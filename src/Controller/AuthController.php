@@ -33,6 +33,7 @@ final class AuthController extends AbstractController
             }
             
             $this->addFlash('error', 'Wrong credentials please try again');
+            return $this->redirectToRoute('app_login');
         }
         
         return $this->render('auth/index.html.twig');
@@ -56,10 +57,10 @@ final class AuthController extends AbstractController
                 
                 $entityManager->persist($user);
                 $entityManager->flush();
-                
                 return $this->redirectToRoute('app_login');
             } else {
                 $this->addFlash('error', 'Passwords do not match');
+                return $this->redirectToRoute('app_register');
             }
         }
         
