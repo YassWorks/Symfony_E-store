@@ -8,6 +8,11 @@
 <body>
     <div class="register-container">
         <h2>Register</h2>
+        {% for message in app.flashes('error') %}
+            <div class="alert-error">
+                {{ message }}
+            </div>
+        {% endfor %}
         <form method="post" action="{{ path('app_register') }}">
             <label for="name">Name</label>
             <input type="text" id="name" name="name" required>
@@ -23,6 +28,9 @@
 
             <button type="submit">Register</button>
         </form>
+        <div class="login-link">
+            <span>Already have an account? <a href="{{ path('app_login') }}">Login here!</a></span>
+        </div>
     </div>
 </body>
 </html>

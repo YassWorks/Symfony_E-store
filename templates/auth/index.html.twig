@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <title>Login</title>
         <link rel="stylesheet" href="{{ asset('css/login.css') }}">
-
 </head>
 <body>
     <div class="login-container">
         <h2>Login</h2>
+        {% for message in app.flashes('error') %}
+            <div class="alert-error">
+                {{ message }}
+            </div>
+        {% endfor %}
         <form method="post" action="{{ path('app_login') }}">
             <div class="form-group">
                 <label for="email">Email</label>

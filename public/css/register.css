@@ -40,3 +40,22 @@ body {
 .register-container button:hover {
     background: #0056b3;
 }
+.login-link {
+    display: block;
+    margin-top: 18px;
+    text-align: center;
+}
+.login-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+.login-link a:hover {
+    text-decoration: underline;
+}
+.alert-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
