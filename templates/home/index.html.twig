@@ -1,1 +1,15 @@
-<a href="/login">Login</a>
+<nav style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa;">
+    <div>
+        <a href="{{ path('landing_page') }}" style="margin-right: 1rem;">Home</a>
+        <a href="#" style="margin-right: 1rem;">Browse</a>
+    </div>
+    <div>
+        {% if user %}
+            <a href="{{ path('profile') }}" style="margin-right: 1rem;">Profile</a>
+            <a href="{{ path('cart') }}" style="margin-right: 1rem;">Cart</a>
+            <a href="{{ path('logout') }}" style="margin-right: 1rem;">Logout</a>
+        {% else %}
+            <a href="{{ path('login') }}">Login</a>
+        {% endif %}
+    </div>
+</nav>

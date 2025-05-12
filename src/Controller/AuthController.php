@@ -13,13 +13,23 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AuthController extends AbstractController
 {   
+
     #[Route('/', name: 'landing_page')]
-    public function landing(): Response
+    public function home(Request $request, UserRepository $userRepository): Response
     {
-        return $this->render('home/index.html.twig');
+        // get user from session
+        $user = null;
+        $userId = $request->getSession()->get('user_id');
+        if ($userId) {
+            $user = $userRepository->find($userId);
+        }
+
+        return $this->render('home/index.html.twig', [
+            'user' => $user,
+        ]);
     }
 
-    #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
+    #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
     public function index(Request $request, UserRepository $userRepository): Response
     {
         if ($request->isMethod('POST')) {
@@ -29,17 +39,19 @@ final class AuthController extends AbstractController
             $user = $userRepository->findOneBy(['email' => $email]);
             
             if ($user && password_verify($password, $user->getPassword())) {
+                // store user ID in session
+                $request->getSession()->set('user_id', $user->getId());
                 return $this->redirectToRoute('landing_page');
             }
-            
+
             $this->addFlash('error', 'Wrong credentials please try again');
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('login');
         }
         
         return $this->render('auth/index.html.twig');
     }
 
-    #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
+    #[Route('/register', name: 'register', methods: ['GET', 'POST'])]
     public function register(Request $request, EntityManagerInterface $entityManager): Response
     {
         if ($request->isMethod('POST')) {
@@ -57,13 +69,21 @@ final class AuthController extends AbstractController
                 
                 $entityManager->persist($user);
                 $entityManager->flush();
-                return $this->redirectToRoute('app_login');
+                return $this->redirectToRoute('login');
             } else {
                 $this->addFlash('error', 'Passwords do not match');
-                return $this->redirectToRoute('app_register');
+                return $this->redirectToRoute('register');
             }
         }
         
         return $this->render('auth/register.html.twig');
+    }
+
+    #[Route('/logout', name: 'logout', methods: ['GET'])]
+    public function logout(Request $request): Response
+    {
+        // clear the session
+        $request->getSession()->invalidate();
+        return $this->redirectToRoute('landing_page');
     }
 }

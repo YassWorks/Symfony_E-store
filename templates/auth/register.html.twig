@@ -13,7 +13,7 @@
                 {{ message }}
             </div>
         {% endfor %}
-        <form method="post" action="{{ path('app_register') }}">
+        <form method="post" action="{{ path('register') }}">
             <label for="name">Name</label>
             <input type="text" id="name" name="name" required>
 
@@ -29,7 +29,7 @@
             <button type="submit">Register</button>
         </form>
         <div class="login-link">
-            <span>Already have an account? <a href="{{ path('app_login') }}">Login here!</a></span>
+            <span>Already have an account? <a href="{{ path('login') }}">Login here!</a></span>
         </div>
     </div>
 </body>
