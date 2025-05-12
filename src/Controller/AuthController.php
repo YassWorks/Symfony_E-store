@@ -10,73 +10,104 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 final class AuthController extends AbstractController
 {   
+    private $userPasswordHasher;
 
-    #[Route('/', name: 'landing_page')]
-    public function home(Request $request, UserRepository $userRepository): Response
+    public function __construct( UserPasswordHasherInterface $userPasswordHasher)
     {
-        // get user from session
-        $user = null;
-        $userId = $request->getSession()->get('user_id');
-        if ($userId) {
-            $user = $userRepository->find($userId);
-        }
+        $this->userPasswordHasher = $userPasswordHasher;
+    }
 
+   #[Route('/', name: 'landing_page')]
+    public function home(): Response
+    {
+        // Get the current authenticated user using Symfony's security
+        $user = $this->getUser();
+        
         return $this->render('home/index.html.twig', [
             'user' => $user,
         ]);
     }
 
     #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
-    public function index(Request $request, UserRepository $userRepository): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($request->isMethod('POST')) {
-            $email = $request->request->get('email');
-            $password = $request->request->get('password');
-            
-            $user = $userRepository->findOneBy(['email' => $email]);
-            
-            if ($user && password_verify($password, $user->getPassword())) {
-                // store user ID in session
-                $request->getSession()->set('user_id', $user->getId());
-                return $this->redirectToRoute('landing_page');
-            }
-
-            $this->addFlash('error', 'Wrong credentials please try again');
-            return $this->redirectToRoute('login');
-        }
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
         
-        return $this->render('auth/index.html.twig');
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        return $this->render('auth/index.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error,
+        ]);
     }
 
     #[Route('/register', name: 'register', methods: ['GET', 'POST'])]
-    public function register(Request $request, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-        if ($request->isMethod('POST')) {
-            $name = $request->request->get('name');
-            $email = $request->request->get('email');
-            $password = $request->request->get('password');
-            $confirmPassword = $request->request->get('confirm_password');
+        $user = new User();
+        
+        // form
+        $form = $this->createFormBuilder($user)
+            ->add('name', TextType::class, [
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('email', EmailType::class, [
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'options' => ['attr' => ['class' => 'form-control']],
+                'first_options'  => ['label' => 'Password'],
+                'second_options' => ['label' => 'Confirm Password'],
+                'mapped' => false,
+                'error_bubbling' => true
+            ])
+            ->add('register', SubmitType::class, [
+                'label' => 'Register',
+                'attr' => ['class' => 'btn btn-primary'],
+            ])
+            ->getForm();
+        
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            // encode the password
+            $user->setPassword(
+                $passwordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
             
-            if ($password === $confirmPassword) {
-                $user = new User();
-                $user->setName($name);
-                $user->setEmail($email);
-                $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
-                $user->setRole(Role::USER);
-                
-                $entityManager->persist($user);
-                $entityManager->flush();
-                return $this->redirectToRoute('login');
-            } else {
-                $this->addFlash('error', 'Passwords do not match');
-                return $this->redirectToRoute('register');
-            }
+            // set default role
+            $user->setRole(Role::ROLE_USER);
+            
+            // save the User
+            $entityManager->persist($user);
+            $entityManager->flush();
+            
+            return $this->redirectToRoute('login');
+
+        } 
+        elseif ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Please check your input.');
         }
         
-        return $this->render('auth/register.html.twig');
+        return $this->render('auth/register.html.twig', [
+            'registrationForm' => $form->createView(),
+        ]);
     }
 
     #[Route('/logout', name: 'logout', methods: ['GET'])]
