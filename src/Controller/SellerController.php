@@ -1,0 +1,127 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Shop;
+use App\Enum\Category;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use App\Enum\Role;
+
+final class SellerController extends AbstractController
+{
+    #[Route('/join_us', name: 'join_us', methods: ['GET', 'POST'])]
+    public function index(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger
+    ): Response {
+        $shop = new Shop();
+    
+        $categoryChoices = [];
+        foreach (Category::cases() as $category) {
+            $categoryChoices[$category->name] = $category->value;
+        }
+        
+        $form = $this->createFormBuilder($shop)
+            ->add('name', TextType::class, [
+                'attr' => ['class' => 'form-control'],
+                'label' => 'Shop Name'
+            ])
+            ->add('categories', ChoiceType::class, [
+                'choices' => $categoryChoices,
+                'multiple' => true,
+                'expanded' => true,
+                'mapped' => false,
+                'label' => 'Shop Categories'
+            ])
+            ->add('website', UrlType::class, [
+                'attr' => ['class' => 'form-control'],
+                'label' => 'Website URL'
+            ])
+            ->add('email', EmailType::class, [
+                'attr' => ['class' => 'form-control'],
+                'label' => 'Contact Email'
+            ])
+            ->add('logo', FileType::class, [
+                'label' => 'Shop Logo (PNG or JPG file)',
+                'mapped' => false,
+                'required' => true,
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Register Shop',
+                'attr' => ['class' => 'btn btn-primary mt-3']
+            ])
+            ->getForm();
+            
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // logo of the shop
+            $logoFile = $form->get('logo')->getData();
+            
+            if ($logoFile) {
+                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
+                
+                try {
+                    $logoFile->move(
+                        $this->getParameter('shop_logos_directory'),
+                        $newFilename
+                    );
+                    
+                    $shop->setLogoUrl('/uploads/shop_logos/'.$newFilename);
+                } catch (FileException) {
+                    $this->addFlash('error', 'There was a problem uploading your logo. Please try again.');
+                }
+            }
+            
+            $selectedCategories = $form->get('categories')->getData();
+            foreach ($selectedCategories as $category) {
+                $shop->addCategory($category);
+            }
+            
+            $entityManager->persist($shop);
+            $entityManager->flush();
+            
+            // adding the ROLE_SELLER role to the user
+            /** @var \App\Entity\User $user */
+            $user = $this->getUser();
+            if ($user) {
+                $user->addRole(Role::ROLE_SELLER);
+                $entityManager->persist($user);
+                $entityManager->flush();
+            }
+
+            return $this->redirectToRoute('seller_dashboard');
+        }
+        elseif ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Please check your input and try again.');
+        }
+        
+        return $this->render('seller/index.html.twig', [
+            'shopForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/dashboard', name: 'seller_dashboard', methods: ['GET'])]
+    public function dashboard(): Response
+    {
+        // Render the seller dashboard template
+        return $this->render('seller/dashboard.html.twig');
+    }
+}

@@ -5,6 +5,12 @@
     </div>
     <div>
         {% if user %}
+            {% if 'ROLE_SELLER' in user.roles %}
+                <a href="{{ path('seller_dashboard') }}" style="margin-right: 1rem;">Your Shop</a>
+            {% else %}
+                <a href="{{ path('join_us') }}" style="margin-right: 1rem;">join Us</a>
+            {% endif %}
+
             <a href="{{ path('profile') }}" style="margin-right: 1rem;">Profile</a>
             <a href="{{ path('cart') }}" style="margin-right: 1rem;">Cart</a>
             <a href="{{ path('logout') }}">Logout</a>

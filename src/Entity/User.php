@@ -26,8 +26,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $name = null;
 
-    #[ORM\Column(type: "string", enumType: Role::class)]
-    private ?Role $role = null;
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
 
     public function getId(): ?int
     {
@@ -70,22 +70,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?Role
+    // role management
+    public function getRolesEnums(): array
     {
-        return $this->role;
+        return array_map(fn(string $r) => Role::from($r), $this->roles);
     }
 
-    public function setRole(Role $role): static
+    public function addRole(Role $role): static
     {
-        $this->role = $role;
+        if (!in_array($role->value, $this->roles, true)) {
+            $this->roles[] = $role->value;
+        }
 
         return $this;
+    }
+
+    public function removeRole(Role $role): static
+    {
+        $this->roles = array_values(array_filter(
+            $this->roles,
+            fn(string $r) => $r !== $role->value
+        ));
+
+        return $this;
+    }
+
+    public function hasRole(Role $role): bool
+    {
+        return in_array($role->value, $this->roles, true);
     }
 
     // these are required methods from UserInterface
     public function getRoles(): array
     {
-        return [$this->getRole()->value];
+        return $this->roles;
     }
 
     public function getUserIdentifier(): string

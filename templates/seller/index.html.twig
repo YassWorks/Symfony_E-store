@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Register Your Shop{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/joinUs.css') }}">
+</head>
+<body>
+    {% block body %}
+    <div class="container">
+        <h1>Become a Seller</h1>
+        <p class="lead">Register your shop to start selling products on our platform.</p>
+        
+        {% for message in app.flashes('success') %}
+            <div class="alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        
+        {% for message in app.flashes('error') %}
+            <div class="alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+        
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(shopForm) }}
+                    <div class="mb-3">
+                        {{ form_label(shopForm.name) }}
+                        {{ form_widget(shopForm.name) }}
+                        {{ form_errors(shopForm.name) }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label>Shop Categories</label>
+                        <div class="category-dropdown">
+                            <select id="categoryDropdown">
+                                <option value="">-- Select a category --</option>
+                                {% for choice in shopForm.categories.vars.choices %}
+                                    <option value="{{ choice.value }}">{{ choice.label }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn" id="addCategory">Add</button>
+                        </div>
+                        <ul id="selectedCategories" class="selected-categories"></ul>
+                        <div class="hidden-inputs" id="categoryInputs"></div>
+                        {{ form_errors(shopForm.categories) }}
+                        
+                        {# Hide the original categories widget #}
+                        <div style="display: none;">
+                            {{ form_widget(shopForm.categories) }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form_label(shopForm.website) }}
+                        {{ form_widget(shopForm.website) }}
+                        {{ form_errors(shopForm.website) }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form_label(shopForm.email) }}
+                        {{ form_widget(shopForm.email) }}
+                        {{ form_errors(shopForm.email) }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form_label(shopForm.logo) }}
+                        {{ form_widget(shopForm.logo) }}
+                        {{ form_errors(shopForm.logo) }}
+                    </div>
+                    
+                    {{ form_widget(shopForm.submit) }}
+                {{ form_end(shopForm) }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdown = document.getElementById('categoryDropdown');
+            const addButton = document.getElementById('addCategory');
+            const selectedList = document.getElementById('selectedCategories');
+            const inputsContainer = document.getElementById('categoryInputs');
+            const selectedCategories = new Set();
+            
+            // Get the original form widget checkboxes
+            const originalCheckboxes = document.querySelectorAll('input[name^="form[categories]"][type="checkbox"]');
+
+            // Add category when button clicked
+            addButton.addEventListener('click', function() {
+                addSelectedCategory();
+            });
+
+            // Also allow adding by pressing Enter on the dropdown
+            dropdown.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addSelectedCategory();
+                }
+            });
+
+            function addSelectedCategory() {
+                const categoryValue = dropdown.value;
+                const categoryText = dropdown.options[dropdown.selectedIndex].text;
+                
+                if (categoryValue && !selectedCategories.has(categoryValue)) {
+                    // Add to selected set
+                    selectedCategories.add(categoryValue);
+                    
+                    // Create list item
+                    const li = document.createElement('li');
+                    li.dataset.value = categoryValue;
+                    li.innerHTML = `
+                        <span>${categoryText}</span>
+                        <button type="button" class="remove-category">&times;</button>
+                    `;
+                    
+                    // Add remove functionality
+                    const removeButton = li.querySelector('.remove-category');
+                    removeButton.addEventListener('click', function() {
+                        selectedCategories.delete(categoryValue);
+                        li.remove();
+                        
+                        // Uncheck the original checkbox
+                        originalCheckboxes.forEach(function(checkbox) {
+                            if (checkbox.value === categoryValue) {
+                                checkbox.checked = false;
+                            }
+                        });
+                    });
+                    
+                    selectedList.appendChild(li);
+                    
+                    // Check the corresponding original checkbox
+                    originalCheckboxes.forEach(function(checkbox) {
+                        if (checkbox.value === categoryValue) {
+                            checkbox.checked = true;
+                        }
+                    });
+                    
+                    // Reset dropdown
+                    dropdown.selectedIndex = 0;
+                }
+            }
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>

@@ -23,6 +23,7 @@ security:
         enable_csrf: true
       logout:
         path: logout
+        target: landing_page
 
   access_control:
     # - { path: ^/admin, roles: ROLE_ADMIN }

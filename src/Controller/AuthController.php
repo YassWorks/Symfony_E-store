@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\Role;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,17 +19,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 final class AuthController extends AbstractController
 {   
-    private $userPasswordHasher;
-
-    public function __construct( UserPasswordHasherInterface $userPasswordHasher)
-    {
-        $this->userPasswordHasher = $userPasswordHasher;
-    }
-
    #[Route('/', name: 'landing_page')]
     public function home(): Response
     {
-        // Get the current authenticated user using Symfony's security
+        // get the current authenticated user using Symfony's security
         $user = $this->getUser();
         
         return $this->render('home/index.html.twig', [
@@ -91,8 +83,9 @@ final class AuthController extends AbstractController
                 )
             );
             
-            // set default role
-            $user->setRole(Role::ROLE_USER);
+            // set default roles
+            $user->addRole(Role::ROLE_USER);
+            $user->addRole(Role::ROLE_BUYER);
             
             // save the User
             $entityManager->persist($user);
@@ -111,10 +104,9 @@ final class AuthController extends AbstractController
     }
 
     #[Route('/logout', name: 'logout', methods: ['GET'])]
-    public function logout(Request $request): Response
+    public function logout(): never
     {
-        // clear the session
-        $request->getSession()->invalidate();
-        return $this->redirectToRoute('landing_page');
+        // This method should never be reached
+        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on the firewall.');
     }
 }
