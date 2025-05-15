@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace App\Shop\Repository;
 
-use App\Entity\Shop;
+use App\Shop\Entity\Shop;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

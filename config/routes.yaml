@@ -1,5 +1,17 @@
-controllers:
+auth_controllers:
     resource:
-        path: ../src/Controller/
-        namespace: App\Controller
+        path: ../src/Auth/Controller/
+        namespace: App\Auth\Controller
+    type: attribute
+
+shop_controllers:
+    resource:
+        path: ../src/Shop/Controller/
+        namespace: App\Shop\Controller
+    type: attribute
+
+core_controllers:
+    resource:
+        path: ../src/Core/Controller/
+        namespace: App\Core\Controller
     type: attribute

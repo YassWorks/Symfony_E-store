@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller;
+namespace App\Auth\Controller;
 
-use App\Entity\User;
-use App\Enum\Role;
+use App\Auth\Entity\User;
+use App\Shared\Enum\Role;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

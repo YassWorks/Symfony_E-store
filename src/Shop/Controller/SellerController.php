@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace App\Shop\Controller;
 
-use App\Entity\Shop;
-use App\Enum\Category;
+use App\Shop\Entity\Shop;
+use App\Shared\Enum\Category;
+use App\Shared\Enum\Role;
+use App\Auth\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -17,7 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
-use App\Enum\Role;
 
 final class SellerController extends AbstractController
 {
@@ -99,7 +100,7 @@ final class SellerController extends AbstractController
             $entityManager->flush();
             
             // adding the ROLE_SELLER role to the user
-            /** @var \App\Entity\User $user */
+            /** @var \App\Auth\Entity\User $user */
             $user = $this->getUser();
             if ($user) {
                 $user->addRole(Role::ROLE_SELLER);

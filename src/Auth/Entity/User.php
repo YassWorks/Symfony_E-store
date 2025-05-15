@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace App\Auth\Entity;
 
-use App\Repository\UserRepository;
+use App\Auth\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use App\Enum\Role;
+use App\Shared\Enum\Role;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 

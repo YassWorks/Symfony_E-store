@@ -26,3 +26,4 @@
 .vscode
 .vscode/*
 start.ps1
+.env

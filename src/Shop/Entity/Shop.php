@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace App\Shop\Entity;
 
-use App\Repository\ShopRepository;
+use App\Shop\Repository\ShopRepository;
 use Doctrine\ORM\Mapping as ORM;
-use App\Enum\Category;
+use App\Shared\Enum\Category;
 
 #[ORM\Entity(repositoryClass: ShopRepository::class)]
 #[ORM\Table(name: "`shop`")]

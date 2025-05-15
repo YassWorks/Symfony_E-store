@@ -1,13 +1,13 @@
 security:
   password_hashers:
     Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
-    App\Entity\User:
+    App\Auth\Entity\User:
       algorithm: auto
 
   providers:
     users:
       entity:
-        class: 'App\Entity\User'
+        class: 'App\Auth\Entity\User'
         property: email
 
   firewalls:
