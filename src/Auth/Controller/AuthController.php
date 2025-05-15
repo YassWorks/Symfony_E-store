@@ -3,13 +3,11 @@
 namespace App\Auth\Controller;
 
 use App\Auth\Entity\User;
-use App\Shared\Enum\Role;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Auth\Service\AuthService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -46,7 +44,7 @@ final class AuthController extends AbstractController
     }
 
     #[Route('/register', name: 'register', methods: ['GET', 'POST'])]
-    public function register(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function register(Request $request, AuthService $authService): Response
     {
         $user = new User();
         
@@ -75,24 +73,8 @@ final class AuthController extends AbstractController
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the password
-            $user->setPassword(
-                $passwordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                )
-            );
-            
-            // set default roles
-            $user->addRole(Role::ROLE_USER);
-            $user->addRole(Role::ROLE_BUYER);
-            
-            // save the User
-            $entityManager->persist($user);
-            $entityManager->flush();
-            
+            $authService->registerUser($user, $form);
             return $this->redirectToRoute('login');
-
         } 
         elseif ($form->isSubmitted() && !$form->isValid()) {
             $this->addFlash('error', 'Please check your input.');
