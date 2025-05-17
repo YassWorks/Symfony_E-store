@@ -1,8 +1,8 @@
 <?php
-namespace App\Products\Service;
+namespace App\Product\Service;
 
-use App\Products\Entity\Product;
-use App\Products\Repository\ProductRepository;
+use App\Product\Entity\Product;
+use App\Product\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProductService

@@ -1,9 +1,9 @@
 <?php
-namespace App\Products\Controller;
+namespace App\Product\Controller;
 
-use App\Products\Entity\Product;
-use App\Products\Form\ProductType;
-use App\Products\Service\ProductService;
+use App\Product\Entity\Product;
+use App\Product\Form\ProductType;
+use App\Product\Service\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

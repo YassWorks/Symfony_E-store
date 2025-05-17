@@ -29,7 +29,7 @@ services:
   
   App\Shared\Utils\FileUploader:
     arguments:
-      $shopLogosDirectory: '%shop_logos_directory%'
+      $uploadDirectory: '%shop_logos_directory%'
   
   App\MailModule\Service\MailService:
     arguments:
@@ -39,6 +39,6 @@ services:
     alias: App\MailModule\Service\MailService
     public: true
 
-  App\Products\Service\ProductService:
+  App\Product\Service\ProductService:
     autowire: true
     autoconfigure: true

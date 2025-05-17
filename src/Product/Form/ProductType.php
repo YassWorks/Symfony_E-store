@@ -1,7 +1,7 @@
 <?php
-namespace App\Products\Form;
+namespace App\Product\Form;
 
-use App\Products\Entity\Product;
+use App\Product\Entity\Product;
 use App\Shared\Enum\Category;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

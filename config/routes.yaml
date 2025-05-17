@@ -16,8 +16,8 @@ core_controllers:
         namespace: App\Core\Controller
     type: attribute
 
-products_controllers:
+product_controllers:
     resource: 
-        path: '../src/Products/Controller/'
-        namespace: App\Products\Controller
+        path: '../src/Product/Controller/'
+        namespace: App\Product\Controller
     type: attribute

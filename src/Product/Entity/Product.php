@@ -1,11 +1,11 @@
 <?php
-namespace App\Products\Entity;
+namespace App\Product\Entity;
 
 use App\Shared\Enum\Category;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Products\Repository\ProductRepository;
+use App\Product\Repository\ProductRepository;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product

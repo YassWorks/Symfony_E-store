@@ -30,12 +30,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Shop/Entity'
                 prefix: 'App\Shop\Entity'
                 alias: Shop
-            Products:
+            Product:
                 is_bundle: false
                 type: attribute
-                dir: '%kernel.project_dir%/src/Products/Entity'
-                prefix: 'App\Products\Entity'
-                alias: Products
+                dir: '%kernel.project_dir%/src/Product/Entity'
+                prefix: 'App\Product\Entity'
+                alias: Product
 
         controller_resolver:
             auto_mapping: false
