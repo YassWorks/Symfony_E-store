@@ -1,0 +1,16 @@
+{% include 'navbar/index.html.twig' %}
+
+{% block title %}Product Details{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">{{ product.title }}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">{{ product.category.value }}</h6>
+    <p class="card-text">{{ product.description }}</p>
+    <p><strong>Price:</strong> ${{ product.price }}</p>
+    <p><strong>In stock:</strong> {{ product.stockQuantity }}</p>
+    <a href="{{ path('product_edit', {id: product.id}) }}" class="btn btn-warning">Edit</a>
+    {{ include('products/_delete_form.html.twig', { product: product }) }}
+  </div>
+</div>
+{% endblock %}

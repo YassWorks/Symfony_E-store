@@ -28,6 +28,9 @@ security:
   access_control:
     # - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/profile, roles: ROLE_BUYER }
+    - { path: ^/products/new,   roles: ROLE_SELLER }
+    - { path: ^/products/\d+/edit, roles: ROLE_SELLER }
+    - { path: ^/products,        roles: ROLE_BUYER }
 
 when@test:
   security:

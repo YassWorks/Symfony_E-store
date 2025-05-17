@@ -1,0 +1,27 @@
+{% include 'navbar/index.html.twig' %}
+
+{% block content %}
+<a href="{{ path('product_new') }}" class="btn btn-primary mb-3">New Product</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th><th>Price</th><th>Stock</th><th>Category</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in products %}
+        <tr>
+            <td>{{ p.title }}</td>
+            <td>{{ p.price|number_format(2) }}</td>
+            <td>{{ p.stockQuantity }}</td>
+            <td>{{ p.category.value }}</td>
+            <td>
+                <a href="{{ path('product_show', {id: p.id}) }}" class="btn btn-sm btn-info">Show</a>
+                <a href="{{ path('product_edit', {id: p.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+                {{ include('products/_delete_form.html.twig', { product: p }) }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

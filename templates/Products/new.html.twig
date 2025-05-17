@@ -1,0 +1,12 @@
+{% include 'navbar/index.html.twig' %}
+{% block title %}New Product{% endblock %}
+{% block content %}
+{{ form_start(form) }}
+  {{ form_row(form.title) }}
+  {{ form_row(form.description) }}
+  {{ form_row(form.price) }}
+  {{ form_row(form.stockQuantity) }}
+  {{ form_row(form.category) }}
+  <button class="btn btn-success">Create</button>
+{{ form_end(form) }}
+{% endblock %}

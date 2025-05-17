@@ -38,3 +38,7 @@ services:
   App\MailModule\Service\MailServiceInterface:
     alias: App\MailModule\Service\MailService
     public: true
+
+  App\Products\Service\ProductService:
+    autowire: true
+    autoconfigure: true
