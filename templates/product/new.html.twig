@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Product{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+  <h1 class="mb-4">Add New Product</h1>
+  {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-success mt-3">Create</button>
+  {{ form_end(form) }}
+</div>
+{% endblock %}

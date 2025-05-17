@@ -1,6 +1,7 @@
 <?php
 namespace App\Product\Entity;
 
+use App\Product\Entity\Product;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -10,41 +11,25 @@ class Image
     private ?int $id = null;
 
     #[ORM\Column(type: 'string')]
-    private string $url;
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $altText = null;
+    private string $filename;
 
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false)]
     private Product $product;
-
-    // getters & setters
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUrl(): string
+    public function getFilename(): string
     {
-        return $this->url;
+        return $this->filename;
     }
 
-    public function setUrl(string $url): self
+    public function setFilename(string $filename): self
     {
-        $this->url = $url;
-        return $this;
-    }
-
-    public function getAltText(): ?string
-    {
-        return $this->altText;
-    }
-
-    public function setAltText(?string $altText): self
-    {
-        $this->altText = $altText;
+        $this->filename = $filename;
         return $this;
     }
 
