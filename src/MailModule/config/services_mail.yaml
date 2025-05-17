@@ -1,0 +1,13 @@
+# src/MailModule/config/services_mail.yaml
+services:
+  # Register all MailModule services
+  App\MailModule\:
+    resource: '../../MailModule/*'
+    exclude: '../../MailModule/{Entity,Migrations,Tests}'
+
+  App\MailModule\Service\MailServiceInterface:
+    alias: App\MailModule\Service\MailService
+
+  App\MailModule\Service\MailService:
+    arguments:
+      $fromAddress: '%env(MAIL_FROM_ADDRESS)%'

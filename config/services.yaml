@@ -3,6 +3,10 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+
+imports:
+  - { resource: '../src/MailModule/config/services_mail.yaml' }
+
 parameters:
   shop_logos_directory: "%kernel.project_dir%/public/uploads/shop_logos"
 
@@ -11,7 +15,6 @@ services:
   _defaults:
     autowire: true # Automatically injects dependencies in your services.
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
   App\:
@@ -27,3 +30,11 @@ services:
   App\Shop\Service\SellerService:
     arguments:
       $shopLogosDirectory: '%shop_logos_directory%'
+  
+  App\MailModule\Service\MailService:
+    arguments:
+      $fromAddress: '%env(MAIL_FROM_ADDRESS)%'
+  
+  App\MailModule\Service\MailServiceInterface:
+    alias: App\MailModule\Service\MailService
+    public: true

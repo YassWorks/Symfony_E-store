@@ -7,12 +7,14 @@ use App\Shared\Enum\Role;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Form\FormInterface;
+use App\MailModule\Service\MailServiceInterface;
 
 class AuthService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $passwordHasher
+        private UserPasswordHasherInterface $passwordHasher,
+        private MailServiceInterface $mailService
     ) {
     }
 
@@ -29,6 +31,16 @@ class AuthService
         // set default roles
         $user->addRole(Role::ROLE_BUYER);
         
+        //send email :
+        $this->mailService->send(
+            $user->getEmail(),
+            'Welcome to Our Store!',
+            'emails/registration.html.twig',
+            [
+                'user'=> $user
+            ] //context
+
+        );
         // save the User
         $this->entityManager->persist($user);
         $this->entityManager->flush();
