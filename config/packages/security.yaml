@@ -20,6 +20,8 @@ security:
       form_login:
         login_path: login
         check_path: login
+        use_referer: true
+        default_target_path: product_index
         enable_csrf: true
       logout:
         path: logout

@@ -16,7 +16,7 @@
             <a href="{{ path('cart_index') }}" style="margin-right: 1rem;">Cart</a>
             <a href="{{ path('logout') }}">Logout</a>
         {% else %}
-            <a href="{{ path('login') }}">Login</a>
+            <a href="{{ path('login', { _target_path: app.request.uri }) }}">Login</a>
         {% endif %}
     </div>
 </nav>
