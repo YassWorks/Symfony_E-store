@@ -7,6 +7,7 @@ use App\Cart\Repository\CartRepository;
 use App\Product\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class CartService
 {
@@ -19,7 +20,11 @@ class CartService
 
     private function getCart(): Cart
     {
-        $user = $this->tokenStore->getToken()->getUser();
+        $token = $this->tokenStore->getToken();
+        $user = $token?->getUser();
+        if (! $user || ! is_object($user)) {
+            throw new AccessDeniedException('You must be logged in to have a cart.');
+        }
         $cart = $this->cartRepo->findOneBy(['user'=>$user]) ?? new Cart();
         if (!$cart->getId()) {
             $cart->setUser($user);

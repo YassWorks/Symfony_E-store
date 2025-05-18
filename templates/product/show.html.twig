@@ -19,9 +19,10 @@
       <p><strong>Price:</strong> ${{ product.price }}</p>
       <p><strong>Stock:</strong> {{ product.stockQuantity }}</p>
       <p>{{ product.description }}</p>
-      <a href="{{ path('product_edit', {id: product.id}) }}" class="btn btn-warning">Edit</a>
-      {{ include('product/_delete_form.html.twig', {product: product}) }}
-      {% if is_granted('ROLE_BUYER') %}
+      {% if is_granted('ROLE_SELLER') %}
+        <a href="{{ path('product_edit', {id: product.id}) }}" class="btn btn-warning">Edit</a>
+        {{ include('product/_delete_form.html.twig', {product: product}) }}
+      {% endif %}
       
       <form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="d-flex align-items-center mt-3">
         <input
@@ -34,7 +35,6 @@
         <button class="btn btn-primary">Add to Cart</button>
       </form>
     
-    {% endif %}
     </div>
   </div>
 </div>
