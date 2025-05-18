@@ -61,6 +61,19 @@ class CartService
     {
         return $this->getCart();
     }
+
+    public function updateQuantity(int $itemId, int $quantity): void
+    {
+        $item = $this->em->find(CartItem::class, $itemId);
+        if ($item && $quantity > 0) {
+            $item->setQuantity($quantity);
+        } elseif ($item) {
+            // remove if zero or negative
+            $cart = $item->getCart();
+            $cart->removeItem($item);
+        }
+        $this->em->flush();
+    }
 }
 
 ?>

@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Route('/cart')]
 class CartController extends AbstractController
@@ -44,6 +45,16 @@ class CartController extends AbstractController
         //convert cart to order here
         $this->addFlash('success','Order placed!');
         return $this->redirectToRoute('product_index');
+    }
+    
+    #[Route('/update/{itemId}', name: 'cart_update', methods: ['POST'])]
+    #[IsGranted('ROLE_BUYER')]
+    public function updateQuantity(Request $request, int $itemId): Response
+    {
+        $qty = (int)$request->request->get('quantity', 1);
+        $this->cartService->updateQuantity($itemId, $qty);
+
+        return $this->redirectToRoute('cart_index');
     }
 }
 
