@@ -2,7 +2,11 @@
 
 namespace App\Shop\Entity;
 
+use App\Auth\Entity\User;
+use App\Product\Entity\Product;
 use App\Shop\Repository\ShopRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Shared\Enum\Category;
 
@@ -29,6 +33,21 @@ class Shop
 
     #[ORM\Column(length: 255)]
     private ?string $logo_url = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner = null;
+
+    /**
+     * @var Collection<int, Product>
+     */
+    #[ORM\OneToMany(mappedBy: 'shop', targetEntity: Product::class, cascade: ['persist', 'remove'])]
+    private Collection $products;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -98,6 +117,48 @@ class Shop
     public function setLogoUrl(string $logo_url): static
     {
         $this->logo_url = $logo_url;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setShop($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            // set the owning side to null (unless already changed)
+            if ($product->getShop() === $this) {
+                $product->setShop(null);
+            }
+        }
 
         return $this;
     }

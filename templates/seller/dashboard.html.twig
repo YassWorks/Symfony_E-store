@@ -1,1 +1,40 @@
-hey there congrats
+{% extends 'base.html.twig' %}
+
+{% block title %}Seller Dashboard{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <h1 class="mb-4">Seller Dashboard</h1>
+
+    <h2 class="mb-3">Manage Products</h2>
+    <a href="{{ path('product_new') }}" class="btn btn-success mb-3">Add New Product</a>
+
+    {% if products is defined and products|length > 0 %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.title }}</td>
+                        <td>${{ product.price }}</td>
+                        <td>{{ product.stockQuantity }}</td>
+                        <td>
+                            <a href="{{ path('product_edit', {id: product.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+                            {{ include('product/_delete_form.html.twig', {product: product}) }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have not added any products yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

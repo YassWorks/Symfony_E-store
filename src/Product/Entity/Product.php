@@ -2,6 +2,7 @@
 namespace App\Product\Entity;
 
 use App\Shared\Enum\Category;
+use App\Shop\Entity\Shop;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -34,6 +35,10 @@ class Product
      */
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Image::class, cascade: ['persist', 'remove'])]
     private Collection $images;
+
+    #[ORM\ManyToOne(targetEntity: Shop::class, inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Shop $shop = null;
 
     public function __construct()
     {
@@ -129,6 +134,18 @@ class Product
                 $image->setProduct(null);
             }
         }
+        return $this;
+    }
+
+    public function getShop(): ?Shop
+    {
+        return $this->shop;
+    }
+
+    public function setShop(?Shop $shop): static
+    {
+        $this->shop = $shop;
+
         return $this;
     }
 }

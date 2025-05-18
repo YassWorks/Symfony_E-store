@@ -42,8 +42,6 @@ class CartController extends AbstractController
     #[IsGranted('ROLE_BUYER')]
     public function checkout()
     {
-        //convert cart to order here
-        $this->addFlash('success','Order placed!');
         return $this->redirectToRoute('product_index');
     }
     

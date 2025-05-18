@@ -30,6 +30,8 @@ security:
   access_control:
     # - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/profile, roles: ROLE_BUYER }
+    - { path: ^/join_us, roles: ROLE_BUYER }
+    - { path: ^/dashboard, roles: ROLE_SELLER }
     - { path: ^/products/new,   roles: ROLE_SELLER }
     - { path: ^/products/\d+/edit, roles: ROLE_SELLER }
 

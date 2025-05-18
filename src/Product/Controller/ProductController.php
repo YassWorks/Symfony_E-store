@@ -6,6 +6,7 @@ use App\Product\Entity\Product;
 use App\Product\Form\ProductType;
 use App\Product\Service\ProductService;
 use App\Shared\Utils\FileUploader;
+use App\Shop\Service\ShopService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,8 @@ class ProductController extends AbstractController
 {
     public function __construct(
         private readonly ProductService $service,
-        private readonly FileUploader $uploader
+        private readonly FileUploader $uploader,
+        private readonly ShopService $shopService // Inject ShopService
     ) {}
 
     #[Route('', name: 'product_index', methods: ['GET'])]
@@ -49,8 +51,19 @@ class ProductController extends AbstractController
                 }
             }
 
+            // Associate product with the current user's shop
+            $user = $this->getUser();
+            $shop = $this->shopService->getShopByUser($user);
+            if ($shop) {
+                $product->setShop($shop);
+            } else {
+                // Handle case where seller does not have a shop
+                $this->addFlash('error', 'You must register a shop before adding products.');
+                return $this->redirectToRoute('join_us'); // Or some other appropriate route
+            }
+
             $this->service->save($product);
-            return $this->redirectToRoute('product_index');
+            return $this->redirectToRoute('seller_dashboard'); // Redirect to seller dashboard
         }
 
         return $this->render('product/new.html.twig', ['form' => $form->createView()]);
@@ -60,6 +73,13 @@ class ProductController extends AbstractController
     #[IsGranted('ROLE_SELLER')]
     public function edit(Request $request, Product $product): Response
     {
+        // Check if the current user owns the product's shop
+        $user = $this->getUser();
+        if (!$product->getShop() || $product->getShop()->getOwner() !== $user) {
+            $this->addFlash('error', 'You are not authorized to edit this product.');
+            return $this->redirectToRoute('seller_dashboard');
+        }
+
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
@@ -77,7 +97,7 @@ class ProductController extends AbstractController
             }
 
             $this->service->save($product);
-            return $this->redirectToRoute('product_show', ['id' => $product->getId()]);
+            return $this->redirectToRoute('seller_dashboard'); // Redirect to seller dashboard
         }
 
         return $this->render('product/edit.html.twig', [
@@ -96,9 +116,16 @@ class ProductController extends AbstractController
     #[IsGranted('ROLE_SELLER')]
     public function delete(Request $request, Product $product): Response
     {
+        // Check if the current user owns the product's shop
+        $user = $this->getUser();
+        if (!$product->getShop() || $product->getShop()->getOwner() !== $user) {
+            $this->addFlash('error', 'You are not authorized to delete this product.');
+            return $this->redirectToRoute('seller_dashboard');
+        }
+
         if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->request->get('_token'))) {
             $this->service->delete($product);
         }
-        return $this->redirectToRoute('product_index');
+        return $this->redirectToRoute('seller_dashboard'); // Redirect to seller dashboard
     }
 }

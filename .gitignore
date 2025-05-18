@@ -27,3 +27,5 @@
 .vscode/*
 start.ps1
 .env
+
+errorss.html.twig

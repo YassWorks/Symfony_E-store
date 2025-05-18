@@ -3,6 +3,7 @@
 namespace App\Auth\Controller;
 
 use App\Auth\Entity\User;
+use App\Auth\Repository\UserRepository;
 use App\Auth\Service\AuthService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +45,7 @@ final class AuthController extends AbstractController
     }
 
     #[Route('/register', name: 'register', methods: ['GET', 'POST'])]
-    public function register(Request $request, AuthService $authService): Response
+    public function register(Request $request, AuthService $authService, UserRepository $userRepository): Response // Add UserRepository
     {
         $user = new User();
         
@@ -73,8 +74,15 @@ final class AuthController extends AbstractController
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            $authService->registerUser($user, $form);
-            return $this->redirectToRoute('login');
+            $email = $form->get('email')->getData();
+            $existingUser = $userRepository->findOneBy(['email' => $email]);
+
+            if ($existingUser) {
+                $this->addFlash('error', 'A user with this email already exists.');
+            } else {
+                $authService->registerUser($user, $form);
+                return $this->redirectToRoute('login');
+            }
         } 
         elseif ($form->isSubmitted() && !$form->isValid()) {
             $this->addFlash('error', 'Please check your input.');

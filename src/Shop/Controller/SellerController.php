@@ -4,6 +4,7 @@ namespace App\Shop\Controller;
 
 use App\Shop\Entity\Shop;
 use App\Shop\Service\SellerService;
+use App\Shop\Service\ShopService;
 use App\Shared\Enum\Category;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -18,6 +19,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class SellerController extends AbstractController
 {
+    public function __construct(private readonly ShopService $shopService)
+    {
+    }
+
     #[Route('/join_us', name: 'join_us', methods: ['GET', 'POST'])]
     public function index(
         Request $request,
@@ -66,7 +71,9 @@ final class SellerController extends AbstractController
         
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $this->getUser();
-            
+
+            $shop->setOwner($user); // Set the owner of the shop
+
             $success = $sellerService->registerShop($shop, $form, $user);
             
             if ($success) {
@@ -86,7 +93,17 @@ final class SellerController extends AbstractController
     #[Route('/dashboard', name: 'seller_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
-        // Render the seller dashboard template
-        return $this->render('seller/dashboard.html.twig');
+        $user = $this->getUser();
+
+        $shop = $this->shopService->getShopByUser($user);
+        $products = [];
+        if ($shop) {
+            $products = $shop->getProducts(); // Get products associated with the shop
+        }
+
+        return $this->render('seller/dashboard.html.twig', [
+            'products' => $products,
+            'shop' => $shop
+        ]);
     }
 }

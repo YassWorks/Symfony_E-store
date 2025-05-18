@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250518180441 extends AbstractMigration
+final class Version20250518195059 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -30,10 +30,10 @@ final class Version20250518180441 extends AbstractMigration
             CREATE TABLE `image` (id INT AUTO_INCREMENT NOT NULL, product_id INT NOT NULL, filename VARCHAR(255) NOT NULL, INDEX IDX_C53D045F4584665A (product_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE `product` (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, price NUMERIC(10, 2) NOT NULL, stock_quantity INT NOT NULL, category VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
+            CREATE TABLE `product` (id INT AUTO_INCREMENT NOT NULL, shop_id INT NOT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, price NUMERIC(10, 2) NOT NULL, stock_quantity INT NOT NULL, category VARCHAR(255) NOT NULL, INDEX IDX_D34A04AD4D16C4DD (shop_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE `shop` (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(50) NOT NULL, categories JSON NOT NULL, website VARCHAR(255) NOT NULL, email VARCHAR(100) NOT NULL, logo_url VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
+            CREATE TABLE `shop` (id INT AUTO_INCREMENT NOT NULL, owner_id INT NOT NULL, name VARCHAR(50) NOT NULL, categories JSON NOT NULL, website VARCHAR(255) NOT NULL, email VARCHAR(100) NOT NULL, logo_url VARCHAR(255) NOT NULL, INDEX IDX_AC6A4CA27E3C61F9 (owner_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
             CREATE TABLE `user` (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(100) NOT NULL, password VARCHAR(100) NOT NULL, name VARCHAR(50) NOT NULL, roles JSON NOT NULL, UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
@@ -53,6 +53,12 @@ final class Version20250518180441 extends AbstractMigration
         $this->addSql(<<<'SQL'
             ALTER TABLE `image` ADD CONSTRAINT FK_C53D045F4584665A FOREIGN KEY (product_id) REFERENCES `product` (id)
         SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE `product` ADD CONSTRAINT FK_D34A04AD4D16C4DD FOREIGN KEY (shop_id) REFERENCES `shop` (id)
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE `shop` ADD CONSTRAINT FK_AC6A4CA27E3C61F9 FOREIGN KEY (owner_id) REFERENCES `user` (id)
+        SQL);
     }
 
     public function down(Schema $schema): void
@@ -69,6 +75,12 @@ final class Version20250518180441 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE `image` DROP FOREIGN KEY FK_C53D045F4584665A
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE `product` DROP FOREIGN KEY FK_D34A04AD4D16C4DD
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE `shop` DROP FOREIGN KEY FK_AC6A4CA27E3C61F9
         SQL);
         $this->addSql(<<<'SQL'
             DROP TABLE `cart`
