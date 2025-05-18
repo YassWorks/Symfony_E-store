@@ -21,6 +21,12 @@
                         <h5 class="card-title">{{ product.title }}</h5>
                         <p class="card-text">{{ product.description|slice(0, 100) ~ '...' }}</p>
                         <a href="{{ path('product_show', {id: product.id}) }}" class="btn btn-primary">View</a>
+                        {% if is_granted('ROLE_BUYER') %}
+                            <form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="d-inline">
+                                <input type="hidden" name="quantity" value="1" />
+                                <button class="btn btn-sm btn-success">+ Cart</button>
+                            </form>
+                        {% endif %}
                     </div>
                 </div>
             </div>

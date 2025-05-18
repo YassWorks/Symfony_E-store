@@ -21,6 +21,20 @@
       <p>{{ product.description }}</p>
       <a href="{{ path('product_edit', {id: product.id}) }}" class="btn btn-warning">Edit</a>
       {{ include('product/_delete_form.html.twig', {product: product}) }}
+      {% if is_granted('ROLE_BUYER') %}
+      
+      <form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="d-flex align-items-center mt-3">
+        <input
+          type="number"
+          name="quantity"
+          value="1"
+          min="1"
+          class="form-control w-auto me-2"
+        />
+        <button class="btn btn-primary">Add to Cart</button>
+      </form>
+    
+    {% endif %}
     </div>
   </div>
 </div>

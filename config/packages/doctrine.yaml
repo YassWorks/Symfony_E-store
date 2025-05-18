@@ -36,6 +36,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Product/Entity'
                 prefix: 'App\Product\Entity'
                 alias: Product
+            Cart:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Cart/Entity'
+                prefix: 'App\Cart\Entity'
+                alias: Cart
 
         controller_resolver:
             auto_mapping: false

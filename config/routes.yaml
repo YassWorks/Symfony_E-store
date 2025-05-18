@@ -21,3 +21,9 @@ product_controllers:
         path: '../src/Product/Controller/'
         namespace: App\Product\Controller
     type: attribute
+
+cart_controllers:
+    resource: 
+        path: '../src/Cart/Controller/'
+        namespace: App\Cart\Controller
+    type: attribute

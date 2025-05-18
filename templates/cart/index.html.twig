@@ -1,1 +1,37 @@
-cart details
+{% extends 'base.html.twig' %}
+{% block title %}Your Cart{% endblock %}
+{% block body %}
+<div class="container py-4">
+  <h1>Your Cart</h1>
+  {% if cart.items|length == 0 %}
+    <p>Your cart is empty.</p>
+  {% else %}
+    <table class="table">
+      <thead>
+        <tr><th>Product</th><th>Qty</th><th>Subtotal</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for item in cart.items %}
+        <tr>
+          <td>{{ item.product.title }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>${{ item.quantity * item.product.price }}</td>
+          <td>
+            <form method="post" action="{{ path('cart_remove',{itemId:item.id}) }}">
+              <button class="btn btn-sm btn-danger">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2"><strong>Total:</strong></td>
+          <td colspan="2">${{ cart.getTotal() }}</td>
+        </tr>
+      </tfoot>
+    </table>
+    <a href="{{ path('cart_checkout') }}" class="btn btn-success">Checkout</a>
+  {% endif %}
+</div>
+{% endblock %}
