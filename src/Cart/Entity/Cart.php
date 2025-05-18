@@ -6,8 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Cart\Entity\CartItem;
 use App\Auth\Entity\User;
+use App\Cart\Repository\CartRepository;
 
 #[ORM\Entity(repositoryClass: CartRepository::class)]
+#[ORM\Table(name: "`cart`")]
 class Cart
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]

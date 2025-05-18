@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use App\Product\Repository\ProductRepository;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\Table(name: "`product`")]
 class Product
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]

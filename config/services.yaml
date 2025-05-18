@@ -5,10 +5,10 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 
 imports:
-  - { resource: '../src/MailModule/config/services_mail.yaml' }
+  - { resource: "../src/MailModule/config/services_mail.yaml" }
 
 parameters:
-  shop_logos_directory: "%kernel.project_dir%/public/uploads/shop_logos"
+  images_directory: "%kernel.project_dir%/public/uploads"
 
 services:
   # default configuration for services in *this* file
@@ -26,15 +26,15 @@ services:
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
-  
+
   App\Shared\Utils\FileUploader:
     arguments:
-      $uploadDirectory: '%shop_logos_directory%'
-  
+      $uploadDirectory: "%images_directory%"
+
   App\MailModule\Service\MailService:
     arguments:
-      $fromAddress: '%env(MAIL_FROM_ADDRESS)%'
-  
+      $fromAddress: "%env(MAIL_FROM_ADDRESS)%"
+
   App\MailModule\Service\MailServiceInterface:
     alias: App\MailModule\Service\MailService
     public: true

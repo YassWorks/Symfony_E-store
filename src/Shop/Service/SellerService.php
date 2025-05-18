@@ -22,7 +22,7 @@ class SellerService
         /** @var UploadedFile $logoFile */
         $logoFile = $form->get('logo')->getData();
           if ($logoFile) {
-            $result = $this->fileUploader->uploadFile($logoFile);
+            $result = $this->fileUploader->uploadFile($logoFile, "/shop_logos/");
             if (!$result['success']) {
                 return false;
             }

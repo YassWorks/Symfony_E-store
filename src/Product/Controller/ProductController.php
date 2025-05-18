@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/products')]
 class ProductController extends AbstractController
@@ -40,7 +40,7 @@ class ProductController extends AbstractController
             $files = $form->get('images')->getData();
             foreach ((array)$files as $file) {
                 if ($file) {
-                    $result = $this->uploader->uploadFile($file);
+                    $result = $this->uploader->uploadFile($file, "/products_images/");
                     if ($result['success']) {
                         $img = new Image();
                         $img->setFilename($result['filename']);
@@ -67,7 +67,7 @@ class ProductController extends AbstractController
             $files = $form->get('images')->getData();
             foreach ((array)$files as $file) {
                 if ($file) {
-                    $result = $this->uploader->uploadFile($file);
+                    $result = $this->uploader->uploadFile($file, "/products_images/");
                     if ($result['success']) {
                         $img = new Image();
                         $img->setFilename($result['filename']);

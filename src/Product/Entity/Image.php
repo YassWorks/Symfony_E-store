@@ -5,6 +5,7 @@ use App\Product\Entity\Product;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\Table(name: "`image`")]
 class Image
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
@@ -38,7 +39,7 @@ class Image
         return $this->product;
     }
 
-    public function setProduct(Product $product): self
+    public function setProduct(?Product $product): self
     {
         $this->product = $product;
         return $this;

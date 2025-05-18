@@ -4,8 +4,10 @@ namespace App\Cart\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Product\Entity\Product;
+use App\Cart\Repository\CartItemRepository;
 
 #[ORM\Entity(repositoryClass: CartItemRepository::class)]
+#[ORM\Table(name: "`cart_item`")]
 class CartItem
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]

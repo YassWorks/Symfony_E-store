@@ -14,14 +14,14 @@ class FileUploader
     ) {
     }
 
-    public function uploadFile(UploadedFile $file): array
+    public function uploadFile(UploadedFile $file, string $location): array
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
         
         try {
-            $file->move($this->uploadDirectory, $newFilename);
+            $file->move($this->uploadDirectory . $location, $newFilename);
             return [
                 'success' => true,
                 'filename' => $newFilename

@@ -21,7 +21,7 @@ security:
         login_path: login
         check_path: login
         use_referer: true
-        default_target_path: product_index
+        default_target_path: landing_page
         enable_csrf: true
       logout:
         path: logout
