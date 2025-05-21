@@ -13,7 +13,7 @@
                     {% if product.images|length > 0 %}
                         {# take first image #}
                         {% set image = product.images[0] %}
-                        <img src="{{ asset('uploads/shop_logos/' ~ image.filename) }}" class="card-img-top" alt="{{ product.title }}" style="max-width: 200px; max-height: 200px;">
+                        <img src="{{ asset('uploads/products_images/' ~ image.filename) }}" class="card-img-top" alt="{{ product.title }}" style="max-width: 200px; max-height: 200px;">
                     {% else %}
                         <img src="{{ asset('uploads/default.jpg') }}" class="card-img-top" alt="No image">
                     {% endif %}
