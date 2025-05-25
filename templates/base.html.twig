@@ -27,125 +27,114 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
+
         <div class="page-wrapper">
+
             {% block header %}
+
             <nav class="main-navbar">
-                <div class="container">
-                    <div
-                        class="d-flex justify-content-between"
-                    >
-                        <div class="d-flex align-items-center">
-                            <a
-                                href="{{ path('landing_page') }}"
-                                class="navbar-brand"
-                            >
-                                <span class="material-icons-outlined me-2"
-                                    >storefront</span
-                                >E-Store
-                            </a>
-                            <button
-                                class="navbar-toggle d-md-none"
-                                type="button"
-                                aria-label="Toggle navigation"
-                            >
-                                <span class="material-icons-outlined"
-                                    >menu</span
-                                >
-                            </button>
-                            <div class="navbar-menu d-none d-md-flex ms-4">
-                                <a
-                                    href="{{ path('landing_page') }}"
-                                    class="nav-link {% if app.request.attributes.get('_route') == 'landing_page' %}active{% endif %}"
-                                >
-                                    <span class="material-icons-outlined me-1"
-                                        >home</span
-                                    >
-                                    Home
-                                </a>
-                                <a
-                                    href="{{ path('product_index') }}"
-                                    class="nav-link {% if app.request.attributes.get('_route') == 'product_index' %}active{% endif %}"
-                                >
-                                    <span class="material-icons-outlined me-1"
-                                        >category</span
-                                    >
-                                    Products
-                                </a>
-                                <div class="navbar-actions">
-                                    {% if app.user %} {% if 'ROLE_SELLER' in
-                                    app.user.roles %}
-                                    <a
-                                        href="{{ path('seller_dashboard') }}"
-                                        class="nav-link {% if 'seller' in app.request.attributes.get('_route') %}active{% endif %}"
-                                    >
-                                        <span class="material-icons-outlined me-1"
-                                            >store</span
-                                        >
-                                        Your Shop
-                                    </a>
-                                    {% else %}
-                                    <a
-                                        href="{{ path('join_us') }}"
-                                        class="nav-link"
-                                    >
-                                        <span class="material-icons-outlined me-1"
-                                            >sell</span
-                                        >
-                                        Become a Seller
-                                    </a>
-                                    {% endif %}
-    
-                                    <a
-                                        href="{{ path('profile') }}"
-                                        class="nav-link {% if app.request.attributes.get('_route') == 'profile' %}active{% endif %}"
-                                    >
-                                        <span class="material-icons-outlined me-1"
-                                            >person</span
-                                        >
-                                        Profile
-                                    </a>
-                                    <a
-                                        href="{{ path('cart_index') }}"
-                                        class="nav-link cart-link {% if app.request.attributes.get('_route') == 'cart_index' %}active{% endif %}"
-                                    >
-                                        <span class="material-icons-outlined me-1"
-                                            >shopping_cart</span
-                                        >
-                                        Cart
-                                    </a>
-                                    <a
-                                        href="{{ path('logout') }}"
-                                        class="btn btn-outline btn-sm"
-                                    >
-                                        <span class="material-icons-outlined me-1"
-                                            >logout</span
-                                        >
-                                        Logout
-                                    </a>
-                                    {% else %}
-                                    <a
-                                        href="{{
-                                            path('login', {
-                                                _target_path: app.request.uri
-                                            })
-                                        }}"
-                                        class="btn btn-primary btn-sm"
-                                    >
-                                        <span class="material-icons-outlined me-1"
-                                            >login</span
-                                        >
-                                        Login
-                                    </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+                <div class="navbar-container">
+                    
+                    <div class="navbar-actions">
+                        <a
+                            href="{{ path('landing_page') }}"
+                            class="navbar-brand"
+                        >
+                            <span class="material-icons-outlined me-2"
+                                >storefront</span
+                            >El Marchi
+                        </a>
+
+                        <a
+                            href="{{ path('product_index') }}"
+                            class="nav-link {% if app.request.attributes.get('_route') == 'product_index' %}active{% endif %}"
+                            style="position: relative; top: -1px;"
+                        >
+                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 5px;">
+                                category
+                            </span>
+                            Products
+                        </a>
                     </div>
+                    
+                    <div style="position: relative; top: -3px;">
+                        {% if app.user %} {% if 'ROLE_SELLER' in app.user.roles %}
+                        <a
+                            href="{{ path('seller_dashboard') }}"
+                            class="nav-link {% if 'seller' in app.request.attributes.get('_route') %}active{% endif %}"
+                        >
+                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 6px;"
+                                >store</span
+                            >
+                            Your Shop
+                        </a>
+                        {% else %}
+                        <a
+                            href="{{ path('join_us') }}"
+                            class="nav-link"
+                        >
+                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 6px;"
+                                >sell</span
+                            >
+                            Become a Seller
+                        </a>
+                        {% endif %}
+
+                        <a
+                            href="{{ path('profile') }}"
+                            class="nav-link {% if app.request.attributes.get('_route') == 'profile' %}active{% endif %}"
+                        >
+                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 5px;"
+                                >person</span
+                            >
+                            Profile
+                        </a>
+                        <a
+                            href="{{ path('cart_index') }}"
+                            class="nav-link cart-link {% if app.request.attributes.get('_route') == 'cart_index' %}active{% endif %}"
+                        >
+                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 5px;"
+                                >shopping_cart</span
+                            >
+                            Cart
+                        </a>
+
+                        <a
+                            href="{{ path('logout') }}"
+                            class="btn btn-outline btn-sm"
+                            style="position: relative; top: 6px; padding-left: 10px;"
+                        >
+                            <span class="material-icons-outlined me-1 align-middle"
+                                >logout</span
+                            >
+                            Logout
+                        </a>
+                        {% else %}
+                        <a
+                            href="{{
+                                path('login', {
+                                    _target_path: app.request.uri
+                                })
+                            }}"
+                            class="btn btn-primary btn-sm"
+                            style="position: relative; top: 6px;"
+                        >
+                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 1px;"
+                                >login</span
+                            >
+                            Login
+                        </a>
+                        {% endif %}
+
+                    </div>
+
                 </div>
             </nav>
+
             {% endblock %}
 
             <main class="content">{% block body %}{% endblock %}</main>
+
         </div>
 
         {# Bootstrap JS Bundle #}
@@ -168,5 +157,6 @@
             });
         </script>
         {% block javascripts %}{% endblock %}
+        
     </body>
 </html>
