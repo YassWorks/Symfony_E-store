@@ -77,6 +77,7 @@
 
 .register-container input[type="text"],
 .register-container input[type="email"],
+.register-container input[type="password"],
 .register-container input[type="url"],
 .register-container input[type="file"],
 .register-container select {
@@ -96,12 +97,14 @@
 
 .register-container input[type="text"]::placeholder,
 .register-container input[type="email"]::placeholder,
+.register-container input[type="password"]::placeholder,
 .register-container input[type="url"]::placeholder {
     color: #aaa;
 }
 
 .register-container input[type="text"]:focus,
 .register-container input[type="email"]:focus,
+.register-container input[type="password"]:focus,
 .register-container input[type="url"]:focus,
 .register-container input[type="file"]:focus,
 .register-container select:focus {
@@ -185,7 +188,8 @@
 }
 
 /* Submit Button */
-.register-container button[type="submit"] {
+.register-container button[type="submit"],
+.register-container .btn-primary {
     width: 100%;
     padding: 1rem;
     background: var(--primary);
@@ -204,13 +208,15 @@
     margin-top: 1rem;
 }
 
-.register-container button[type="submit"]:hover {
+.register-container button[type="submit"]:hover,
+.register-container .btn-primary:hover {
     background: #e84d18;
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(254, 93, 38, 0.35);
 }
 
-.register-container button[type="submit"]:active {
+.register-container button[type="submit"]:active,
+.register-container .btn-primary:active {
     transform: translateY(0);
     box-shadow: 0 2px 6px rgba(254, 93, 38, 0.15);
 }
@@ -250,11 +256,72 @@
     font-size: 1.2rem;
 }
 
+/* Register/Login Link Styles */
+.register-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.register-link span {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+.register-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.register-link a:hover {
+    color: #e84d18;
+    text-decoration: underline;
+}
+
 /* Form Error Styles */
 .form-error {
     color: #d63301;
     font-size: 0.875rem;
     margin-top: 0.25rem;
+}
+
+/* Symfony form error classes */
+.invalid-feedback {
+    color: #d63301;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.form-error-icon {
+    color: #d63301;
+    margin-right: 0.25rem;
+}
+
+.form-error-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0 0 0;
+}
+
+.form-error-list li {
+    color: #d63301;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Input field error states */
+.register-container input.is-invalid,
+.register-container select.is-invalid {
+    border-color: #d63301;
+    box-shadow: 0 0 0 3px rgba(214, 51, 1, 0.15);
+}
+
+.register-container input:invalid {
+    border-color: #d63301;
 }
 
 /* File Upload Styling */

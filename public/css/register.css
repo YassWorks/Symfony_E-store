@@ -1,3 +1,4 @@
+/* Registration Styles - Matching Seller Styles */
 .auth-page {
     background-color: #f9f9f7;
     min-height: 100vh;
@@ -62,20 +63,8 @@
     width: auto;
 }
 
-.register-container .form-group {
+.form-group {
     margin-bottom: 1.5rem;
-}
-
-.register-container .form-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.register-container .form-column {
-    flex: 1;
-    min-width: 200px;
 }
 
 .register-container label {
@@ -92,12 +81,13 @@
 .register-container select {
     width: 100%;
     padding: 0.75rem 0.75rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
     border: 1px solid rgba(0,0,0,0.1);
     border-radius: var(--radius-sm);
     font-size: 1rem;
     transition: all 0.3s ease;
     box-shadow: 0 1px 3px rgba(0,0,0,0.03) inset;
+    background: white;
     box-sizing: border-box;
     text-align: left;
     line-height: 1.2;
@@ -118,7 +108,8 @@
     box-shadow: 0 0 0 3px rgba(254, 93, 38, 0.15);
 }
 
-.register-container button[type="submit"] {
+.register-container button[type="submit"],
+.register-container .btn-primary {
     width: 100%;
     padding: 1rem;
     background: var(--primary);
@@ -137,13 +128,15 @@
     margin-top: 1rem;
 }
 
-.register-container button[type="submit"]:hover {
+.register-container button[type="submit"]:hover,
+.register-container .btn-primary:hover {
     background: #e84d18;
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(254, 93, 38, 0.35);
 }
 
-.register-container button[type="submit"]:active {
+.register-container button[type="submit"]:active,
+.register-container .btn-primary:active {
     transform: translateY(0);
     box-shadow: 0 2px 6px rgba(254, 93, 38, 0.15);
 }
@@ -204,4 +197,20 @@
 .alert-success .material-icons-outlined {
     margin-right: 0.5rem;
     font-size: 1.2rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-4 {
+    margin-top: 1.5rem;
+}
+
+.text-muted {
+    color: #6c757d;
+}
+
+.text-decoration-none {
+    text-decoration: none;
 }

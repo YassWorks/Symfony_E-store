@@ -3,7 +3,7 @@
 {% block title %}Register{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/register.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/seller.css') }}">
 {% endblock %}
 
 {% block header %}{% endblock %}
@@ -17,7 +17,8 @@
                 <path d="M2 17L12 22L22 17" stroke="#FE5D26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M2 12L12 17L22 12" stroke="#FE5D26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-        </div>        <h2>Create Account</h2>
+        </div>        
+        <h2>Create Account</h2>
         
         {% for message in app.flashes('error') %}
             <div class="alert-error">
@@ -47,7 +48,7 @@
             {{ form_widget(registrationForm.register, {'label': 'Create Account', 'attr': {'class': 'btn-primary'}}) }}
         {{ form_end(registrationForm) }}
         
-        <div class="login-link">
+        <div class="register-link">
             <span>Already have an account? <a href="{{ path('login') }}">Sign in</a></span>
         </div>
         
