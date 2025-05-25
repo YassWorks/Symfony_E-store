@@ -24,7 +24,7 @@
 }
 
 .login-container h2 {
-    margin-bottom: 1.75rem;
+    margin-bottom: 1rem;
     text-align: center;
     color: var(--dark);
     font-weight: 700;
@@ -45,6 +45,13 @@
     border-radius: 2px;
 }
 
+.auth-subtitle {
+    text-align: center;
+    color: #6c757d;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
 .logo-container {
     text-align: center;
     margin-bottom: 2rem;
@@ -57,7 +64,14 @@
 
 .form-group {
     margin-bottom: 1.5rem;
-    position: relative;
+}
+
+.login-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--dark);
+    font-size: 0.95rem;
 }
 
 .form-floating {
@@ -79,7 +93,10 @@
 }
 
 .form-floating > .form-control {
-    padding: 1rem 0.75rem;
+    padding: 0.75rem 0.75rem;
+    box-sizing: border-box;
+    text-align: left;
+    line-height: 1.2;
 }
 
 .form-floating > .form-control:focus ~ label,
@@ -96,12 +113,15 @@ input[type="email"],
 input[type="password"],
 input[type="text"] {
     width: 100%;
-    padding: 1rem;
+    padding: 0.75rem 0.75rem;
     font-size: 1rem;
     border: 1px solid rgba(0,0,0,0.1);
     border-radius: var(--radius-sm);
     transition: all 0.3s ease;
     box-shadow: 0 1px 3px rgba(0,0,0,0.03) inset;
+    box-sizing: border-box;
+    text-align: left;
+    line-height: 1.2;
 }
 
 input[type="email"]::placeholder,
@@ -134,6 +154,7 @@ button[type="submit"] {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    margin-top: 1rem;
 }
 
 button[type="submit"]:hover {
@@ -182,6 +203,25 @@ button[type="submit"]:active {
 }
 
 .alert-error .material-icons-outlined {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.08);
+    color: #155724;
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    text-align: center;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert-success .material-icons-outlined {
     margin-right: 0.5rem;
     font-size: 1.2rem;
 }

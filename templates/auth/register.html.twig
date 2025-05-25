@@ -17,8 +17,8 @@
                 <path d="M2 17L12 22L22 17" stroke="#FE5D26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M2 12L12 17L22 12" stroke="#FE5D26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-        </div>
-        <h2>Create Account</h2>
+        </div>        <h2>Create Account</h2>
+        <p class="auth-subtitle">Join our platform and start shopping with the best deals.</p>
         
         {% for message in app.flashes('error') %}
             <div class="alert-error">
@@ -28,30 +28,25 @@
         {% endfor %}
         
         {{ form_start(registrationForm) }}
-            <div class="form-row">
-                <div class="form-column">
-                    {{ form_label(registrationForm.name) }}
-                    {{ form_widget(registrationForm.name, {'attr': {'placeholder': 'Your full name'}}) }}
-                    {{ form_errors(registrationForm.name) }}
-                </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.name) }}
+                {{ form_widget(registrationForm.name, {'attr': {'placeholder': 'Your full name'}}) }}
+                {{ form_errors(registrationForm.name) }}
             </div>
             
-            <div class="form-row">
-                <div class="form-column">
-                    {{ form_label(registrationForm.email) }}
-                    {{ form_widget(registrationForm.email, {'attr': {'placeholder': 'name@example.com'}}) }}
-                    {{ form_errors(registrationForm.email) }}
-                </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.email) }}
+                {{ form_widget(registrationForm.email, {'attr': {'placeholder': 'name@example.com'}}) }}
+                {{ form_errors(registrationForm.email) }}
             </div>
             
-            <div class="form-row">
-                <div class="form-column">
-                    {{ form_widget(registrationForm.password, {'attr': {'placeholder': 'Choose a secure password'}}) }}
-                    {{ form_errors(registrationForm.password) }}
-                </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.password) }}
+                {{ form_widget(registrationForm.password, {'attr': {'placeholder': 'Choose a secure password'}}) }}
+                {{ form_errors(registrationForm.password) }}
             </div>
             
-            {{ form_row(registrationForm.register, {'label': 'Create Account', 'attr': {'class': 'btn-primary'}}) }}
+            {{ form_widget(registrationForm.register, {'label': 'Create Account', 'attr': {'class': 'btn-primary'}}) }}
         {{ form_end(registrationForm) }}
         
         <div class="login-link">
