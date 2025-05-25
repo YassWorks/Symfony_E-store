@@ -19,7 +19,13 @@ class ProductType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, ['attr' => ['class' => 'form-control mb-3']])
-            ->add('description', TextareaType::class, ['attr' => ['class' => 'form-control mb-3', 'rows' => 4]])
+            ->add('description', TextareaType::class, [
+                'attr' => [
+                    'class' => 'form-control mb-3',
+                    'rows' => 4,
+                    'style' => 'resize: none;'
+                ]
+            ])
             ->add('price', MoneyType::class, ['currency' => 'USD', 'attr' => ['class' => 'form-control mb-3']])
             ->add('stockQuantity', IntegerType::class, ['attr' => ['class' => 'form-control mb-3']])
             ->add('category', ChoiceType::class, [

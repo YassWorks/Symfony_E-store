@@ -1,0 +1,283 @@
+/* Seller Registration Styles */
+.auth-page {
+    background-color: #f9f9f7;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.register-container {
+    width: 100%;
+    max-width: 550px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: var(--border);
+    transition: var(--transition);
+}
+
+.register-container:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.register-container h2 {
+    margin-bottom: 1rem;
+    text-align: center;
+    color: var(--dark);
+    font-weight: 700;
+    font-size: 1.8rem;
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+
+.register-container h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: #6c757d;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.logo-container .logo {
+    height: 60px;
+    width: auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.register-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--dark);
+    font-size: 0.95rem;
+}
+
+.register-container input[type="text"],
+.register-container input[type="email"],
+.register-container input[type="url"],
+.register-container input[type="file"],
+.register-container select {
+    width: 100%;
+    padding: 0.75rem 0.75rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03) inset;
+    background: white;
+    box-sizing: border-box;
+    text-align: left;
+    line-height: 1.2;
+}
+
+.register-container input[type="text"]::placeholder,
+.register-container input[type="email"]::placeholder,
+.register-container input[type="url"]::placeholder {
+    color: #aaa;
+}
+
+.register-container input[type="text"]:focus,
+.register-container input[type="email"]:focus,
+.register-container input[type="url"]:focus,
+.register-container input[type="file"]:focus,
+.register-container select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(254, 93, 38, 0.15);
+}
+
+/* Category Dropdown Styles */
+.category-dropdown {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.category-dropdown select {
+    flex: 1;
+    margin-bottom: 0;
+    padding: 0.75rem 0.75rem;
+    box-sizing: border-box;
+    text-align: left;
+    line-height: 1.2;
+}
+
+.category-dropdown .btn {
+    padding: 0.9rem 1.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.category-dropdown .btn:hover {
+    background: #e84d18;
+    transform: translateY(-1px);
+}
+
+.selected-categories {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.selected-categories li {
+    display: flex;
+    align-items: center;
+    background: rgba(254, 93, 38, 0.1);
+    color: var(--primary);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    border: 1px solid rgba(254, 93, 38, 0.2);
+}
+
+.selected-categories li span {
+    margin-right: 0.5rem;
+}
+
+.remove-category {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.remove-category:hover {
+    color: #e84d18;
+}
+
+/* Submit Button */
+.register-container button[type="submit"] {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(254, 93, 38, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.register-container button[type="submit"]:hover {
+    background: #e84d18;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(254, 93, 38, 0.35);
+}
+
+.register-container button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(254, 93, 38, 0.15);
+}
+
+/* Alert Styles */
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.08);
+    color: #155724;
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    text-align: center;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert-error {
+    background-color: rgba(254, 93, 38, 0.08);
+    color: #d63301;
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    text-align: center;
+    border: 1px solid rgba(254, 93, 38, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert-success .material-icons-outlined,
+.alert-error .material-icons-outlined {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+/* Form Error Styles */
+.form-error {
+    color: #d63301;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* File Upload Styling */
+input[type="file"] {
+    border: 2px dashed rgba(0,0,0,0.1) !important;
+    padding: 1.5rem 1rem !important;
+    text-align: center;
+    cursor: pointer;
+}
+
+input[type="file"]:hover {
+    border-color: var(--primary) !important;
+    background-color: rgba(254, 93, 38, 0.02);
+}
+
+/* Back Link */
+.text-center.mt-4 a {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.text-center.mt-4 a:hover {
+    color: var(--primary);
+}

@@ -1,81 +1,94 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Register Your Shop{% endblock %}</title>
-    <link rel="stylesheet" href="{{ asset('css/joinUs.css') }}">
-</head>
-<body>
-    {% block body %}
-    <div class="container">
-        <h1>Become a Seller</h1>
-        <p class="lead">Register your shop to start selling products on our platform.</p>
-        
+{% extends 'base.html.twig' %}
+
+{% block title %}Register Your Shop{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/register.css') }}">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block body %}
+<div class="auth-page">
+    <div class="register-container">
+        <div class="logo-container">
+            <svg width="70" height="70" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#FE5D26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="#FE5D26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="#FE5D26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <h2>Become a Seller</h2>
+        <p class="auth-subtitle">Register your shop to start selling products on our platform.</p>
         {% for message in app.flashes('success') %}
             <div class="alert-success">
+                <span class="material-icons-outlined">check_circle</span>
                 {{ message }}
             </div>
         {% endfor %}
         
         {% for message in app.flashes('error') %}
-            <div class="alert-danger">
+            <div class="alert-error">
+                <span class="material-icons-outlined">error_outline</span>
                 {{ message }}
             </div>
-        {% endfor %}
-        
-        <div class="card">
-            <div class="card-body">
-                {{ form_start(shopForm) }}
-                    <div class="mb-3">
-                        {{ form_label(shopForm.name) }}
-                        {{ form_widget(shopForm.name) }}
-                        {{ form_errors(shopForm.name) }}
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label>Shop Categories</label>
-                        <div class="category-dropdown">
-                            <select id="categoryDropdown">
-                                <option value="">-- Select a category --</option>
-                                {% for choice in shopForm.categories.vars.choices %}
-                                    <option value="{{ choice.value }}">{{ choice.label }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="button" class="btn" id="addCategory">Add</button>
-                        </div>
-                        <ul id="selectedCategories" class="selected-categories"></ul>
-                        <div class="hidden-inputs" id="categoryInputs"></div>
-                        {{ form_errors(shopForm.categories) }}
-                        
-                        {# Hide the original categories widget #}
-                        <div style="display: none;">
-                            {{ form_widget(shopForm.categories) }}
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        {{ form_label(shopForm.website) }}
-                        {{ form_widget(shopForm.website) }}
-                        {{ form_errors(shopForm.website) }}
-                    </div>
-                    
-                    <div class="mb-3">
-                        {{ form_label(shopForm.email) }}
-                        {{ form_widget(shopForm.email) }}
-                        {{ form_errors(shopForm.email) }}
-                    </div>
-                    
-                    <div class="mb-3">
-                        {{ form_label(shopForm.logo) }}
-                        {{ form_widget(shopForm.logo) }}
-                        {{ form_errors(shopForm.logo) }}
-                    </div>
-                    
-                    {{ form_widget(shopForm.submit) }}
-                {{ form_end(shopForm) }}
+        {% endfor %}          
+        {{ form_start(shopForm) }}
+            <div class="form-group">
+                {{ form_label(shopForm.name) }}
+                {{ form_widget(shopForm.name, {'attr': {'placeholder': 'Enter your shop name'}}) }}
+                {{ form_errors(shopForm.name) }}
             </div>
+            
+            <div class="form-group">
+                <label>Shop Categories</label>
+                <div class="category-dropdown">
+                    <select id="categoryDropdown">
+                        <option value="">-- Select a category --</option>
+                        {% for choice in shopForm.categories.vars.choices %}
+                            <option value="{{ choice.value }}">{{ choice.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="btn" id="addCategory">Add</button>
+                </div>
+                <ul id="selectedCategories" class="selected-categories"></ul>
+                <div class="hidden-inputs" id="categoryInputs"></div>
+                {{ form_errors(shopForm.categories) }}
+                
+                {# Hide the original categories widget #}
+                <div style="display: none;">
+                    {{ form_widget(shopForm.categories) }}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(shopForm.website) }}
+                {{ form_widget(shopForm.website, {'attr': {'placeholder': 'https://www.yourshop.com'}}) }}
+                {{ form_errors(shopForm.website) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(shopForm.email) }}
+                {{ form_widget(shopForm.email, {'attr': {'placeholder': 'shop@example.com'}}) }}
+                {{ form_errors(shopForm.email) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(shopForm.logo) }}
+                {{ form_widget(shopForm.logo) }}
+                {{ form_errors(shopForm.logo) }}
+            </div>
+            
+            {{ form_widget(shopForm.submit, {'attr': {'class': 'btn-primary'}}) }}
+        {{ form_end(shopForm) }}
+        <div class="text-center mt-4">
+            <a href="{{ path('landing_page') }}" class="text-muted text-decoration-none">
+                <span class="material-icons-outlined" style="font-size: 16px; vertical-align: middle;">arrow_back</span>
+                Back to Home
+            </a>
         </div>
     </div>
+</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -142,10 +155,7 @@
                     
                     // Reset dropdown
                     dropdown.selectedIndex = 0;
-                }
-            }
+                }            }
         });
     </script>
-    {% endblock %}
-</body>
-</html>
+{% endblock %}
