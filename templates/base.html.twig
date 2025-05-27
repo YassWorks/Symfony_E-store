@@ -27,14 +27,11 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-
         <div class="page-wrapper">
-
             {% block header %}
 
             <nav class="main-navbar">
                 <div class="navbar-container">
-                    
                     <div class="navbar-actions">
                         <a
                             href="{{ path('landing_page') }}"
@@ -48,31 +45,36 @@
                         <a
                             href="{{ path('product_index') }}"
                             class="nav-link {% if app.request.attributes.get('_route') == 'product_index' %}active{% endif %}"
-                            style="position: relative; top: -1px;"
+                            style="position: relative; top: -1px"
                         >
-                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 5px;">
+                            <span
+                                class="material-icons-outlined me-1 align-middle"
+                                style="position: relative; top: 5px"
+                            >
                                 category
                             </span>
                             Products
                         </a>
                     </div>
-                      <div style="position: relative; top: -3px;">
+
+                    <div style="position: relative; top: -3px">
                         {% if app.user %} {% if user_has_shop(app.user) %}
                         <a
                             href="{{ path('seller_dashboard') }}"
                             class="nav-link {% if 'seller' in app.request.attributes.get('_route') %}active{% endif %}"
                         >
-                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 6px;"
+                            <span
+                                class="material-icons-outlined me-1 align-middle"
+                                style="position: relative; top: 6px"
                                 >store</span
                             >
                             Your Shop
                         </a>
                         {% else %}
-                        <a
-                            href="{{ path('join_us') }}"
-                            class="nav-link"
-                        >
-                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 6px;"
+                        <a href="{{ path('join_us') }}" class="nav-link">
+                            <span
+                                class="material-icons-outlined me-1 align-middle"
+                                style="position: relative; top: 6px; margin-left: 10px;"
                                 >sell</span
                             >
                             Become a Seller
@@ -82,8 +84,11 @@
                         <a
                             href="{{ path('profile') }}"
                             class="nav-link {% if app.request.attributes.get('_route') == 'profile' %}active{% endif %}"
+                            style="margin-left: 10px;"
                         >
-                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 5px;"
+                            <span
+                                class="material-icons-outlined me-1 align-middle"
+                                style="position: relative; top: 5px"
                                 >person</span
                             >
                             Profile
@@ -91,8 +96,11 @@
                         <a
                             href="{{ path('cart_index') }}"
                             class="nav-link cart-link {% if app.request.attributes.get('_route') == 'cart_index' %}active{% endif %}"
+                            style="margin-left: 10px;"
                         >
-                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 5px;"
+                            <span
+                                class="material-icons-outlined me-1 align-middle"
+                                style="position: relative; top: 5px"
                                 >shopping_cart</span
                             >
                             Cart
@@ -101,9 +109,15 @@
                         <a
                             href="{{ path('logout') }}"
                             class="btn btn-outline btn-sm"
-                            style="position: relative; top: 6px; padding-left: 10px;"
+                            style="
+                                position: relative;
+                                top: 6px;
+                                padding-left: 10px;
+                                margin-left: 10px;
+                            "
                         >
-                            <span class="material-icons-outlined me-1 align-middle"
+                            <span
+                                class="material-icons-outlined me-1 align-middle"
                                 >logout</span
                             >
                             Logout
@@ -116,24 +130,23 @@
                                 })
                             }}"
                             class="btn btn-primary btn-sm"
-                            style="position: relative; top: 6px;"
+                            style="position: relative; top: 6px"
                         >
-                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 1px;"
+                            <span
+                                class="material-icons-outlined me-1 align-middle"
+                                style="position: relative; top: 1px"
                                 >login</span
                             >
                             Login
                         </a>
                         {% endif %}
-
                     </div>
-
                 </div>
             </nav>
 
             {% endblock %}
 
             <main class="content">{% block body %}{% endblock %}</main>
-
         </div>
 
         {# Bootstrap JS Bundle #}
@@ -156,6 +169,5 @@
             });
         </script>
         {% block javascripts %}{% endblock %}
-        
     </body>
 </html>
