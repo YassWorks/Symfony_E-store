@@ -102,7 +102,7 @@ final class AdminController extends AbstractController
     public function deleteUser(Request $request, User $user): Response
     {
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
-            // Prevent admin from deleting themselves
+            // prevent admin from deleting themselves cuz that would be silly
             if ($user === $this->getUser()) {
                 $this->addFlash('error', 'You cannot delete your own account.');
             } else {

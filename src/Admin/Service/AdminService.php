@@ -32,32 +32,30 @@ class AdminService
 
     public function deleteUser(User $user): void
     {
-        // Cascade delete all shops owned by the user
+        // remove stuff attached to the user (shops & cart)
         $shops = $this->entityManager->getRepository(Shop::class)->findBy(['owner' => $user]);
         foreach ($shops as $shop) {
             $this->deleteShop($shop);
         }
 
-        // Cascade delete all carts associated with the user
         $carts = $this->entityManager->getRepository(Cart::class)->findBy(['user' => $user]);
         foreach ($carts as $cart) {
             $this->entityManager->remove($cart);
         }
 
-        // Finally, delete the user
         $this->entityManager->remove($user);
         $this->entityManager->flush();
     }
     
     public function deleteShop(Shop $shop): void
     {
-        // Cascade delete all products associated with the shop
+        // remove products first
         $products = $this->entityManager->getRepository(Product::class)->findBy(['shop' => $shop]);
         foreach ($products as $product) {
             $this->entityManager->remove($product);
         }
 
-        // Remove the seller role from the shop owner
+        // - seller role
         $owner = $shop->getOwner();
         if ($owner && $owner->hasRole(Role::ROLE_SELLER)) {
             $owner->removeRole(Role::ROLE_SELLER);
