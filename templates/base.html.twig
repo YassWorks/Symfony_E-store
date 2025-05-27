@@ -56,9 +56,8 @@
                             Products
                         </a>
                     </div>
-                    
-                    <div style="position: relative; top: -3px;">
-                        {% if app.user %} {% if 'ROLE_SELLER' in app.user.roles %}
+                      <div style="position: relative; top: -3px;">
+                        {% if app.user %} {% if user_has_shop(app.user) %}
                         <a
                             href="{{ path('seller_dashboard') }}"
                             class="nav-link {% if 'seller' in app.request.attributes.get('_route') %}active{% endif %}"

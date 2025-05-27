@@ -28,7 +28,7 @@ security:
         target: landing_page
 
   access_control:
-    - { path: ^/admin, roles: ROLE_ADMIN }
+    # - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/profile, roles: ROLE_BUYER }
     - { path: ^/join_us, roles: ROLE_BUYER }
     - { path: ^/dashboard, roles: ROLE_SELLER }

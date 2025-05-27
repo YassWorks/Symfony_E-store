@@ -42,3 +42,7 @@ services:
   App\Product\Service\ProductService:
     autowire: true
     autoconfigure: true
+  
+  App\Admin\Service\AdminService:
+        arguments:
+            $adminPasskey: '%env(ADMIN_PASSKEY)%'
