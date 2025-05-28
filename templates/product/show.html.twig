@@ -9,101 +9,87 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-      <a href="{{ path('product_index') }}" class="back-link">
-        <span class="material-icons-outlined">arrow_back</span>
-        Back to Products
-      </a>
-    
-    <div class="product-detail-container">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="product-image-container" style="max-width: 300px; margin: auto;">
-            {% if product.images|length > 0 %}
-              {% set image = product.images[0] %}
-              <img src="{{ asset('uploads/products_images/' ~ image.filename) }}" 
-                   alt="{{ product.title }}" 
-                   class="product-image" 
-                   style="width: 100%; height: auto;">
-            {% else %}
-              <img src="{{ asset('uploads/default.jpg') }}" 
-                   alt="No image available" 
-                   class="product-image" 
-                   style="width: 100%; height: auto;">
-            {% endif %}
-          </div>
-        </div>
-        
-        <div class="col-md-6">
-          <div class="product-info">
-            <h1 class="product-title">{{ product.title }}</h1>
-            
-            <div class="product-meta">
-              <div class="product-meta-item">
-                <span class="product-meta-label">Category:</span>
-                <span class="product-category">{{ product.category.value }}</span>
-              </div>
-              
-              <div class="product-meta-item">
-                <span class="product-meta-label">Price:</span>
-                <span class="product-price">${{ product.price }}</span>
-              </div>
+	<div class="container" style="margin-top: 20px;">
+		<a href="{{ path('product_index') }}" class="back-link">
+			<span class="material-icons-outlined">arrow_back</span>
+			Back to Products
+		</a>
 
-              <div class="product-meta-item">
-                <span class="product-meta-label">Stock:</span>
-                <span class="product-stock {% if product.stockQuantity < 5 %}low-stock{% endif %} {% if product.stockQuantity == 0 %}out-of-stock{% endif %}">
-                  {{ product.stockQuantity }} 
-                  {% if product.stockQuantity > 0 %}
-                    units available
-                  {% else %}
-                    out of stock
-                  {% endif %}
-                </span>
-              </div>
-            </div>
-            
-            {% if product.description %}
-            <div class="product-description">
-              <p>{{ product.description }}</p>
-            </div>
-            {% endif %}
-            
-            <div class="product-meta-item">
-                {% if product.shop %}
-                  {% include 'shop/shopinfo.html.twig' %}
-                {% endif %}
-              </div>
-            
-            <div class="product-actions">
-              {% if product.stockQuantity > 0 %}
-              <form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="add-to-cart-form">
-                <label for="quantity">Quantity:</label>
-                <input
-                  type="number"
-                  name="quantity"
-                  id="quantity"
-                  value="1"
-                  min="1"
-                  max="{{ product.stockQuantity }}"
-                  class="form-control quantity-input"
-                />
-                <button class="btn btn-primary">
-                  <span class="material-icons-outlined">add_shopping_cart</span>
-                  Add to Cart
-                </button>
-              </form>
-              {% else %}
-              <div class="add-to-cart-form">
-                <button class="btn btn-secondary" disabled>
-                  <span class="material-icons-outlined">remove_shopping_cart</span>
-                  Out of Stock
-                </button>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+		<div class="product-detail-container">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="product-image-container" style="max-width: 300px; margin: auto;">
+						{% if product.images|length > 0 %}
+							{% set image = product.images[0] %}
+							<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ product.title }}" class="product-image" style="width: 100%; height: auto;">
+						{% else %}
+							<img src="{{ asset('uploads/default.jpg') }}" alt="No image available" class="product-image" style="width: 100%; height: auto;">
+						{% endif %}
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="product-info">
+						<h1 class="product-title">{{ product.title }}</h1>
+
+						<div class="product-meta">
+							<div class="product-meta-item">
+								<span class="product-meta-label">Category:</span>
+								<span class="product-category">{{ product.category.value }}</span>
+							</div>
+
+							<div class="product-meta-item">
+								<span class="product-meta-label">Price:</span>
+								<span class="product-price">${{ product.price }}</span>
+							</div>
+
+							<div class="product-meta-item">
+								<span class="product-meta-label">Stock:</span>
+								<span class="product-stock {% if product.stockQuantity < 5 %}low-stock{% endif %} {% if product.stockQuantity == 0 %}out-of-stock{% endif %}">
+									{{ product.stockQuantity }}
+									{% if product.stockQuantity > 0 %}
+										units available
+									{% else %}
+										out of stock
+									{% endif %}
+								</span>
+							</div>
+						</div>
+
+						{% if product.description %}
+							<div class="product-description">
+								<p>{{ product.description }}</p>
+							</div>
+						{% endif %}
+
+						<div class="product-meta-item">
+							{% if product.shop %}
+								{% include 'shop/shopinfo.html.twig' %}
+							{% endif %}
+						</div>
+
+						<div class="product-actions">
+							{% if product.stockQuantity > 0 %}
+								<form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="add-to-cart-form">
+									<label for="quantity">Quantity:</label>
+									<input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stockQuantity }}" class="form-control quantity-input"/>
+									<button class="btn btn-primary">
+										<span class="material-icons-outlined">add_shopping_cart</span>
+										Add to Cart
+									</button>
+								</form>
+							{% else %}
+								<div class="add-to-cart-form">
+									<button class="btn btn-secondary" disabled>
+										<span class="material-icons-outlined">remove_shopping_cart</span>
+										Out of Stock
+									</button>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
