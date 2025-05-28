@@ -33,4 +33,13 @@ class ProductService
         $this->em->remove($product);
         $this->em->flush();
     }
+    /**
+     *
+     * @param array{q:string, minPrice:?float, maxPrice:?float, shop:?int, categories:string[]} $criteria
+     * @return Product[]
+     */
+    public function findByFilters(array $criteria): array
+    {
+        return $this->repo->findByFilters($criteria);
+    }
 }

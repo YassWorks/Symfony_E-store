@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Shared\Enum\Category;
 
 #[Route('/products')]
 class ProductController extends AbstractController
@@ -23,10 +24,32 @@ class ProductController extends AbstractController
     ) {}
 
     #[Route('', name: 'product_index', methods: ['GET'])]
-    public function index(): Response
-    {
-        $products = $this->service->list();
-        return $this->render('product/index.html.twig', compact('products'));
+    public function index(Request $request): Response
+    {   
+        $qRaw = $request->query->get('q', '');
+        $minRaw = $request->query->get('minPrice', '');
+        $maxRaw = $request->query->get('maxPrice', '');
+        $shopRaw = $request->query->get('shop', '');
+        $catsRaw = $request->query->all('categories');
+                
+        $criteria = [
+            'q'=> trim($qRaw),
+            'minPrice'=> is_numeric($minRaw) ? (float) $minRaw : null,
+            'maxPrice'=> is_numeric($maxRaw) ? (float) $maxRaw : null,
+            'shop'=> ctype_digit((string)$shopRaw) ? (int) $shopRaw : null,
+            'categories'=> is_array($catsRaw) ? $catsRaw : [],
+        ];
+
+        $allShops = $this->shopService->listAll();
+        $allCategories = Category::cases();
+        $products = $this->service->findByFilters($criteria);
+
+        return $this->render('product/index.html.twig', [
+                'products'      => $products,
+                'allShops'      => $allShops,
+                'allCategories' => $allCategories,
+                'criteria'      => $criteria,
+            ]);
     }
 
     #[Route('/new', name: 'product_new', methods: ['GET','POST'])]

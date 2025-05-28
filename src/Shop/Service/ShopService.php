@@ -16,4 +16,13 @@ class ShopService
     {
         return $this->shopRepository->findOneBy(['owner' => $user]);
     }
+    /**
+     *
+     * @return Shop[]
+     */
+    public function listAll(): array
+    {
+        return $this->shopRepository->findAll();
+    }
+
 }
