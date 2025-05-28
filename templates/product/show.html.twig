@@ -18,20 +18,7 @@
     <div class="product-detail-container">
       <div class="row">
         <div class="col-md-6">
-          <div class="product-image-container" style="max-width: 300px; margin: auto;">
-            {% if product.images|length > 0 %}
-              {% set image = product.images[0] %}
-              <img src="{{ asset('uploads/products_images/' ~ image.filename) }}" 
-                   alt="{{ product.title }}" 
-                   class="product-image" 
-                   style="width: 100%; height: auto;">
-            {% else %}
-              <img src="{{ asset('uploads/default.jpg') }}" 
-                   alt="No image available" 
-                   class="product-image" 
-                   style="width: 100%; height: auto;">
-            {% endif %}
-          </div>
+          {% include 'product/imageSlider.html.twig'%}
         </div>
         
         <div class="col-md-6">

@@ -79,24 +79,9 @@
         {% for product in products %}
           <div class="col-sm-6 col-lg-4">
             <div class="card h-100 product-card">
-              <div class="position-relative text-center">
-                {% if product.images|length > 0 %}
-                  {% set image = product.images[0] %}
-                  <img
-                    src="{{ asset('uploads/products_images/' ~ image.filename) }}"
-                    class="card-img-top"
-                    alt="{{ product.title }}"
-                    style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto;"
-                  >
-                {% else %}
-                  <img
-                    src="{{ asset('uploads/default.jpg') }}"
-                    class="card-img-top"
-                    alt="No image"
-                    style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto;"
-                  >
-                {% endif %}
-              </div>
+                <div class="d-flex justify-content-center align-items-center" style="height:250px; width:100wh; overflow: hidden;">
+                        {% include 'product/imageSlider.html.twig' %}
+                </div>
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ product.title }}</h5>
                 <p class="card-text text-muted">
