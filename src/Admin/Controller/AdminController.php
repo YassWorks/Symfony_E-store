@@ -25,7 +25,6 @@ final class AdminController extends AbstractController
     ) {}
 
     #[Route('/admin', name: 'admin')]
-    #[IsGranted('ROLE_ADMIN')]
     public function index(): Response
     {
         $user = $this->getUser();
