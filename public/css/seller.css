@@ -348,3 +348,214 @@ input[type="file"]:hover {
 .text-center.mt-4 a:hover {
     color: var(--primary);
 }
+
+/* Dashboard Specific Styles */
+.dashboard-stats-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+.dashboard-stats-card .card-body {
+    padding: 1.5rem;
+}
+
+.stats-icon-container {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.product-table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.product-table-container .table {
+    margin-bottom: 0;
+}
+
+.product-table-container .table th {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.product-table-container .table td {
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+    padding: 1rem 0.75rem;
+}
+
+.product-table-container .table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.product-image-placeholder {
+    background: linear-gradient(135deg, #f1f3f4 0%, #e9ecef 100%);
+    border: 2px dashed #dee2e6;
+}
+
+.btn-group .btn {
+    border-radius: 6px !important;
+    margin: 0 2px;
+    opacity: 1 !important; /* Ensure buttons are always visible */
+}
+
+.btn-group {
+    display: inline-flex !important; /* Force inline display */
+    white-space: nowrap; /* Prevent wrapping */
+}
+
+.btn-group .btn:first-child {
+    border-top-right-radius: 6px !important;
+    border-bottom-right-radius: 6px !important;
+}
+
+.btn-group .btn:last-child {
+    border-top-left-radius: 6px !important;
+    border-bottom-left-radius: 6px !important;
+}
+
+.dashboard-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin: -1.5rem -1.5rem 2rem -1.5rem;
+    padding: 2rem 1.5rem;
+    border-radius: 12px 12px 0 0;
+}
+
+.empty-state {
+    padding: 4rem 2rem;
+}
+
+.empty-state-icon {
+    font-size: 4rem !important;
+    color: #ced4da;
+    margin-bottom: 1.5rem;
+}
+
+/* Badge Improvements */
+.badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+}
+
+/* Stock Status Colors */
+.stock-high {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+    color: #198754 !important;
+    border: 1px solid rgba(25, 135, 84, 0.2);
+}
+
+.stock-low {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+    color: #ffc107 !important;
+    border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.stock-out {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+    color: #dc3545 !important;
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+/* Card Enhancements */
+.card {
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    background: white !important;
+    border-bottom: 1px solid #f1f3f4 !important;
+}
+
+/* Button Improvements */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 2px 4px rgba(254, 93, 38, 0.2);
+}
+
+.btn-primary:hover {
+    background: #e84d18;
+    border-color: #e84d18;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(254, 93, 38, 0.3);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    background-color: rgba(254, 93, 38, 0.1); /* Add slight background for better visibility */
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* Dashboard responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-stats-card {
+        margin-bottom: 1rem;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        margin: 2px 0;
+        border-radius: 6px !important;
+    }
+    
+    .product-table-container {
+        overflow-x: auto;
+    }
+}
+
+/* Custom scrollbar for table */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #e84d18;
+}
