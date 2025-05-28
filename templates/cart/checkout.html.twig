@@ -1,395 +1,434 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Checkout{% endblock %}
+{% block title %}Checkout
+{% endblock %}
 
 {% block body %}
-<br><br><br>
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- Order Summary Card -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-white border-0 py-3">
-                    <h4 class="mb-0 fw-bold text-primary">
-                        <span class="material-icons-outlined me-2" style="vertical-align: middle;">receipt</span>
-                        Order Summary
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <!-- Cart Items -->
-                    <div class="mb-4">
-                        {% for item in cart.items %}
-                            <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-                                <div class="me-3" style="width: 60px; height: 60px;">
-                                    {% if item.product.images is defined and item.product.images|length > 0 %}
-                                        {% set image = item.product.images[0] %}
-                                        <img src="{{ asset('uploads/products_images/' ~ image.filename) }}" 
-                                             alt="{{ item.product.title }}" 
-                                             class="img-fluid rounded" 
-                                             style="width: 100%; height: 100%; object-fit: cover;">
-                                    {% else %}
-                                        <img src="{{ asset('uploads/default.jpg') }}" 
-                                             alt="Product" 
-                                             class="img-fluid rounded" 
-                                             style="width: 100%; height: 100%; object-fit: cover;">
-                                    {% endif %}
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">{{ item.product.title }}</h6>
-                                    <small class="text-muted">{{ item.product.category.value }}</small>
-                                </div>
-                                <div class="text-end">
-                                    <div class="small text-muted">Qty: {{ item.quantity }}</div>
-                                    <div class="fw-bold">${{ (item.quantity * item.product.price)|number_format(2, '.', ',') }}</div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
+	<div style="padding-top: 40px">
+		<div class="container">
+			<h1><span class="material-icons-outlined me-3" style="font-size: 2rem;">shopping_cart_checkout</span>Checkout</h1>
+			<p class="text-muted mb-0">Review your order and complete your purchase</p>
+		</div>
+	</div>
 
-                    <!-- Pricing Details -->
-                    <div class="border-top pt-3">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal:</span>
-                            <span>${{ cart.getTotal()|number_format(2, '.', ',') }}</span>
-                        </div>                                        {% if crystal_discount %}
-                                            <div class="d-flex justify-content-between mb-2 text-success">
-                                                <span>Crystal Discount ({{ crystal_discount.discount_percent|number_format(2) }}%):</span>
-                                                <span>-${{ crystal_discount.discount_amount|number_format(2, '.', ',') }}</span>
-                                            </div>
-                                            <div class="small text-muted mb-2">
-                                                {{ crystal_discount.crystals_used }} crystals used for discount
-                                            </div>
-                                        {% endif %}
-                        
-                        <div class="d-flex justify-content-between fw-bold fs-5 text-primary border-top pt-2">
-                            <span>Total:</span>
-                            <span id="final-total">${{ final_total|number_format(2, '.', ',') }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+	<div class="container section-sm">
+		<div class="row g-4">
+			<!-- Order Summary Side -->
+			<div class="col-lg-6">
+				<!-- Order Summary Card -->				
+                <div class="card">
+					<div class="card-header">
+						<h4 class="mb-0 fw-bold">
+							<span class="material-icons-outlined me-2" style="vertical-align: middle;">receipt</span>
+							Order Summary
+						</h4>
+					</div>
+					<div class="card-body">
+						<!-- Cart Items -->
+						<div class="mb-4" style="max-height: 300px; overflow-y: auto; border: var(--border); border-radius: var(--radius-sm); padding: 1rem; background-color: var(--gray-light);">
+							{% for item in cart.items %}
+								<div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+									<div class="me-3" style="width: 50px; height: 50px;">
+										{% if item.product.images is defined and item.product.images|length > 0 %}
+											{% set image = item.product.images[0] %}
+											<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ item.product.title }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;">
+										{% else %}
+											<img src="{{ asset('uploads/default.jpg') }}" alt="Product" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;">
+										{% endif %}
+									</div>
+									<div class="flex-grow-1">
+										<h6 class="mb-1">{{ item.product.title }}</h6>
+										<small class="text-muted">{{ item.product.category.value }}</small>
+									</div>
+									<div class="text-end">
+										<div class="small text-muted">Qty: {{ item.quantity }}</div>
+										<div class="fw-bold text-primary">${{ (item.quantity * item.product.price)|number_format(2, '.', ',') }}</div>
+									</div>
+								</div>
+							{% endfor %}
+						</div>						<!-- Pricing Details -->
+						<div class="border-top pt-3">
+							<div class="d-flex justify-content-between mb-2">
+								<span>Subtotal:</span>
+								<span class="fw-semibold">${{ cart.getTotal()|number_format(2, '.', ',') }}</span>
+							</div>
+							{% if crystal_discount %}
+								<div class="d-flex justify-content-between mb-2 text-success">
+									<span>Crystal Discount ({{ crystal_discount.discount_percent|number_format(2) }}%):</span>
+									<span>-${{ crystal_discount.discount_amount|number_format(2, '.', ',') }}</span>
+								</div>
+								<div class="small text-muted mb-2">
+									{{ crystal_discount.crystals_used }} crystals used for discount
+								</div>
+							{% endif %}
 
-            <!-- Payment Methods Card -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-white border-0 py-3">
-                    <h4 class="mb-0 fw-bold">
-                        <span class="material-icons-outlined me-2" style="vertical-align: middle;">payment</span>
-                        Choose Payment Method
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <!-- Flouci Payment -->
-                        <div class="col-md-6">
-                            <div class="payment-option" data-payment="flouci">
-                                <div class="card h-100 border-2 border-primary payment-card" style="cursor: pointer; transition: all 0.3s;">
-                                    <div class="card-body text-center py-4">
-                                        <span class="material-icons-outlined text-primary mb-3" style="font-size: 48px;">phone_android</span>
-                                        <h5 class="fw-bold mb-2">Pay with Flouci</h5>
-                                        <p class="text-muted mb-0">Mobile payment solution</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+							<div class="d-flex justify-content-between fw-bold fs-5 text-primary border-top pt-2 mt-3">
+								<span>Total:</span>
+								<span id="final-total">${{ final_total|number_format(2, '.', ',') }}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-                        <!-- Crystal Payment -->
-                        <div class="col-md-6">
-                            <div class="payment-option" data-payment="crystals">
-                                <div class="card h-100 border-2 border-warning payment-card" style="cursor: pointer; transition: all 0.3s;">
-                                    <div class="card-body text-center py-4">
-                                        <span class="material-icons-outlined text-warning mb-3" style="font-size: 48px;">auto_awesome</span>
-                                        <h5 class="fw-bold mb-2">Pay with Crystals</h5>
-                                        <p class="text-muted mb-0">Use your crystal balance</p>
-                                        <small class="text-info">
-                                            Available: {{ app.user.crystals }} crystals
-                                            <br>
-                                            Needed: {{ (final_total * 100)|round }} crystals
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+			<!-- Payment Methods Side -->
+			<div class="col-lg-6">				<!-- Payment Methods Card -->
+				<div class="card">
+					<div class="card-header">
+						<h4 class="mb-0 fw-bold">
+							<span class="material-icons-outlined me-2" style="vertical-align: middle;">payment</span>
+							Payment Method
+						</h4>
+					</div>
+					<div class="card-body">
+						<div class="row g-3 mb-4">
+							<!-- Flouci Payment -->
+							<div class="col-12">
+								<div class="payment-option" data-payment="flouci">
+									<div class="card border-2 payment-card" style="cursor: pointer; transition: var(--transition);">
+										<div class="card-body py-3">
+											<div class="d-flex align-items-center">
+												<span class="material-icons-outlined text-primary me-3" style="font-size: 32px;">phone_android</span>
+												<div class="flex-grow-1">
+													<h6 class="fw-bold mb-1">Pay with Flouci</h6>
+													<small class="text-muted">Mobile payment solution</small>
+												</div>
+												<div class="text-end">
+													<small class="badge bg-primary">Recommended</small>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 
-                    <!-- Flouci Payment Form -->
-                    <div id="flouci-form" class="payment-form mt-4" style="display: none;">
-                        <div class="card border-primary">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">
-                                    <span class="material-icons-outlined me-2" style="vertical-align: middle;">phone_android</span>
-                                    Flouci Payment
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form id="flouci-payment-form">
-                                    <div class="mb-3">
-                                        <label for="phone-number" class="form-label">Phone Number</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">+216</span>
-                                            <input type="tel" 
-                                                   class="form-control" 
-                                                   id="phone-number" 
-                                                   placeholder="12345678" 
-                                                   pattern="[0-9]{8}" 
-                                                   maxlength="8" 
-                                                   required>
-                                        </div>
-                                        <div class="form-text">Enter your 8-digit phone number</div>
-                                    </div>
-                                    <div class="d-grid gap-2">
-                                        <button type="submit" class="btn btn-primary btn-lg">
-                                            <span class="material-icons-outlined me-2">payment</span>
-                                            Pay ${{ final_total|number_format(2, '.', ',') }} with Flouci
-                                        </button>
-                                        <button type="button" class="btn btn-outline-secondary cancel-payment">
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+							<!-- Crystal Payment -->
+							<div class="col-12">
+								<div class="payment-option" data-payment="crystals">
+									<div class="card border-2 payment-card" style="cursor: pointer; transition: var(--transition);">
+										<div class="card-body py-3">
+											<div class="d-flex align-items-center">
+												<span class="material-icons-outlined text-warning me-3" style="font-size: 32px;">auto_awesome</span>
+												<div class="flex-grow-1">
+													<h6 class="fw-bold mb-1">Pay with Crystals</h6>
+													<small class="text-muted">Use your crystal balance</small>
+												</div>
+												<div class="text-end">
+													<div class="small text-info">
+														<div>Available: <strong>{{ app.user.crystals }}</strong></div>
+														<div>Needed: <strong>{{ (final_total * 100)|round }}</strong></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>						<!-- Flouci Payment Form -->
+						<div id="flouci-form" class="payment-form" style="display: none;">
+							<div class="card border-primary bg-light">
+								<div class="card-body">
+									<div class="d-flex align-items-center mb-3">
+										<span class="material-icons-outlined text-primary me-2">phone_android</span>
+										<h5 class="mb-0 text-primary">Flouci Payment</h5>
+									</div>
+									<form id="flouci-payment-form">
+										<div class="mb-3">
+											<label for="phone-number" class="form-label">Phone Number</label>
+											<div class="input-group">
+												<span class="input-group-text">+216</span>
+												<input type="tel" class="form-control" id="phone-number" placeholder="12345678" pattern="[0-9]{8}" maxlength="8" required>
+											</div>
+											<div class="form-text">Enter your 8-digit phone number</div>
+										</div>
+										<div class="d-flex gap-2">
+											<button type="submit" class="btn btn-primary flex-grow-1">
+												<span class="material-icons-outlined me-2">payment</span>
+												Pay ${{ final_total|number_format(2, '.', ',') }}
+											</button>
+											<button type="button" class="btn btn-outline-secondary cancel-payment">
+												Cancel
+											</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
 
-                    <!-- Crystal Payment Form -->
-                    <div id="crystals-form" class="payment-form mt-4" style="display: none;">
-                        <div class="card border-warning">
-                            <div class="card-header bg-warning text-dark">
-                                <h5 class="mb-0">
-                                    <span class="material-icons-outlined me-2" style="vertical-align: middle;">auto_awesome</span>
-                                    Crystal Payment
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="bg-light p-3 rounded">
-                                                <strong>Your Balance:</strong><br>
-                                                <span class="text-primary fs-5">{{ app.user.crystals }} crystals</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="bg-light p-3 rounded">
-                                                <strong>Required:</strong><br>
-                                                <span class="text-warning fs-5">{{ (final_total * 100)|round }} crystals</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-grid gap-2">
-                                    <button type="button" id="crystal-payment-btn" class="btn btn-warning btn-lg">
-                                        <span class="material-icons-outlined me-2">auto_awesome</span>
-                                        Pay {{ (final_total * 100)|round }} Crystals
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary cancel-payment">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+						<!-- Crystal Payment Form -->
+						<div id="crystals-form" class="payment-form" style="display: none;">
+							<div class="card border-warning bg-light">
+								<div class="card-body">
+									<div class="d-flex align-items-center mb-3">
+										<span class="material-icons-outlined me-2">token</span>
+										<h5 class="mb-0">Crystal Payment</h5>
+									</div>
+									<div class="row g-3 mb-3">
+										<div class="col-6">
+											<div class="bg-white p-3 rounded border">
+												<small class="text-muted">Your Balance</small>
+												<div class="fw-bold text-primary">{{ app.user.crystals }} crystals</div>
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="bg-white p-3 rounded border">
+												<small class="text-muted">Required</small>
+												<div class="fw-bold text-warning">{{ (final_total * 100)|round }} crystals</div>
+											</div>
+										</div>
+									</div>
+									<div class="d-flex gap-2">
+										<button type="button" id="crystal-payment-btn" class="btn btn-warning flex-grow-1">
+											<span class="material-icons-outlined me-2">auto_awesome</span>
+											Pay {{ (final_total * 100)|round }} Crystals
+										</button>
+										<button type="button" class="btn btn-outline-secondary cancel-payment">
+											Cancel
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>						<!-- Loading State -->
+						<div id="loading-state" class="text-center mt-4" style="display: none;">
+							<div class="card bg-light border-0">
+								<div class="card-body py-4">
+									<div class="spinner-border text-primary mb-3" role="status">
+										<span class="visually-hidden">Processing...</span>
+									</div>
+									<h6 class="text-primary">Processing Payment...</h6>
+									<small class="text-muted">Please wait while we process your payment.</small>
+								</div>
+							</div>
+						</div>
 
-                    <!-- Loading State -->
-                    <div id="loading-state" class="text-center mt-4" style="display: none;">
-                        <div class="spinner-border text-primary mb-3" role="status">
-                            <span class="visually-hidden">Processing...</span>
-                        </div>
-                        <h5>Processing Payment...</h5>
-                        <p class="text-muted">Please wait while we process your payment.</p>
-                    </div>
+						<!-- Success State -->
+						<div id="success-state" class="text-center mt-4" style="display: none;">
+							<div class="card bg-success bg-opacity-10 border-success">
+								<div class="card-body py-4">
+									<span class="material-icons-outlined text-success mb-3" style="font-size: 48px;">check_circle</span>
+									<h5 class="text-success mb-2">Payment Successful!</h5>
+									<p class="text-muted mb-3">Thank you for your purchase! Your order has been confirmed.</p>
+									<div id="success-message" class="alert alert-success mb-3"></div>
+									<a href="{{ path('product_index') }}" class="btn btn-primary">
+										<span class="material-icons-outlined me-2">shopping_bag</span>
+										Continue Shopping
+									</a>
+								</div>
+							</div>
+						</div>
 
-                    <!-- Success State -->
-                    <div id="success-state" class="text-center mt-4" style="display: none;">
-                        <div class="text-success mb-3">
-                            <span class="material-icons-outlined" style="font-size: 64px;">check_circle</span>
-                        </div>
-                        <h3 class="text-success mb-3">Payment Successful!</h3>
-                        <p class="text-muted mb-4">Thank you for your purchase! Your order has been confirmed and your items will be shipped soon.</p>
-                        <div id="success-message" class="alert alert-success mb-4"></div>
-                        <a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
-                            <span class="material-icons-outlined me-2">home</span>
-                            Continue Shopping
-                        </a>
-                    </div>
+						<!-- Error State -->
+						<div id="error-state" class="text-center mt-4" style="display: none;">
+							<div class="card bg-danger bg-opacity-10 border-danger">
+								<div class="card-body py-4">
+									<span class="material-icons-outlined text-danger mb-3" style="font-size: 48px;">error</span>
+									<h5 class="text-danger mb-2">Payment Failed</h5>
+									<div id="error-message" class="alert alert-danger mb-3"></div>
+									<button type="button" class="btn btn-primary" id="retry-payment">
+										<span class="material-icons-outlined me-2">refresh</span>
+										Try Again
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<style>
+		.payment-card {
+			border: 2px solid var(--gray-medium) !important;
+			transition: var(--transition);
+		}
 
-                    <!-- Error State -->
-                    <div id="error-state" class="text-center mt-4" style="display: none;">
-                        <div class="text-danger mb-3">
-                            <span class="material-icons-outlined" style="font-size: 64px;">error</span>
-                        </div>
-                        <h3 class="text-danger mb-3">Payment Failed</h3>
-                        <div id="error-message" class="alert alert-danger mb-4"></div>
-                        <button type="button" class="btn btn-primary" id="retry-payment">
-                            Try Again
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+		.payment-card:hover {
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-lg) !important;
+			border-color: var(--primary) !important;
+		}
 
-<style>
-.payment-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-}
+		.payment-card.selected {
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-lg) !important;
+			border-color: var(--primary) !important;
+			background-color: rgba(254, 93, 38, 0.05) !important;
+		}
 
-.payment-card.selected {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-}
+		.payment-option[data-payment="flouci"] .payment-card.selected {
+			border-color: var(--primary) !important;
+			background-color: rgba(254, 93, 38, 0.05) !important;
+		}
 
-.payment-option[data-payment="flouci"] .payment-card.selected {
-    border-color: #0d6efd !important;
-    background-color: rgba(13, 110, 253, 0.05);
-}
+		.payment-option[data-payment="crystals"] .payment-card.selected {
+			border-color: var(--secondary) !important;
+			background-color: rgba(242, 192, 120, 0.05) !important;
+		}
 
-.payment-option[data-payment="crystals"] .payment-card.selected {
-    border-color: #ffc107 !important;
-    background-color: rgba(255, 193, 7, 0.05);
-}
-</style>
+		.checkout-card {
+			border: var(--border);
+			border-radius: var(--radius);
+			box-shadow: var(--shadow);
+		}
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const paymentOptions = document.querySelectorAll('.payment-option');
-    const paymentForms = document.querySelectorAll('.payment-form');
-    const loadingState = document.getElementById('loading-state');
-    const successState = document.getElementById('success-state');
-    const errorState = document.getElementById('error-state');
-    const flouciForm = document.getElementById('flouci-payment-form');
-    const crystalPaymentBtn = document.getElementById('crystal-payment-btn');
-    const cancelButtons = document.querySelectorAll('.cancel-payment');
-    const retryButton = document.getElementById('retry-payment');
+		.checkout-card .card-header {
+			background-color: var(--light);
+			border-bottom: var(--border);
+			border-radius: var(--radius) var(--radius) 0 0;
+		}
 
-    // Payment option selection
-    paymentOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            const paymentType = this.dataset.payment;
-            
-            // Reset all selections
-            paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
-            paymentForms.forEach(form => form.style.display = 'none');
-            
-            // Select current option
-            this.querySelector('.payment-card').classList.add('selected');
-            document.getElementById(paymentType + '-form').style.display = 'block';
-        });
-    });
+		.payment-form .card {
+			border-radius: var(--radius-sm);
+		}
 
-    // Cancel payment
-    cancelButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
-            paymentForms.forEach(form => form.style.display = 'none');
-        });
-    });
+		.order-summary-items {
+			border-radius: var(--radius-sm);
+		}
 
-    // Flouci payment form
-    flouciForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const phoneNumber = document.getElementById('phone-number').value;
-        
-        if (!/^\d{8}$/.test(phoneNumber)) {
-            showError('Please enter a valid 8-digit phone number');
-            return;
-        }
+		@media (max-width: 991.98px) {
+			.container {
+				padding: 0 1rem;
+			}
+			
+			.row.g-4 {
+				--bs-gutter-x: 1rem;
+			}
+		}
+	</style>
 
-        showLoading();
-        
-        fetch('{{ path("cart_checkout_flouci") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'phone_number=' + encodeURIComponent(phoneNumber)
-        })
-        .then(response => response.json())
-        .then(data => {
-            hideLoading();
-            if (data.success) {
-                showSuccess(data.message);
-            } else {
-                showError(data.error);
-            }
-        })
-        .catch(error => {
-            hideLoading();
-            showError('An error occurred while processing your payment. Please try again.');
-        });
-    });
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const paymentOptions = document.querySelectorAll('.payment-option');
+const paymentForms = document.querySelectorAll('.payment-form');
+const loadingState = document.getElementById('loading-state');
+const successState = document.getElementById('success-state');
+const errorState = document.getElementById('error-state');
+const flouciForm = document.getElementById('flouci-payment-form');
+const crystalPaymentBtn = document.getElementById('crystal-payment-btn');
+const cancelButtons = document.querySelectorAll('.cancel-payment');
+const retryButton = document.getElementById('retry-payment');
 
-    // Crystal payment
-    crystalPaymentBtn.addEventListener('click', function() {
-        showLoading();
-        
-        fetch('{{ path("cart_checkout_crystals") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            hideLoading();
-            if (data.success) {
-                showSuccess(data.message);
-            } else {
-                showError(data.error);
-            }
-        })
-        .catch(error => {
-            hideLoading();
-            showError('An error occurred while processing your payment. Please try again.');
-        });
-    });
+// Payment option selection
+paymentOptions.forEach(option => {
+option.addEventListener('click', function () {
+const paymentType = this.dataset.payment;
 
-    // Retry payment
-    retryButton.addEventListener('click', function() {
-        hideError();
-        hideSuccess();
-        paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
-        paymentForms.forEach(form => form.style.display = 'none');
-    });
+// Reset all selections
+paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
+paymentForms.forEach(form => form.style.display = 'none');
 
-    function showLoading() {
-        paymentForms.forEach(form => form.style.display = 'none');
-        errorState.style.display = 'none';
-        successState.style.display = 'none';
-        loadingState.style.display = 'block';
-    }
-
-    function hideLoading() {
-        loadingState.style.display = 'none';
-    }
-
-    function showSuccess(message) {
-        document.getElementById('success-message').textContent = message;
-        successState.style.display = 'block';
-    }
-
-    function hideSuccess() {
-        successState.style.display = 'none';
-    }
-
-    function showError(message) {
-        document.getElementById('error-message').textContent = message;
-        errorState.style.display = 'block';
-    }
-
-    function hideError() {
-        errorState.style.display = 'none';
-    }
-
-    // Phone number input validation
-    const phoneInput = document.getElementById('phone-number');
-    phoneInput.addEventListener('input', function() {
-        this.value = this.value.replace(/\D/g, '');
-        if (this.value.length > 8) {
-            this.value = this.value.slice(0, 8);
-        }
-    });
+// Select current option
+this.querySelector('.payment-card').classList.add('selected');
+document.getElementById(paymentType + '-form').style.display = 'block';
 });
-</script>
+});
+
+// Cancel payment
+cancelButtons.forEach(btn => {
+btn.addEventListener('click', function () {
+paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
+paymentForms.forEach(form => form.style.display = 'none');
+});
+});
+
+// Flouci payment form
+flouciForm.addEventListener('submit', function (e) {
+e.preventDefault();
+const phoneNumber = document.getElementById('phone-number').value;
+
+if (!/^\d{8}$/.test(phoneNumber)) {
+showError('Please enter a valid 8-digit phone number');
+return;
+}
+
+showLoading();
+
+fetch('{{ path("cart_checkout_flouci") }}', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded'
+},
+body: 'phone_number=' + encodeURIComponent(phoneNumber)
+}).then(response => response.json()).then(data => {
+hideLoading();
+if (data.success) {
+showSuccess(data.message);
+} else {
+showError(data.error);
+}
+}).catch(error => {
+hideLoading();
+showError('An error occurred while processing your payment. Please try again.');
+});
+});
+
+// Crystal payment
+crystalPaymentBtn.addEventListener('click', function () {
+showLoading();
+
+fetch('{{ path("cart_checkout_crystals") }}', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded'
+}
+}).then(response => response.json()).then(data => {
+hideLoading();
+if (data.success) {
+showSuccess(data.message);
+} else {
+showError(data.error);
+}
+}).catch(error => {
+hideLoading();
+showError('An error occurred while processing your payment. Please try again.');
+});
+});
+
+// Retry payment
+retryButton.addEventListener('click', function () {
+hideError();
+hideSuccess();
+paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
+paymentForms.forEach(form => form.style.display = 'none');
+});
+
+function showLoading() {
+paymentForms.forEach(form => form.style.display = 'none');
+errorState.style.display = 'none';
+successState.style.display = 'none';
+loadingState.style.display = 'block';
+}
+
+function hideLoading() {
+loadingState.style.display = 'none';
+}
+
+function showSuccess(message) {
+document.getElementById('success-message').textContent = message;
+successState.style.display = 'block';
+}
+
+function hideSuccess() {
+successState.style.display = 'none';
+}
+
+function showError(message) {
+document.getElementById('error-message').textContent = message;
+errorState.style.display = 'block';
+}
+
+function hideError() {
+errorState.style.display = 'none';
+}
+
+// Phone number input validation
+const phoneInput = document.getElementById('phone-number');
+phoneInput.addEventListener('input', function () {
+this.value = this.value.replace(/\D/g, '');
+if (this.value.length > 8) {
+this.value = this.value.slice(0, 8);
+}
+});
+});
+	</script>
 {% endblock %}

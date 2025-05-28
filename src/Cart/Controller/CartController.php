@@ -172,7 +172,7 @@ class CartController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'message' => sprintf(
-                'Payment processed successfully! %d crystals were used (equivalent to $%.2f)',
+                'Payment processed successfully! %d crystals were used.',
                 $totalCrystalsNeeded,
                 $cart->getTotal()
             ),

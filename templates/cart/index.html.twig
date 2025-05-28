@@ -6,7 +6,7 @@
 	<br/>
 	<br/>
 	<br/>
-	<div class="container py-5">
+	<div class="container py-2">
 		{% if cart.items|length == 0 %}
 			<div class="card shadow-sm text-center p-4">
 				<div class="card-body py-5">
@@ -258,21 +258,23 @@
                 },
                 body: 'crystals=' + encodeURIComponent(crystals)
                 }).then(response => response.json()).then(data => {
-                if (data.success) { // Update display with server response
-                crystalsUsedSpan.textContent = data.crystals_used;
-                discountPercentSpan.textContent = data.discount_percent;
-                discountAmountSpan.textContent = data.discount_amount;
-                finalTotalSpan.textContent = '$' + data.new_total;
-                discountInfo.classList.remove('d-none');
-                currentCrystalsUsed = data.crystals_used;
-                } else {
-                showError(data.error);
-                }
+                    if (data.success) { // Update display with server response
+                        crystalsUsedSpan.textContent = data.crystals_used;
+                        discountPercentSpan.textContent = data.discount_percent;
+                        discountAmountSpan.textContent = data.discount_amount;
+                        finalTotalSpan.textContent = '$' + data.new_total;
+                        discountInfo.classList.remove('d-none');
+                        currentCrystalsUsed = data.crystals_used;
+                    } else {
+                        showError(data.error);
+                    }
                 }).catch(error => {
                 console.error('Error:', error);
                 showError('An error occurred while applying the discount');
                 });
-            }            // Validate input as user types and update discount
+            }            
+            
+            // Validate input as user types and update discount
             crystalsInput.addEventListener('input', function () {
                 const crystals = parseInt(this.value) || 0;
 
@@ -281,10 +283,9 @@
                     this.value = availableCrystals;
                 }
 
-                // Hide error when user starts typing
+                // hide error when user starts typing
                 hideError();
-                
-                // Update discount in real-time
+
                 updateDiscount();
             });
         });
