@@ -20,7 +20,7 @@ class ProductController extends AbstractController
     public function __construct(
         private readonly ProductService $service,
         private readonly FileUploader $uploader,
-        private readonly ShopService $shopService // Inject ShopService
+        private readonly ShopService $shopService 
     ) {}
 
     #[Route('', name: 'product_index', methods: ['GET'])]
@@ -31,6 +31,10 @@ class ProductController extends AbstractController
         $maxRaw = $request->query->get('maxPrice', '');
         $shopRaw = $request->query->get('shop', '');
         $catsRaw = $request->query->all('categories');
+
+        if (!is_array($catsRaw)) {
+            $catsRaw = [$catsRaw];
+        }
                 
         $criteria = [
             'q'=> trim($qRaw),

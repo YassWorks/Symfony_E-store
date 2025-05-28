@@ -34,12 +34,29 @@
 										<span class="material-icons-outlined me-2">storefront</span>El Marchi
 									</a>
 
-									<a href="{{ path('product_index') }}" class="nav-link {% if app.request.attributes.get('_route') == 'product_index' %}active{% endif %}" style="position: relative; top: 1px">
-										<span class="material-icons-outlined me-1 align-middle" style="position: relative; top: -2px">
-											category
-										</span>
-										Products
-									</a>
+									<div class="dropdown">
+                                        <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') == 'product_index' %}active{% endif %}" href="#" id="productsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: -2px">
+                                                category
+                                            </span>
+                                            Products
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="productsDropdown">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('product_index') }}">All Products</a>
+                                            </li>
+                                            {% set currentCategories = app.request.query.all('categories') %}
+                                            {% for category in categories %}
+                                                {% set newCategories = currentCategories is iterable ? currentCategories|merge([category.value]) : [category.value] %}
+
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ path('product_index', { 'categories': newCategories }) }}">
+                                                        {{ category.value|capitalize }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
 								</div>
 
 								<div class="d-flex align-items-center">

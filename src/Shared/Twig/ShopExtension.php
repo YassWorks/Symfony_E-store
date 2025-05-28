@@ -6,8 +6,10 @@ use App\Auth\Entity\User;
 use App\Shop\Service\ShopService;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use App\Shared\Enum\Category;
+use Twig\Extension\GlobalsInterface;
 
-class ShopExtension extends AbstractExtension
+class ShopExtension extends AbstractExtension implements GlobalsInterface
 {
     public function __construct(private readonly ShopService $shopService)
     {
@@ -28,5 +30,11 @@ class ShopExtension extends AbstractExtension
 
         $shop = $this->shopService->getShopByUser($user);
         return $shop !== null;
+    }
+    public function getGlobals():array
+    {
+        return [
+            'categories' => Category::cases(),
+        ];
     }
 }
