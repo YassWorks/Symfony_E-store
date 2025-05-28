@@ -1,5 +1,3 @@
-/* E-store Theme CSS - Modern Design */
-
 :root {
     --primary: #FE5D26;
     --secondary: #F2C078;
@@ -374,5 +372,3 @@ h2 {
 .mt-3 { margin-top: 1rem; }
 .mt-4 { margin-top: 1.5rem; }
 .mt-5 { margin-top: 3rem; }
-
-/* Add Google Fonts link in your base template */
