@@ -65,7 +65,9 @@ class CartService
     public function getCartDetails(): Cart
     {
         return $this->getCart();
-    }    public function updateQuantity(int $itemId, int $quantity): void
+    }    
+    
+    public function updateQuantity(int $itemId, int $quantity): void
     {
         $item = $this->em->find(CartItem::class, $itemId);
         if ($item && $quantity > 0) {
