@@ -29,6 +29,7 @@
                                 <span class="fs-5 fw-bold text-primary">${{ product.price }}</span>
                                 <span class="badge bg-light text-dark">{{ product.category.value }}</span>
                             </div>
+                            {% include 'shop/shopinfo.html.twig' %}
                             <div class="d-grid gap-2">
                                 <a href="{{ path('product_show', {id: product.id}) }}" class="btn btn-primary">
                                     <span class="material-icons-outlined me-1">visibility</span> View Details
