@@ -14,32 +14,44 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProductType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options)
+{    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, ['attr' => ['class' => 'form-control mb-3']])
+            ->add('title', TextType::class, [
+                'label' => 'Product Title',
+                'attr' => ['class' => 'form-control', 'placeholder' => 'Enter product title...']
+            ])
             ->add('description', TextareaType::class, [
+                'label' => 'Description',
                 'attr' => [
-                    'class' => 'form-control mb-3',
+                    'class' => 'form-control',
                     'rows' => 4,
-                    'style' => 'resize: none;'
+                    'placeholder' => 'Describe your product...'
                 ]
             ])
-            ->add('price', MoneyType::class, ['currency' => 'USD', 'attr' => ['class' => 'form-control mb-3']])
-            ->add('stockQuantity', IntegerType::class, ['attr' => ['class' => 'form-control mb-3']])
+            ->add('price', MoneyType::class, [
+                'label' => 'Price',
+                'currency' => 'USD',
+                'attr' => ['class' => 'form-control', 'placeholder' => '0.00']
+            ])
+            ->add('stockQuantity', IntegerType::class, [
+                'label' => 'Stock Quantity',
+                'attr' => ['class' => 'form-control', 'placeholder' => '0', 'min' => '0']
+            ])
             ->add('category', ChoiceType::class, [
+                'label' => 'Category',
                 'choices' => array_combine(
                     array_map(fn(Category $c) => ucwords(strtolower($c->value)), Category::cases()),
                     Category::cases()
                 ),
-                'attr' => ['class' => 'form-select mb-3'],
-            ])
-            ->add('images', FileType::class, [
+                'attr' => ['class' => 'form-select'],
+                'placeholder' => 'Select a category...'
+            ])            ->add('images', FileType::class, [
+                'label' => 'Product Images',
                 'mapped' => false,
                 'required' => false,
                 'multiple' => true,
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control', 'accept' => 'image/*']
             ]);
     }
 

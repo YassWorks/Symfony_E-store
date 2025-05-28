@@ -35,13 +35,11 @@ class ProductController extends AbstractController
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        $form->handleRequest($request);        if ($form->isSubmitted() && $form->isValid()) {
             // handle image uploads
             $files = $form->get('images')->getData();
             foreach ((array)$files as $file) {
-                if ($file) {
+                if ($file instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
                     $result = $this->uploader->uploadFile($file, "/products_images/");
                     if ($result['success']) {
                         $img = new Image();
@@ -81,12 +79,10 @@ class ProductController extends AbstractController
         }
 
         $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        $form->handleRequest($request);        if ($form->isSubmitted() && $form->isValid()) {
             $files = $form->get('images')->getData();
             foreach ((array)$files as $file) {
-                if ($file) {
+                if ($file instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
                     $result = $this->uploader->uploadFile($file, "/products_images/");
                     if ($result['success']) {
                         $img = new Image();
