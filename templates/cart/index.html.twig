@@ -1,5 +1,7 @@
-{# templates/cart/index.html.twig #} {% extends 'base.html.twig' %} {% block
-title %}Your Cart{% endblock %} {% block body %}
+{# templates/cart/index.html.twig #} 
+{% extends 'base.html.twig' %} 
+{% block title %}Your Cart{% endblock %} 
+{% block body %}
 <br />
 <br />
 <br />
@@ -132,7 +134,10 @@ title %}Your Cart{% endblock %} {% block body %}
                                                     value="{{ item.quantity }}"
                                                     min="1"
                                                     class="form-control form-control-sm text-center"
-                                                    style="margin-right: -6px; margin-left: -10px"
+                                                    style="
+                                                        margin-right: -6px;
+                                                        margin-left: -10px;
+                                                    "
                                                 />
                                                 <button
                                                     class="btn btn-sm btn-outline"
@@ -197,20 +202,18 @@ title %}Your Cart{% endblock %} {% block body %}
 
         <div class="col-lg-4">
             <div class="card shadow-sm">
-            
                 <div class="card-header bg-white">
                     <h5 class="mb-0">Order Summary</h5>
                 </div>
 
                 <div class="card-body">
-
                     <div class="d-flex justify-content-between mb-4">
                         <span class="fw-bold">Total</span>
                         <span class="fw-bold text-primary fs-5"
                             >${{ cart.getTotal()|number_format(2, '.', ',') }}</span
                         >
                     </div>
-                    
+
                     <div class="d-grid">
                         <a
                             href="{{ path('cart_checkout') }}"
@@ -222,7 +225,6 @@ title %}Your Cart{% endblock %} {% block body %}
                             Proceed to Checkout
                         </a>
                     </div>
-
                 </div>
             </div>
         </div>
