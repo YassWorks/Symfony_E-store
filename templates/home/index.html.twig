@@ -1,27 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Welcome to E-Store{% endblock %}
+{% block title %}Welcome to E-Store
+{% endblock %}
 
 {% block body %}
-<section class="hero bg-light py-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h1 class="display-4 fw-bold">Welcome to El Marchi</h1>
-                <p class="lead mb-4">Discover amazing products today!</p>
-                <div class="d-flex gap-3">
-                    <a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
-                        <span class="material-icons-outlined me-2">shopping_bag</span> Shop Now
-                    </a>
-                    {% if not app.user %}
-                    <a href="{{ path('register') }}" class="btn btn-light btn-lg">
-                        <span class="material-icons-outlined me-2">person_add</span> Sign Up
-                    </a>
-                    {% endif %}
-                </div>
-                <br>
-            </div>
-        </div>
-    </div>
-</section>
+	<section class="hero bg-light py-5">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-md-6">
+					<h1 class="display-4 fw-bold">Welcome to El Marchi</h1>
+					<p class="lead mb-4">Discover amazing products today!</p>
+					<div class="d-flex gap-3">
+						<a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
+							<span class="material-icons-outlined me-2">shopping_bag</span>
+							Shop Now
+						</a>
+						{% if not app.user %}
+							<a href="{{ path('register') }}" class="btn btn-light btn-lg">
+								<span class="material-icons-outlined me-2">person_add</span>
+								Sign Up
+							</a>
+						{% endif %}
+					</div>
+					<br>
+				</div>
+			</div>
+		</div>
+	</section>
 {% endblock %}

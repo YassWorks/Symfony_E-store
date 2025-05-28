@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ product.title }}{% endblock %}
+{% block title %}
+	{{ product.title }}
+{% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ asset('css/product.css') }}" />
+	<link rel="stylesheet" href="{{ asset('css/product.css') }}"/>
 {% endblock %}
 
 {% block body %}

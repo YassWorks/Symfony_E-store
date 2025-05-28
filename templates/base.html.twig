@@ -1,173 +1,120 @@
 {# templates/base.html.twig #}
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{% block title %}E-Store{% endblock %}</title>
-        {# Google Fonts #}
-        <link
-            href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
-            rel="stylesheet"
-        />
-        {# Bootstrap CSS #}
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-..."
-            crossorigin="anonymous"
-        />
-        {# Theme CSS #}
-        <link rel="stylesheet" href="{{ asset('css/theme.css') }}" />
-        <link rel="stylesheet" href="{{ asset('css/navbar.css') }}" />
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        <div class="page-wrapper">
-            {% block header %}
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>
+			{% block title %}E-Store
+			{% endblock %}
+		</title>
+		{# Google Fonts #}
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+		<link
+		href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+		{# Bootstrap CSS #}
+		<link
+		href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-..." crossorigin="anonymous"/>
+		{# Theme CSS #}
+		<link rel="stylesheet" href="{{ asset('css/theme.css') }}"/>
+		<link rel="stylesheet" href="{{ asset('css/navbar.css') }}"/> {% block stylesheets %}{% endblock %}
+		</head>
+		<body>
+			<div class="page-wrapper">
+				{% block header %}
 
-            <nav class="main-navbar">
-                <div class="navbar-container">
-                    <div class="navbar-actions">
-                        <a
-                            href="{{ path('landing_page') }}"
-                            class="navbar-brand"
-                        >
-                            <span class="material-icons-outlined me-2"
-                                >storefront</span
-                            >El Marchi
-                        </a>
+					<nav class="main-navbar">
+						<div class="navbar-container">
+                        
+							<div class="navbar-actions" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
 
-                        <a
-                            href="{{ path('product_index') }}"
-                            class="nav-link {% if app.request.attributes.get('_route') == 'product_index' %}active{% endif %}"
-                            style="position: relative; top: 1px"
-                        >
-                            <span
-                                class="material-icons-outlined me-1 align-middle"
-                                style="position: relative; top: 5px"
-                            >
-                                category
-                            </span>
-                            Products
-                        </a>
-                    </div>
+                                <div class="d-flex align-items-center">
+                                    <a href="{{ path('landing_page') }}" class="navbar-brand" style="margin-right: 20px;">
+                                        <span class="material-icons-outlined me-2">storefront</span>El Marchi
+                                    </a>
 
-                    <div style="position: relative; top: -3px">
-                        {% if app.user %} {% if user_has_shop(app.user) %}
-                        <a
-                            href="{{ path('seller_dashboard') }}"
-                            class="nav-link {% if 'seller' in app.request.attributes.get('_route') %}active{% endif %}"
-                        >
-                            <span
-                                class="material-icons-outlined me-1 align-middle"
-                                style="position: relative; top: 6px"
-                                >store</span
-                            >
-                            Your Shop
-                        </a>
-                        {% else %}
-                        <a href="{{ path('join_us') }}" class="nav-link">
-                            <span
-                                class="material-icons-outlined me-1 align-middle"
-                                style="position: relative; top: 6px; margin-left: 10px;"
-                                >sell</span
-                            >
-                            Become a Seller
-                        </a>
-                        {% endif %}
+                                    <a href="{{ path('product_index') }}" class="nav-link {% if app.request.attributes.get('_route') == 'product_index' %}active{% endif %}" style="position: relative; top: 1px">
+                                        <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: -2px">
+                                            category
+                                        </span>
+                                        Products
+                                    </a>
+                                </div>
 
-                        <a
-                            href="{{ path('profile') }}"
-                            class="nav-link {% if app.request.attributes.get('_route') == 'profile' %}active{% endif %}"
-                            style="margin-left: 10px;"
-                        >
-                            <span
-                                class="material-icons-outlined me-1 align-middle"
-                                style="position: relative; top: 5px"
-                                >person</span
-                            >
-                            Profile
-                        </a>
-                        <a
-                            href="{{ path('cart_index') }}"
-                            class="nav-link cart-link {% if app.request.attributes.get('_route') == 'cart_index' %}active{% endif %}"
-                            style="margin-left: 10px;"
-                        >
-                            <span
-                                class="material-icons-outlined me-1 align-middle"
-                                style="position: relative; top: 5px"
-                                >shopping_cart</span
-                            >
-                            Cart
-                        </a>
+                                <div class="d-flex align-items-center">
+                                    {% if app.user %}
+                                        
+                                        <div class="d-flex align-items-center">
+                                            {% if user_has_shop(app.user) %}
+                                                <a href="{{ path('seller_dashboard') }}" class="nav-link {% if 'seller' in app.request.attributes.get('_route') %}active{% endif %}">
+                                                    <span class="material-icons-outlined me-1 align-middle">store</span>
+                                                    Your Shop
+                                                </a>
+                                            {% else %}
+                                                <a href="{{ path('join_us') }}" class="nav-link">
+                                                    <span class="material-icons-outlined me-1 align-middle" style="margin-left: 10px;">sell</span>
+                                                    Become a Seller
+                                                </a>
+                                            {% endif %}
 
-                        <a
-                            href="{{ path('logout') }}"
-                            class="btn btn-outline btn-sm"
-                            style="
-                                position: relative;
-                                top: 4px;
-                                padding-left: 10px;
-                                margin-left: 10px;
-                            "
-                        >
-                            <span
-                                class="material-icons-outlined me-1 align-middle"
-                                >logout</span
-                            >
-                            Logout
-                        </a>
-                        {% else %}
-                        <a
-                            href="{{
-                                path('login', {
-                                    _target_path: app.request.uri
-                                })
-                            }}"
-                            class="btn btn-primary btn-sm"
-                            style="position: relative; top: 4px"
-                        >
-                            <span
-                                class="material-icons-outlined me-1 align-middle"
-                                style="position: relative; top: 1px"
-                                >login</span
-                            >
-                            Login
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </nav>
+                                            <a href="{{ path('profile') }}" class="nav-link {% if app.request.attributes.get('_route') == 'profile' %}active{% endif %}" style="margin-left: 10px;">
+                                                <span class="material-icons-outlined me-1 align-middle">person</span>
+                                                Profile
+                                            </a>
+                                            <a href="{{ path('cart_index') }}" class="nav-link cart-link {% if app.request.attributes.get('_route') == 'cart_index' %}active{% endif %}" style="margin-left: 10px;">
+                                                <span class="material-icons-outlined me-1 align-middle">shopping_cart</span>
+                                                Cart
+                                            </a>
 
-            {% endblock %}
+                                            <a href="{{ path('logout') }}" class="btn btn-outline btn-sm" style="
+                                                                                                            padding-left: 10px;
+                                                                                                            margin-left: 10px;
+                                                                                                        ">
+                                                <span class="material-icons-outlined me-1 align-middle">logout</span>
+                                                Logout
+                                            </a>
+                                        </div>
 
-            <main class="content">{% block body %}{% endblock %}</main>
-        </div>
+                                    {% else %}
+                                    
+                                        <a href="{{ path('login', { _target_path: app.request.uri }) }}" class="btn btn-primary btn-sm" style="position: relative; top: 1px">
+                                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 1px">login</span>
+                                            Login
+                                        </a>
+                                    
+                                    {% endif %}
+                                </div>
 
-        {# Bootstrap JS Bundle #}
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-..."
-            crossorigin="anonymous"
-        ></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const navbarToggle = document.querySelector(".navbar-toggle");
-                const navbarMenu = document.querySelector(".navbar-menu");
+							</div>
 
-                if (navbarToggle) {
-                    navbarToggle.addEventListener("click", function () {
-                        navbarMenu.classList.toggle("d-none");
-                        navbarMenu.classList.toggle("active");
+						</div>
+					</nav>
+
+				{% endblock %}
+
+				<main class="content"> {% block body %}{% endblock %}
+					</main>
+				</div>
+
+				{# Bootstrap JS Bundle #}
+				<script
+                    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-..."
+                    crossorigin="anonymous"
+				></script>
+				<script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const navbarToggle = document.querySelector(".navbar-toggle");
+                        const navbarMenu = document.querySelector(".navbar-menu");
+        
+                        if (navbarToggle) {
+                            navbarToggle.addEventListener("click", function () {
+                                navbarMenu.classList.toggle("d-none");
+                                navbarMenu.classList.toggle("active");
+                            });
+                        }
                     });
-                }
-            });
-        </script>
-        {% block javascripts %}{% endblock %}
-    </body>
-</html>
+                </script>{% block javascripts %}
+			{% endblock %}
+		</body>
+	</html>
