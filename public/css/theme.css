@@ -372,3 +372,12 @@ h2 {
 .mt-3 { margin-top: 1rem; }
 .mt-4 { margin-top: 1.5rem; }
 .mt-5 { margin-top: 3rem; }
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: black;
+  filter: invert(1);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}

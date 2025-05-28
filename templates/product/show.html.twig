@@ -15,33 +15,26 @@
 			Back to Products
 		</a>
 
-		<div class="product-detail-container">
-			<div class="row">
-				<div class="col-md-6">
-					<div class="product-image-container" style="max-width: 300px; margin: auto;">
-						{% if product.images|length > 0 %}
-							{% set image = product.images[0] %}
-							<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ product.title }}" class="product-image" style="width: 100%; height: auto;">
-						{% else %}
-							<img src="{{ asset('uploads/default.jpg') }}" alt="No image available" class="product-image" style="width: 100%; height: auto;">
-						{% endif %}
-					</div>
-				</div>
-
-				<div class="col-md-6">
-					<div class="product-info">
-						<h1 class="product-title">{{ product.title }}</h1>
-
-						<div class="product-meta">
-							<div class="product-meta-item">
-								<span class="product-meta-label">Category:</span>
-								<span class="product-category">{{ product.category.value }}</span>
-							</div>
-
-							<div class="product-meta-item">
-								<span class="product-meta-label">Price:</span>
-								<span class="product-price">${{ product.price }}</span>
-							</div>
+    <div class="product-detail-container">
+      <div class="row">
+        <div class="col-md-6">
+          {% include 'product/imageSlider.html.twig'%}
+        </div>
+        
+        <div class="col-md-6">
+          <div class="product-info">
+            <h1 class="product-title">{{ product.title }}</h1>
+            
+            <div class="product-meta">
+              <div class="product-meta-item">
+                <span class="product-meta-label">Category:</span>
+                <span class="product-category">{{ product.category.value }}</span>
+              </div>
+              
+              <div class="product-meta-item">
+                <span class="product-meta-label">Price:</span>
+                <span class="product-price">${{ product.price }}</span>
+              </div>
 
 							<div class="product-meta-item">
 								<span class="product-meta-label">Stock:</span>
