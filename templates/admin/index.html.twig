@@ -1,65 +1,67 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Admin Dashboard
+{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="container py-4">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="mb-4">Admin Dashboard</h1>
-            <p class="lead mb-5">Welcome to the administration panel. Here you can manage users and shops.</p>
-        </div>
-    </div>
+	<div class="container py-4">
+		<div class="row">
+			<div class="col-12">
+				<h1 class="mb-4">Admin Dashboard</h1>
+				<p class="lead mb-5">Welcome to the administration panel. Here you can manage users and shops.</p>
+			</div>
+		</div>
 
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">
-                        <span class="material-icons-outlined me-2">people</span>
-                        Manage Users
-                    </h5>
-                    <p class="card-text flex-grow-1">
-                        View, manage, and delete user accounts. Monitor user activity and maintain the user database.
-                    </p>
-                    <a href="{{ path('admin_users') }}" class="btn btn-success">
-                        <span class="material-icons-outlined me-2">manage_accounts</span>
-                        Manage Users
-                    </a>
-                </div>
-            </div>
-        </div>
+		<div class="row">
+			<div class="col-md-6 mb-4">
+				<div class="card h-100">
+					<div class="card-body d-flex flex-column">
+						<h5 class="card-title">
+							<span class="material-icons-outlined me-2">people</span>
+							Manage Users
+						</h5>
+						<p class="card-text flex-grow-1">
+							View, manage, and delete user accounts. Monitor user activity and maintain the user database.
+						</p>
+						<a href="{{ path('admin_users') }}" class="btn btn-success">
+							<span class="material-icons-outlined me-2">manage_accounts</span>
+							Manage Users
+						</a>
+					</div>
+				</div>
+			</div>
 
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">
-                        <span class="material-icons-outlined me-2">store</span>
-                        Manage Shops
-                    </h5>
-                    <p class="card-text flex-grow-1">
-                        View, manage, and delete shop accounts. Monitor shop activity and maintain the shop database.
-                    </p>
-                    <a href="{{ path('admin_shops') }}" class="btn btn-success">
-                        <span class="material-icons-outlined me-2">storefront</span>
-                        Manage Shops
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+			<div class="col-md-6 mb-4">
+				<div class="card h-100">
+					<div class="card-body d-flex flex-column">
+						<h5 class="card-title">
+							<span class="material-icons-outlined me-2">store</span>
+							Manage Shops
+						</h5>
+						<p class="card-text flex-grow-1">
+							View, manage, and delete shop accounts. Monitor shop activity and maintain the shop database.
+						</p>
+						<a href="{{ path('admin_shops') }}" class="btn btn-success">
+							<span class="material-icons-outlined me-2">storefront</span>
+							Manage Shops
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="alert alert-warning">
-                <span class="material-icons-outlined me-2" style="position: relative; top: 4px;">warning</span>
-                <strong>Warning:</strong> Be careful when deleting users or shops as this action cannot be undone.
-            </div>
-        </div>
-    </div>
-</div>
+		<div class="row mt-4">
+			<div class="col-12">
+				<div class="alert alert-warning">
+					<span class="material-icons-outlined me-2" style="position: relative; top: 4px;">warning</span>
+					<strong>Warning:</strong>
+					Be careful when deleting users or shops as this action cannot be undone.
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}

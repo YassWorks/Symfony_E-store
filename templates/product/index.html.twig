@@ -1,63 +1,66 @@
 {# templates/product/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Products{% endblock %}
+{% block title %}Products
+{% endblock %}
 
 {% block body %}
 
-<div class="container py-4">
-    <br>
-    <br>
-    <br>
-    <div class="row g-4">
-        {% for product in products %}
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100 product-card">
-                    <div class="position-relative text-center">
-                        {% if product.images|length > 0 %}
-                            {% set image = product.images[0] %}
-                            <img src="{{ asset('uploads/products_images/' ~ image.filename) }}" class="card-img-top" alt="{{ product.title }}" style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto;">
-                        {% else %}
-                            <img src="{{ asset('uploads/default.jpg') }}" class="card-img-top" alt="No image" style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto;">
-                        {% endif %}
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ product.title }}</h5>
-                        <p class="card-text text-muted">{{ product.description|slice(0, 100) ~ (product.description|length > 100 ? '...' : '') }}</p>
-                        <div class="mt-auto">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="fs-5 fw-bold text-primary">${{ product.price }}</span>
-                                <span class="badge bg-light text-dark">{{ product.category.value }}</span>
-                            </div>
-                            <div class="d-grid gap-2">
-                                <a href="{{ path('product_show', {id: product.id}) }}" class="btn btn-primary">
-                                    <span class="material-icons-outlined me-1">visibility</span> View Details
-                                </a>
-                                {% if is_granted('ROLE_BUYER') %}
-                                    <form method="post" action="{{ path('cart_add', { id: product.id }) }}">
-                                        <input type="hidden" name="quantity" value="1" />
-                                        <button class="btn btn-outline w-100">
-                                            <span class="material-icons-outlined me-1">add_shopping_cart</span> Add to Cart
-                                        </button>
-                                    </form>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% else %}
-            <div class="col-12">
-                <div class="card p-5 text-center">
-                    <div class="card-body">
-                        <span class="material-icons-outlined mb-3" style="font-size: 48px; color: var(--secondary);">inventory_2</span>
-                        <h3>No products found</h3>
-                        <p class="text-muted">We couldn't find any products matching your criteria.</p>
-                        <a href="{{ path('landing_page') }}" class="btn btn-primary">Return to Home</a>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-</div>
+	<div class="container py-4">
+		<br>
+		<br>
+		<br>
+		<div class="row g-4">
+			{% for product in products %}
+				<div class="col-sm-6 col-lg-4">
+					<div class="card h-100 product-card">
+						<div class="position-relative text-center">
+							{% if product.images|length > 0 %}
+								{% set image = product.images[0] %}
+								<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" class="card-img-top" alt="{{ product.title }}" style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto;">
+							{% else %}
+								<img src="{{ asset('uploads/default.jpg') }}" class="card-img-top" alt="No image" style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto;">
+							{% endif %}
+						</div>
+						<div class="card-body d-flex flex-column">
+							<h5 class="card-title">{{ product.title }}</h5>
+							<p class="card-text text-muted">{{ product.description|slice(0, 100) ~ (product.description|length > 100 ? '...' : '') }}</p>
+							<div class="mt-auto">
+								<div class="d-flex justify-content-between align-items-center mb-3">
+									<span class="fs-5 fw-bold text-primary">${{ product.price }}</span>
+									<span class="badge bg-light text-dark">{{ product.category.value }}</span>
+								</div>
+								<div class="d-grid gap-2">
+									<a href="{{ path('product_show', {id: product.id}) }}" class="btn btn-primary">
+										<span class="material-icons-outlined me-1">visibility</span>
+										View Details
+									</a>
+									{% if is_granted('ROLE_BUYER') %}
+										<form method="post" action="{{ path('cart_add', { id: product.id }) }}">
+											<input type="hidden" name="quantity" value="1"/>
+											<button class="btn btn-outline w-100">
+												<span class="material-icons-outlined me-1">add_shopping_cart</span>
+												Add to Cart
+											</button>
+										</form>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% else %}
+				<div class="col-12">
+					<div class="card p-5 text-center">
+						<div class="card-body">
+							<span class="material-icons-outlined mb-3" style="font-size: 48px; color: var(--secondary);">inventory_2</span>
+							<h3>No products found</h3>
+							<p class="text-muted">We couldn't find any products matching your criteria.</p>
+							<a href="{{ path('landing_page') }}" class="btn btn-primary">Return to Home</a>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
 {% endblock %}
