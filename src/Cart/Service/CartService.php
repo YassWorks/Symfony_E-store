@@ -65,9 +65,7 @@ class CartService
     public function getCartDetails(): Cart
     {
         return $this->getCart();
-    }
-
-    public function updateQuantity(int $itemId, int $quantity): void
+    }    public function updateQuantity(int $itemId, int $quantity): void
     {
         $item = $this->em->find(CartItem::class, $itemId);
         if ($item && $quantity > 0) {
@@ -77,6 +75,25 @@ class CartService
             $cart = $item->getCart();
             $cart->removeItem($item);
         }
+        $this->em->flush();
+    }
+
+    public function updateAllQuantities(array $quantities): void
+    {
+        $cart = $this->getCart();
+        
+        foreach ($quantities as $itemId => $quantity) {
+            $item = $this->em->find(CartItem::class, $itemId);
+            if ($item && $item->getCart()->getId() === $cart->getId()) {
+                if ($quantity > 0) {
+                    $item->setQuantity($quantity);
+                } else {
+                    // remove if zero or negative
+                    $cart->removeItem($item);
+                }
+            }
+        }
+        
         $this->em->flush();
     }
 }

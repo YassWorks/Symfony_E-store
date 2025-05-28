@@ -72,4 +72,24 @@ class CartController extends AbstractController
 
         return $this->redirectToRoute('cart_index');
     }
+
+    #[Route('/update-all', name: 'cart_update_all', methods: ['POST'])]
+    #[IsGranted('ROLE_BUYER')]
+    public function updateAllQuantities(Request $request): Response
+    {
+        $quantities = $request->request->all('quantities');
+
+        // Convert string values to integers and filter out invalid entries
+        $validQuantities = [];
+        foreach ($quantities as $itemId => $quantity) {
+            $qty = (int)$quantity;
+            if ($qty >= 0) { // Allow 0 to remove items
+                $validQuantities[(int)$itemId] = $qty;
+            }
+        }
+
+        $this->cartService->updateAllQuantities($validQuantities);
+
+        return $this->redirectToRoute('cart_index');
+    }
 }
