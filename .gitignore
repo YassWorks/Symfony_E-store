@@ -25,7 +25,6 @@
 ###< symfony/asset-mapper ###
 .vscode
 .vscode/*
-start.ps1
 .env
 
 errorss.html.twig

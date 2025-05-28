@@ -1,0 +1,1 @@
+clear && rm var/log/* -r && rm var/cache/* -r && symfony server:start
