@@ -29,6 +29,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
+    #[ORM\Column(type: 'integer')]
+    private int $crystals = 0;
+
+    public function __construct()
+    {
+        $this->crystals = 0;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -66,6 +74,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCrystals(): int
+    {
+        return $this->crystals;
+    }
+
+    public function setCrystals(int $crystals): static
+    {
+        $this->crystals = $crystals;
+
+        return $this;
+    }
+
+    public function addCrystals(int $amount): static
+    {
+        $this->crystals += $amount;
+
+        return $this;
+    }
+
+    public function subtractCrystals(int $amount): static
+    {
+        $this->crystals = max(0, $this->crystals - $amount);
 
         return $this;
     }

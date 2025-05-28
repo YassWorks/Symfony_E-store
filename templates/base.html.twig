@@ -17,7 +17,8 @@
 		href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-..." crossorigin="anonymous"/>
 		{# Theme CSS #}
 		<link rel="stylesheet" href="{{ asset('css/theme.css') }}"/>
-		<link rel="stylesheet" href="{{ asset('css/navbar.css') }}"/> {% block stylesheets %}{% endblock %}
+		<link rel="stylesheet" href="{{ asset('css/navbar.css') }}"/>
+		<link rel="stylesheet" href="{{ asset('css/notifications.css') }}"/> {% block stylesheets %}{% endblock %}
 		</head>
 		<body>
 			<div class="page-wrapper">
@@ -25,84 +26,90 @@
 
 					<nav class="main-navbar">
 						<div class="navbar-container">
-                        
+
 							<div class="navbar-actions" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
 
-                                <div class="d-flex align-items-center">
-                                    <a href="{{ path('landing_page') }}" class="navbar-brand" style="margin-right: 20px;">
-                                        <span class="material-icons-outlined me-2">storefront</span>El Marchi
-                                    </a>
+								<div class="d-flex align-items-center">
+									<a href="{{ path('landing_page') }}" class="navbar-brand" style="margin-right: 20px;">
+										<span class="material-icons-outlined me-2">storefront</span>El Marchi
+									</a>
 
-                                    <a href="{{ path('product_index') }}" class="nav-link {% if app.request.attributes.get('_route') == 'product_index' %}active{% endif %}" style="position: relative; top: 1px">
-                                        <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: -2px">
-                                            category
-                                        </span>
-                                        Products
-                                    </a>
-                                </div>
+									<a href="{{ path('product_index') }}" class="nav-link {% if app.request.attributes.get('_route') == 'product_index' %}active{% endif %}" style="position: relative; top: 1px">
+										<span class="material-icons-outlined me-1 align-middle" style="position: relative; top: -2px">
+											category
+										</span>
+										Products
+									</a>
+								</div>
 
-                                <div class="d-flex align-items-center">
-                                    {% if app.user %}
-                                        
-                                        <div class="d-flex align-items-center">
-                                            {% if user_has_shop(app.user) %}
-                                                <a href="{{ path('seller_dashboard') }}" class="nav-link {% if 'seller' in app.request.attributes.get('_route') %}active{% endif %}">
-                                                    <span class="material-icons-outlined me-1 align-middle">store</span>
-                                                    Your Shop
-                                                </a>
-                                            {% else %}
-                                                <a href="{{ path('join_us') }}" class="nav-link">
-                                                    <span class="material-icons-outlined me-1 align-middle" style="margin-left: 10px;">sell</span>
-                                                    Become a Seller
-                                                </a>
-                                            {% endif %}
+								<div class="d-flex align-items-center">
+									{% if app.user %}
+										<div class="d-flex align-items-center">
+											<a href="{{ path('profile') }}" class="nav-link" style="margin-left: 10px;">
+												<span class="material-icons-outlined me-1 align-middle">token</span>
+												{{ app.user.crystals }}
+												Crystals
+											</a>
+											{% if user_has_shop(app.user) %}
+												<a href="{{ path('seller_dashboard') }}" class="nav-link {% if 'seller' in app.request.attributes.get('_route') %}active{% endif %}">
+													<span class="material-icons-outlined me-1 align-middle">store</span>
+													Your Shop
+												</a>
+											{% else %}
+												<a href="{{ path('join_us') }}" class="nav-link">
+													<span class="material-icons-outlined me-1 align-middle" style="margin-left: 10px;">sell</span>
+													Become a Seller
+												</a>
+											{% endif %}
 
-                                            <a href="{{ path('profile') }}" class="nav-link {% if app.request.attributes.get('_route') == 'profile' %}active{% endif %}" style="margin-left: 10px;">
-                                                <span class="material-icons-outlined me-1 align-middle">person</span>
-                                                Profile
-                                            </a>
-                                            <a href="{{ path('cart_index') }}" class="nav-link cart-link {% if app.request.attributes.get('_route') == 'cart_index' %}active{% endif %}" style="margin-left: 10px;">
-                                                <span class="material-icons-outlined me-1 align-middle">shopping_cart</span>
-                                                Cart
-                                            </a>
+											<a href="{{ path('profile') }}" class="nav-link {% if app.request.attributes.get('_route') == 'profile' %}active{% endif %}" style="margin-left: 10px;">
+												<span class="material-icons-outlined me-1 align-middle">person</span>
+												Profile
+											</a>
+											<a href="{{ path('cart_index') }}" class="nav-link cart-link {% if app.request.attributes.get('_route') == 'cart_index' %}active{% endif %}" style="margin-left: 10px;">
+												<span class="material-icons-outlined me-1 align-middle">shopping_cart</span>
+												Cart
+											</a>
 
-                                            <a href="{{ path('logout') }}" class="btn btn-outline btn-sm" style="
-                                                                                                            padding-left: 10px;
-                                                                                                            margin-left: 10px;
-                                                                                                        ">
-                                                <span class="material-icons-outlined me-1 align-middle">logout</span>
-                                                Logout
-                                            </a>
-                                        </div>
+											<a href="{{ path('logout') }}" class="btn btn-outline btn-sm" style="
+													                                                                                                            padding-left: 10px;
+													                                                                                                            margin-left: 10px;
+													                                                                                                        ">
+												<span class="material-icons-outlined me-1 align-middle">logout</span>
+												Logout
+											</a>
+										</div>
 
-                                    {% else %}
-                                    
-                                        <a href="{{ path('login', { _target_path: app.request.uri }) }}" class="btn btn-primary btn-sm" style="position: relative; top: 1px">
-                                            <span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 1px">login</span>
-                                            Login
-                                        </a>
-                                    
-                                    {% endif %}
-                                </div>
+									{% else %}
+
+										<a href="{{ path('login', { _target_path: app.request.uri }) }}" class="btn btn-primary btn-sm" style="position: relative; top: 1px">
+											<span class="material-icons-outlined me-1 align-middle" style="position: relative; top: 1px">login</span>
+											Login
+										</a>
+
+									{% endif %}
+								</div>
 
 							</div>
 
 						</div>
 					</nav>
-
 				{% endblock %}
+
+				<!-- Notification Container -->
+				<div id="notification-container" class="notification-container"></div>
 
 				<main class="content"> {% block body %}{% endblock %}
 					</main>
 				</div>
 
 				{# Bootstrap JS Bundle #}
-				<script
+				 <script
                     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
                     integrity="sha384-..."
                     crossorigin="anonymous"
-				></script>
-				<script>
+                ></script>
+				 <script>
                     document.addEventListener("DOMContentLoaded", function () {
                         const navbarToggle = document.querySelector(".navbar-toggle");
                         const navbarMenu = document.querySelector(".navbar-menu");
@@ -113,6 +120,85 @@
                                 navbarMenu.classList.toggle("active");
                             });
                         }
+                        
+                        // Notification System
+                        window.NotificationSystem = {
+                            show: function(message, type = 'success', duration = 4000) {
+                                const container = document.getElementById('notification-container');
+                                if (!container) return;
+                                
+                                const notification = document.createElement('div');
+                                notification.className = `notification ${type}`;
+                                
+                                let icon = 'check_circle';
+                                if (type === 'error') icon = 'error';
+                                else if (type === 'warning') icon = 'warning';
+                                else if (type === 'info') icon = 'info';
+                                
+                                notification.innerHTML = `
+                                    <span class="material-icons-outlined notification-icon">${icon}</span>
+                                    <div class="notification-content">
+                                        <div class="notification-message">${message}</div>
+                                    </div>
+                                    <button class="notification-close" type="button">&times;</button>
+                                `;
+                                
+                                container.appendChild(notification);
+                                
+                                // Show notification
+                                setTimeout(() => notification.classList.add('show'), 100);
+                                
+                                // Auto hide
+                                const hideTimeout = setTimeout(() => this.hide(notification), duration);
+                                
+                                // Manual close
+                                notification.querySelector('.notification-close').addEventListener('click', () => {
+                                    clearTimeout(hideTimeout);
+                                    this.hide(notification);
+                                });
+                                
+                                return notification;
+                            },
+                            
+                            hide: function(notification) {
+                                notification.classList.add('hide');
+                                setTimeout(() => {
+                                    if (notification.parentNode) {
+                                        notification.parentNode.removeChild(notification);
+                                    }
+                                }, 300);
+                            }
+                        };
+                        
+                        // Cart AJAX functionality
+                        document.addEventListener('submit', function(e) {
+                            const form = e.target;
+                            if (form.action && form.action.includes('/cart/add/')) {
+                                e.preventDefault();
+                                
+                                const formData = new FormData(form);
+                                
+                                fetch(form.action, {
+                                    method: 'POST',
+                                    body: formData,
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        NotificationSystem.show(data.message, 'success');
+                                    } else {
+                                        NotificationSystem.show(data.message || 'An error occurred', 'error');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    NotificationSystem.show('Failed to add item to cart', 'error');
+                                });
+                            }
+                        });
                     });
                 </script>{% block javascripts %}
 			{% endblock %}

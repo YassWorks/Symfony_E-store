@@ -2,3 +2,213 @@
 
 {% block title %}My Profile
 {% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/seller.css') }}">
+{% endblock %}
+
+{% block body %}
+	<div class="container py-4">
+		<div class="row">
+			<div class="col-12">
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<h1 class="mb-2 fw-bold">
+						<span class="material-icons-outlined me-2" style="font-size: 2.5rem; vertical-align: middle; position: relative; top: -2px;">
+							person
+						</span>
+						My Profile
+					</h1>
+				</div>
+
+				{% for message in app.flashes('success') %}
+					<div class="alert alert-success alert-dismissible fade show" role="alert">
+						<span class="material-icons-outlined me-2">check_circle</span>
+						{{ message }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					</div>
+				{% endfor %}
+
+				{% for message in app.flashes('error') %}
+					<div class="alert alert-danger alert-dismissible fade show" role="alert">
+						<span class="material-icons-outlined me-2">error_outline</span>
+						{{ message }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					</div>
+				{% endfor %}
+
+				<div
+					class="row">
+					<!-- User Information Card -->
+					<div class="col-lg-6 mb-4">
+						<div class="card border-0 shadow-sm">
+							<div class="card-header bg-white border-0 py-3">
+								<h5 class="mb-0 fw-bold">
+									<span class="material-icons-outlined me-2" style="vertical-align: middle;">
+										account_circle
+									</span>
+									Personal Information
+								</h5>
+							</div>
+							<div class="card-body">
+								<div class="row mb-3">
+									<label class="col-sm-4 col-form-label fw-semibold text-muted">Full Name:</label>
+									<div class="col-sm-8">
+										<p class="form-control-plaintext mb-0">{{ app.user.name }}</p>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label class="col-sm-4 col-form-label fw-semibold text-muted">Email:</label>
+									<div class="col-sm-8">
+										<p class="form-control-plaintext mb-0">{{ app.user.email }}</p>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label class="col-sm-4 col-form-label fw-semibold text-muted">User ID:</label>
+									<div class="col-sm-8">
+										<p class="form-control-plaintext mb-0">#{{ app.user.id }}</p>
+									</div>
+								</div>
+								<div class="row">
+									<label class="col-sm-4 col-form-label fw-semibold text-muted">Account Type:</label>
+									<div class="col-sm-8">
+										<div class="d-flex flex-wrap gap-2">
+											{% for role in app.user.rolesEnums %}
+												<span class="badge bg-primary">{{ role.name|replace({'ROLE_': ''})|title }}</span>
+											{% endfor %}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Crystals & Net Worth Card -->
+					<div class="col-lg-6 mb-4">
+						<div class="card border-0 shadow-sm">
+							<div class="card-header bg-white border-0 py-3">
+								<h5 class="mb-0 fw-bold">
+									<span class="material-icons-outlined me-2" style="vertical-align: middle;">
+										token
+									</span>
+									Crystals
+								</h5>
+							</div>
+							<div class="card-body">
+								<div class="row mb-3">
+									<label class="col-sm-4 col-form-label fw-semibold text-muted">Crystals:</label>
+									<div class="col-sm-8">
+										<div class="d-flex align-items-center">
+											<span class="material-icons-outlined text-warning me-2">star</span>
+											<span class="fw-bold fs-5 text-primary">{{ app.user.crystals }}</span>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<label class="col-sm-4 col-form-label fw-semibold text-muted">Net Worth:</label>
+									<div class="col-sm-8">
+										<div class="d-flex align-items-center">
+											<span class="material-icons-outlined text-success me-2">attach_money</span>
+											<span class="fw-bold fs-5 text-success">${{ (app.user.crystals / 100)|number_format(2) }}</span>
+										</div>
+										<small class="text-muted">Based on 100 crystals = $1.00</small>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div
+					class="row">
+					<!-- Shop Information Card (if user is a seller) -->
+					{% if user_has_shop(app.user) %}
+						<div class="col-lg-6 mb-4">
+							<div class="card border-0 shadow-sm">
+								<div class="card-header bg-white border-0 py-3">
+									<div class="d-flex justify-content-between align-items-center">
+										<h5 class="mb-0 fw-bold">
+											<span class="material-icons-outlined me-2" style="vertical-align: middle;">
+												store
+											</span>
+											My Shop
+										</h5>
+										<a href="{{ path('seller_dashboard') }}" class="btn btn-sm btn-outline-primary">
+											<span class="material-icons-outlined me-1" style="font-size: 18px;">dashboard</span>
+											Manage
+										</a>
+									</div>
+								</div>
+								<div class="card-body">
+									{% if userShop %}
+										<div class="d-flex align-items-center mb-3">
+											{% if userShop.logoUrl %}
+												<img src="{{ asset(userShop.logoUrl) }}" alt="{{ userShop.name }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+											{% else %}
+												<div class="bg-light rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+													<span class="material-icons-outlined text-muted">store</span>
+												</div>
+											{% endif %}
+											<div>
+												<h6 class="mb-1 fw-semibold">{{ userShop.name }}</h6>
+												<small class="text-muted">{{ userShop.email }}</small>
+											</div>
+										</div>
+										<div class="row mb-2">
+											<label class="col-sm-4 col-form-label-sm fw-semibold text-muted">Website:</label>
+											<div class="col-sm-8">
+												{% if userShop.website %}
+													<a href="{{ userShop.website }}" target="_blank" class="text-decoration-none small">
+														{{ userShop.website }}
+														<span class="material-icons-outlined ms-1" style="font-size: 14px; vertical-align: middle;">open_in_new</span>
+													</a>
+												{% else %}
+													<small class="text-muted">Not provided</small>
+												{% endif %}
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-4 col-form-label-sm fw-semibold text-muted">Categories:</label>
+											<div class="col-sm-8">
+												<div class="d-flex flex-wrap gap-1">
+													{% for category in userShop.categoriesEnum %}
+														<span class="badge bg-light text-dark small">{{ category.name }}</span>
+													{% endfor %}
+												</div>
+											</div>
+										</div>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					{% else %}
+						<!-- Become a Seller Card -->
+						<div class="col-lg-6 mb-4">
+							<div class="card border-0 shadow-sm">
+								<div class="card-header bg-white border-0 py-3">
+									<h5 class="mb-0 fw-bold">
+										<span class="material-icons-outlined me-2" style="vertical-align: middle;">
+											sell
+										</span>
+										Become a Seller
+									</h5>
+								</div>
+								<div class="card-body text-center">
+									<div class="mb-3">
+										<span class="material-icons-outlined text-muted" style="font-size: 3rem;">storefront</span>
+									</div>
+									<h6 class="fw-semibold mb-2">Start Your Business</h6>
+									<p class="text-muted mb-3">Join our platform as a seller and start selling your products to thousands of customers.</p>
+									<a href="{{ path('join_us') }}" class="btn btn-primary">
+										<span class="material-icons-outlined me-2">store_mall_directory</span>
+										Register Your Shop
+									</a>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+				</div>
+
+			</div>
+		</div>
+	</div>
+{% endblock %}
