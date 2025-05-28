@@ -28,10 +28,10 @@ class ProductType extends AbstractType
                     'rows' => 4,
                     'placeholder' => 'Describe your product...'
                 ]
-            ])
+            ]) 
             ->add('price', MoneyType::class, [
                 'label' => 'Price',
-                'currency' => 'USD',
+                'currency' => false,
                 'attr' => ['class' => 'form-control', 'placeholder' => '0.00']
             ])
             ->add('stockQuantity', IntegerType::class, [
