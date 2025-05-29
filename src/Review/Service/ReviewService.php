@@ -64,4 +64,11 @@ class ReviewService
     {
         return $this->repo->getAverageRatingsForShopProducts($productIds);
     }
+
+    public function getTopRatedProducts(int $limit = 5): array
+    {
+        return $this->repo->findTopRatedProducts($limit);
+    }
+
+    
 }
