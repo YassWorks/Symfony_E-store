@@ -1,0 +1,46 @@
+{# templates/review/list.html.twig #}
+<div class="container py-5 position-relative">
+  <h1>Users Rates</h1>
+
+  {% if reviews is empty %}
+    <p>No Rates for this product</p>
+  {% else %}
+    <div class="slider-nav">
+      <button id="prevBtn"><span class="material-icons-outlined">chevron_left</span></button>
+      <button id="nextBtn"><span class="material-icons-outlined">chevron_right</span></button>
+    </div>
+    <div class="review-slider" id="slider">
+      {% for review in reviews %}
+        <div class="card review-card">
+          <div class="review-header">
+            {% set avatar = review.user.avatarFilename|default('default.jpg') %}
+            <img src="/uploads/products_images/{{ avatar }}"
+                 alt="{{ review.user.name }}"
+                 class="review-avatar">
+            <h5 class="mt-2 mb-0">{{ review.user.name }}</h5>
+            <small class="text-muted">Rate : {{ review.rating }}/5</small>
+          </div>
+          <div class="card-body text-center">
+            <div class="mb-2">
+              {% for i in 1..5 %}
+                {% if i <= review.rating %}
+                  <span class="material-icons-outlined text-warning md-18">star</span>
+                {% elseif i - review.rating < 1 %}
+                  <span class="material-icons-outlined text-warning md-18">star_half</span>
+                {% else %}
+                  <span class="material-icons-outlined text-warning md-18">star_outline</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% if review.comment %}
+              <p class="fst-italic">“{{ review.comment|nl2br }}”</p>
+            {% endif %}
+            <div class="review-date">
+              <small>{{ review.createdAt|date('d/m/Y H:i') }}</small>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
