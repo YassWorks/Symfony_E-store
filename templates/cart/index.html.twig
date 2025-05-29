@@ -7,6 +7,23 @@
 	<br/>
 	<br/>
 	<div class="container py-2">
+		{# Flash Messages #}
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
+				<span class="material-icons-outlined me-2">check_circle</span>
+				{{ message }}
+				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			</div>
+		{% endfor %}
+
+		{% for message in app.flashes('error') %}
+			<div class="alert alert-danger alert-dismissible fade show" role="alert">
+				<span class="material-icons-outlined me-2">error_outline</span>
+				{{ message }}
+				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			</div>
+		{% endfor %}
+
 		{% if cart.items|length == 0 %}
 			<div class="card shadow-sm text-center p-4">
 				<div class="card-body py-5">
@@ -87,11 +104,18 @@
                                                     }}</small>
 															</div>
 														</div>
-													</td>
-													<td class="text-center">
+													</td>													<td class="text-center">
 														<div class="d-flex justify-content-center align-items-center">
 															<div style="width: 120px">
-																<input type="number" name="quantities[{{ item.id }}]" value="{{ item.quantity }}" min="1" class="form-control form-control-sm text-center"/>
+																<input type="number" 
+																	   name="quantities[{{ item.id }}]" 
+																	   value="{{ item.quantity }}" 
+																	   min="1" 
+																	   max="{{ item.product.stockQuantity }}"
+																	   data-stock="{{ item.product.stockQuantity }}"
+																	   data-product-title="{{ item.product.title }}"
+																	   class="form-control form-control-sm text-center quantity-input"/>
+																<small class="text-muted">Stock: {{ item.product.stockQuantity }}</small>
 															</div>
 														</div>
 													</td>
@@ -103,9 +127,9 @@
 													</td>
 													<td class="text-center">
 														<form method="post" action="{{ path('cart_remove', { itemId: item.id }) }}" style="display: inline;">
-															<button class="btn btn-sm btn-outline-danger" type="submit">
+															<a class="btn btn-sm btn-outline-danger" href="{{ path('cart_remove', { itemId: item.id }) }}">
 																<span class="material-icons-outlined">delete</span>
-															</button>
+															</a>
 														</form>
 													</td>
 												</tr>
@@ -198,9 +222,72 @@
 				</div>
 			</div>
 		</form>
-	{% endif %}
-	<script>
+	{% endif %}	<script>
 		document.addEventListener('DOMContentLoaded', function () {
+			// Quantity validation
+			const quantityInputs = document.querySelectorAll('.quantity-input');
+			const updateButton = document.querySelector('button[type="submit"]');
+			
+			quantityInputs.forEach(function(input) {
+				input.addEventListener('input', function() {
+					const stock = parseInt(this.getAttribute('data-stock'));
+					const value = parseInt(this.value);
+					const productTitle = this.getAttribute('data-product-title');
+					
+					// Clear any existing error styling
+					this.classList.remove('is-invalid');
+					
+					// Remove any existing error messages
+					const existingError = this.parentNode.querySelector('.invalid-feedback');
+					if (existingError) {
+						existingError.remove();
+					}
+					
+					if (value > stock) {
+						this.classList.add('is-invalid');
+						const errorDiv = document.createElement('div');
+						errorDiv.className = 'invalid-feedback';
+						errorDiv.textContent = `Only ${stock} items available`;
+						this.parentNode.appendChild(errorDiv);
+						this.value = stock;
+					}
+				});
+				
+				// Validate on blur as well
+				input.addEventListener('blur', function() {
+					const stock = parseInt(this.getAttribute('data-stock'));
+					const value = parseInt(this.value);
+					
+					if (value > stock) {
+						this.value = stock;
+					}
+				});
+			});
+			
+			// Form submission validation
+			const cartForm = document.getElementById('cart-form');
+			if (cartForm) {
+				cartForm.addEventListener('submit', function(e) {
+					let hasErrors = false;
+					
+					quantityInputs.forEach(function(input) {
+						const stock = parseInt(input.getAttribute('data-stock'));
+						const value = parseInt(input.value);
+						
+						if (value > stock) {
+							hasErrors = true;
+							input.classList.add('is-invalid');
+						}
+					});
+					
+					if (hasErrors) {
+						e.preventDefault();
+						alert('Please correct the quantity errors before updating your cart.');
+					}
+				});
+			}
+			
+            // Crystal discount functionality
             const crystalsInput = document.getElementById('crystals-input');
             const discountInfo = document.getElementById('discount-info');
             const crystalError = document.getElementById('crystal-error');

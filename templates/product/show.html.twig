@@ -61,26 +61,18 @@
 							{% if product.shop %}
 								{% include 'shop/shopinfo.html.twig' %}
 							{% endif %}
-						</div>
-
-						<div class="product-actions">
-							{% if product.stockQuantity > 0 %}
-								<form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="add-to-cart-form">
-									<label for="quantity">Quantity:</label>
-									<input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stockQuantity }}" class="form-control quantity-input"/>
-									<button class="btn btn-primary">
-										<span class="material-icons-outlined">add_shopping_cart</span>
-										Add to Cart
-									</button>
-								</form>
-							{% else %}
-								<div class="add-to-cart-form">
-									<button class="btn btn-secondary" disabled>
-										<span class="material-icons-outlined">remove_shopping_cart</span>
-										Out of Stock
-									</button>
-								</div>
-							{% endif %}
+						</div>						<div class="product-actions">
+							<form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="add-to-cart-form" id="add-to-cart-form">
+								<label for="quantity">Quantity:</label>
+								<input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stockQuantity }}" class="form-control quantity-input"/>
+								<button type="submit" class="btn btn-primary" id="add-to-cart-btn" 
+									{% if product.stockQuantity <= 0 %}disabled{% endif %}>
+									<span class="material-icons-outlined">add_shopping_cart</span>
+									<span class="btn-text">
+										{% if product.stockQuantity > 0 %}Add to Cart{% else %}Out of Stock{% endif %}
+									</span>
+								</button>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -131,5 +123,102 @@
         slider.scrollBy({ left: 300, behavior: 'smooth' });
       });
     }
-  </script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const form = document.getElementById('add-to-cart-form');
+		const button = document.getElementById('add-to-cart-btn');
+		const buttonText = button.querySelector('.btn-text');
+		const quantityInput = document.getElementById('quantity');
+		const productId = {{ product.id }};
+		
+		// Function to check stock status and update button
+		function updateButtonState() {
+			fetch(`{{ path('cart_check_stock', {id: product.id}) }}`)
+				.then(response => response.json())
+				.then(data => {
+					const availableQty = data.available_quantity;
+					const stockStatus = data.stock_status;
+					
+					// Update quantity input max value
+					quantityInput.max = Math.max(1, availableQty);
+					
+					// Update button state based on stock status
+					if (stockStatus === 'out_of_stock' || stockStatus === 'max_reached') {
+						button.disabled = true;
+						button.classList.remove('btn-primary');
+						button.classList.add('btn-secondary');
+						buttonText.textContent = stockStatus === 'out_of_stock' ? 'Out of Stock' : 'Max in Cart';
+					} else {
+						button.disabled = false;
+						button.classList.remove('btn-secondary');
+						button.classList.add('btn-primary');
+						buttonText.textContent = 'Add to Cart';
+					}
+					
+					// If current quantity in input exceeds available, adjust it
+					if (parseInt(quantityInput.value) > availableQty && availableQty > 0) {
+						quantityInput.value = availableQty;
+					} else if (availableQty <= 0) {
+						quantityInput.value = 1;
+					}
+				})
+				.catch(error => {
+					console.error('Error checking stock:', error);
+				});
+		}
+		
+		// Check stock on page load
+		updateButtonState();
+		
+		// Handle form submission
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
+			
+			if (button.disabled) {
+				return;
+			}
+			
+			const formData = new FormData(form);
+			
+			fetch(form.action, {
+				method: 'POST',
+				body: formData,
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest'
+				}
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					// Show success notification (assuming NotificationSystem is available from base.html.twig)
+					if (typeof NotificationSystem !== 'undefined') {
+						NotificationSystem.show(data.message, 'success');
+					}
+					
+					// Update button state after successful addition
+					setTimeout(updateButtonState, 100);
+				} else {
+					// Show error notification
+					if (typeof NotificationSystem !== 'undefined') {
+						NotificationSystem.show(data.message || 'An error occurred', 'error');
+					}
+					
+					// Still check stock status in case something changed
+					updateButtonState();
+				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				if (typeof NotificationSystem !== 'undefined') {
+					NotificationSystem.show('Failed to add item to cart', 'error');
+				}
+			});
+		});
+		
+		// Update button state when quantity changes
+		quantityInput.addEventListener('change', function() {
+			// Validate quantity against available stock in real-time
+			setTimeout(updateButtonState, 100);
+		});
+	});
+	</script>
 {% endblock %}

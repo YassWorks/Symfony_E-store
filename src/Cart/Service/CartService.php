@@ -8,6 +8,7 @@ use App\Product\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use function Symfony\Component\VarDumper\dump;
 
 class CartService
 {
@@ -51,13 +52,24 @@ class CartService
         }
         $this->em->flush();
     }
-
+    
     public function removeProduct(int $itemId): void
     {
         $cart = $this->getCart();
         $item = $this->em->find(CartItem::class, $itemId);
-        if ($item) {
+
+        // checking if it's the first item in the cart. If so we'll need to handling it differently
+        if ($cart->getItems()->count() === 1 && $cart->getItems()->first()->getId() === $itemId) {
+            // if it's the only item, we can just clear the cart
+            $cart->getItems()->clear();
+            $this->em->remove($item);
+            $this->em->flush();
+            return;
+        }
+
+        if ($item && $item->getCart() && $item->getCart()->getId() === $cart->getId()) {
             $cart->removeItem($item);
+            $this->em->remove($item);
             $this->em->flush();
         }
     }
@@ -66,37 +78,61 @@ class CartService
     {
         return $this->getCart();
     }    
-    
-    public function updateQuantity(int $itemId, int $quantity): void
+      public function updateQuantity(int $itemId, int $quantity): void
     {
         $item = $this->em->find(CartItem::class, $itemId);
         if ($item && $quantity > 0) {
+            // Check stock availability
+            $product = $item->getProduct();
+            if ($quantity > $product->getStockQuantity()) {
+                throw new \InvalidArgumentException(
+                    sprintf('Cannot set quantity to %d. Only %d items available in stock.', 
+                    $quantity, $product->getStockQuantity())
+                );
+            }
             $item->setQuantity($quantity);
         } elseif ($item) {
             // remove if zero or negative
             $cart = $item->getCart();
             $cart->removeItem($item);
+            $this->em->remove($item);
         }
         $this->em->flush();
-    }
-
-    public function updateAllQuantities(array $quantities): void
+    }      public function updateAllQuantities(array $quantities): void
     {
         $cart = $this->getCart();
-        
-        foreach ($quantities as $itemId => $quantity) {
+          foreach ($quantities as $itemId => $quantity) {
             $item = $this->em->find(CartItem::class, $itemId);
-            if ($item && $item->getCart()->getId() === $cart->getId()) {
+            if ($item && $item->getCart() && $item->getCart()->getId() === $cart->getId()) {
                 if ($quantity > 0) {
+                    // Check stock availability
+                    $product = $item->getProduct();
+                    if ($quantity > $product->getStockQuantity()) {
+                        throw new \InvalidArgumentException(
+                            sprintf('Cannot set quantity to %d for "%s". Only %d items available in stock.', 
+                            $quantity, $product->getTitle(), $product->getStockQuantity())
+                        );
+                    }
                     $item->setQuantity($quantity);
                 } else {
                     // remove if zero or negative
                     $cart->removeItem($item);
+                    $this->em->remove($item);
                 }
             }
         }
         
         $this->em->flush();
+    }
+    
+    public function getProductQuantityInCart(int $productId): int
+    {
+        $cart = $this->getCart();
+        $existing = $cart->getItems()
+            ->filter(fn($i) => $i->getProduct()->getId() === $productId)
+            ->first();
+        
+        return $existing ? $existing->getQuantity() : 0;
     }
 }
 

@@ -40,10 +40,14 @@ class Cart
         }
         return $this;
     }
-
+    
     public function removeItem(CartItem $i): self
     {
-        $this->items->removeElement($i);
+        if ($this->items->contains($i)) {
+            $this->items->removeElement($i);
+            // Set the owning side to null (important for orphan removal)
+            $i->setCart(null);
+        }
         return $this;
     }
 

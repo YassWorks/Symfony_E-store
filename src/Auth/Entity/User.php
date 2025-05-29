@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Shared\Enum\Role;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: "`user`")]
@@ -30,11 +32,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(type: 'integer')]
-    private int $crystals = 0;
+    private int $crystals = 0;    /**
+     * @var Collection<int, \App\Wishlist\Entity\Wishlist>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: \App\Wishlist\Entity\Wishlist::class, cascade: ['remove'])]
+    private Collection $wishlists;
 
     public function __construct()
     {
         $this->crystals = 0;
+        $this->wishlists = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,4 +153,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function eraseCredentials(): void {}
+
+    /**
+     * @return Collection<int, \App\Wishlist\Entity\Wishlist>
+     */
+    public function getWishlists(): Collection
+    {
+        return $this->wishlists;
+    }
+
+    public function addWishlist(\App\Wishlist\Entity\Wishlist $wishlist): static
+    {
+        if (!$this->wishlists->contains($wishlist)) {
+            $this->wishlists->add($wishlist);
+            $wishlist->setUser($this);
+        }
+
+        return $this;
+    }    public function removeWishlist(\App\Wishlist\Entity\Wishlist $wishlist): static
+    {
+        $this->wishlists->removeElement($wishlist);
+
+        return $this;
+    }
 }

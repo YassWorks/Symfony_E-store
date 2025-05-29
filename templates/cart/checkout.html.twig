@@ -133,8 +133,7 @@
 									<div class="d-flex align-items-center mb-3">
 										<span class="material-icons-outlined text-primary me-2">phone_android</span>
 										<h5 class="mb-0 text-primary">Flouci Payment</h5>
-									</div>
-									<form id="flouci-payment-form">
+									</div>									<form id="flouci-payment-form">
 										<div class="mb-3">
 											<label for="phone-number" class="form-label">Phone Number</label>
 											<div class="input-group">
@@ -142,6 +141,11 @@
 												<input type="tel" class="form-control" id="phone-number" placeholder="12345678" pattern="[0-9]{8}" maxlength="8" required>
 											</div>
 											<div class="form-text">Enter your 8-digit phone number</div>
+										</div>
+										<div class="mb-3">
+											<label for="delivery-address" class="form-label">Delivery Address</label>
+											<textarea class="form-control" id="delivery-address" rows="3" placeholder="Enter your full delivery address" required></textarea>
+											<div class="form-text">Enter your complete delivery address including street, city, and postal code</div>
 										</div>
 										<div class="d-flex gap-2">
 											<button type="submit" class="btn btn-primary flex-grow-1">
@@ -164,8 +168,7 @@
 									<div class="d-flex align-items-center mb-3">
 										<span class="material-icons-outlined me-2">token</span>
 										<h5 class="mb-0">Crystal Payment</h5>
-									</div>
-									<div class="row g-3 mb-3">
+									</div>									<div class="row g-3 mb-3">
 										<div class="col-6">
 											<div class="bg-white p-3 rounded border">
 												<small class="text-muted">Your Balance</small>
@@ -178,6 +181,11 @@
 												<div class="fw-bold text-warning">{{ (final_total * 100)|round }} crystals</div>
 											</div>
 										</div>
+									</div>
+									<div class="mb-3">
+										<label for="crystal-delivery-address" class="form-label">Delivery Address</label>
+										<textarea class="form-control" id="crystal-delivery-address" rows="3" placeholder="Enter your full delivery address" required></textarea>
+										<div class="form-text">Enter your complete delivery address including street, city, and postal code</div>
 									</div>
 									<div class="d-flex gap-2">
 										<button type="button" id="crystal-payment-btn" class="btn btn-warning flex-grow-1">
@@ -338,9 +346,15 @@ paymentForms.forEach(form => form.style.display = 'none');
 flouciForm.addEventListener('submit', function (e) {
 e.preventDefault();
 const phoneNumber = document.getElementById('phone-number').value;
+const deliveryAddress = document.getElementById('delivery-address').value.trim();
 
 if (!/^\d{8}$/.test(phoneNumber)) {
 showError('Please enter a valid 8-digit phone number');
+return;
+}
+
+if (!deliveryAddress || deliveryAddress.length < 10) {
+showError('Please enter a valid delivery address (minimum 10 characters)');
 return;
 }
 
@@ -351,7 +365,7 @@ method: 'POST',
 headers: {
 'Content-Type': 'application/x-www-form-urlencoded'
 },
-body: 'phone_number=' + encodeURIComponent(phoneNumber)
+body: 'phone_number=' + encodeURIComponent(phoneNumber) + '&delivery_address=' + encodeURIComponent(deliveryAddress)
 }).then(response => response.json()).then(data => {
 hideLoading();
 if (data.success) {
@@ -367,13 +381,21 @@ showError('An error occurred while processing your payment. Please try again.');
 
 // Crystal payment
 crystalPaymentBtn.addEventListener('click', function () {
+const crystalDeliveryAddress = document.getElementById('crystal-delivery-address').value.trim();
+
+if (!crystalDeliveryAddress || crystalDeliveryAddress.length < 10) {
+showError('Please enter a valid delivery address (minimum 10 characters)');
+return;
+}
+
 showLoading();
 
 fetch('{{ path("cart_checkout_crystals") }}', {
 method: 'POST',
 headers: {
 'Content-Type': 'application/x-www-form-urlencoded'
-}
+},
+body: 'delivery_address=' + encodeURIComponent(crystalDeliveryAddress)
 }).then(response => response.json()).then(data => {
 hideLoading();
 if (data.success) {

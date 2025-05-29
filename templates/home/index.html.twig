@@ -1,30 +1,631 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Welcome to E-Store
+{% block title %}Welcome to El Marchi - Your Ultimate Shopping Destination
 {% endblock %}
 
 {% block body %}
-	<section class="hero bg-light py-5">
-		<div class="container">
-			<div class="row align-items-center">
-				<div>
-					<h1 class="display-4 fw-bold">Welcome to El Marchi</h1>
-					<p class="lead mb-4">Discover amazing products today!</p>
-					<div class="d-flex gap-3">
-						<a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
+<!-- Hero Section -->
+<section class="hero-section">
+	<div class="container">
+		<div class="row align-items-center min-vh-75">
+			<div class="col-lg-6">
+				<div class="hero-content">
+					<h1 class="hero-title">
+						Welcome to <span class="brand-highlight">El Marchi</span>
+					</h1>
+					<p class="hero-description">
+						Discover amazing products from trusted sellers around the world. 
+						Shop with confidence and enjoy a seamless shopping experience.
+					</p>
+					<div class="hero-actions">
+						<a href="{{ path('product_index') }}" class="btn btn-primary btn-lg hero-btn">
 							<span class="material-icons-outlined me-2">shopping_bag</span>
-							Shop Now
+							Start Shopping
 						</a>
 						{% if not app.user %}
-							<a href="{{ path('register') }}" class="btn btn-light btn-lg">
+							<a href="{{ path('register') }}" class="btn btn-outline-primary btn-lg hero-btn">
 								<span class="material-icons-outlined me-2">person_add</span>
-								Sign Up
+								Join Us
 							</a>
 						{% endif %}
 					</div>
-					<br>
+					<div class="hero-stats">
+						<div class="stat-item">
+							<span class="stat-number">{{ featuredProducts|length }}+</span>
+							<span class="stat-label">Products</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-number">{{ featuredShops|length }}+</span>
+							<span class="stat-label">Shops</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-number">{{ categories|length }}</span>
+							<span class="stat-label">Categories</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="hero-image">
+					<div class="hero-card">
+						<span class="material-icons-outlined hero-icon">storefront</span>
+						<h3>Your Shopping Paradise</h3>
+						<p>Explore thousands of products from verified sellers</p>
+					</div>
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section section">
+	<div class="container">
+		<div class="section-header text-center">
+			<h2 class="section-title">Shop by Category</h2>
+			<p class="section-description">Browse our wide range of product categories</p>
+		</div>
+		<div class="row g-4">
+			{% for category in categories|slice(0, 6) %}
+				<div class="col-md-6 col-lg-4">
+					<a href="{{ path('product_index', { 'categories': [category.value] }) }}" class="category-card">
+						<div class="category-icon">
+							<span class="material-icons-outlined">
+								{% if category.value == 'Electronics' %}devices
+								{% elseif category.value == 'Clothing' %}checkroom
+								{% elseif category.value == 'Books' %}menu_book
+								{% elseif category.value == 'Food' %}restaurant
+								{% elseif category.value == 'Sports' %}sports_soccer
+								{% elseif category.value == 'Health' %}health_and_safety
+								{% else %}category
+								{% endif %}
+							</span>
+						</div>
+						<h4 class="category-name">{{ category.value }}</h4>
+						<p class="category-desc">Discover amazing {{ category.value|lower }} products</p>
+					</a>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+
+<!-- Featured Products Section -->
+{% if featuredProducts|length > 0 %}
+<section class="featured-products-section section bg-light">
+	<div class="container">
+		<div class="section-header text-center">
+			<h2 class="section-title">Featured Products</h2>
+			<p class="section-description">Check out our handpicked selection of amazing products</p>
+		</div>
+		<div class="row g-4">
+			{% for product in featuredProducts %}
+				<div class="col-sm-6 col-lg-4">
+					<div class="product-card">
+						<div class="product-image">
+							{% if product.images is defined and product.images|length > 0 %}
+								{% set image = product.images[0] %}
+								<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ product.title }}" class="img-fluid">
+							{% else %}
+								<div class="product-placeholder">
+									<span class="material-icons-outlined">image</span>
+								</div>
+							{% endif %}
+							<div class="product-overlay">
+								<a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-primary btn-sm">
+									<span class="material-icons-outlined me-1">visibility</span>
+									View Details
+								</a>
+							</div>
+						</div>
+						<div class="product-content">
+							<h5 class="product-title">{{ product.title }}</h5>
+							<p class="product-description">
+								{{ product.description|slice(0, 80) }}
+								{{ product.description|length > 80 ? '...' }}
+							</p>
+							<div class="product-meta">
+								<span class="product-price">${{ product.price }}</span>
+								<span class="product-category">{{ product.category.value }}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		<div class="text-center mt-5">
+			<a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
+				<span class="material-icons-outlined me-2">inventory</span>
+				View All Products
+			</a>
+		</div>
+	</div>
+</section>
+{% endif %}
+
+<!-- Why Choose Us Section -->
+<section class="features-section section">
+	<div class="container">
+		<div class="section-header text-center">
+			<h2 class="section-title">Why Choose El Marchi?</h2>
+			<p class="section-description">Here's what makes us special</p>
+		</div>
+		<div class="row g-4">
+			<div class="col-md-6 col-lg-3">
+				<div class="feature-card">
+					<div class="feature-icon">
+						<span class="material-icons-outlined">verified</span>
+					</div>
+					<h4 class="feature-title">Trusted Sellers</h4>
+					<p class="feature-description">All our sellers are verified and trusted</p>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-3">
+				<div class="feature-card">
+					<div class="feature-icon">
+						<span class="material-icons-outlined">local_shipping</span>
+					</div>
+					<h4 class="feature-title">Fast Delivery</h4>
+					<p class="feature-description">Quick and reliable shipping worldwide</p>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-3">
+				<div class="feature-card">
+					<div class="feature-icon">
+						<span class="material-icons-outlined">security</span>
+					</div>
+					<h4 class="feature-title">Secure Payments</h4>
+					<p class="feature-description">Safe and secure payment processing</p>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-3">
+				<div class="feature-card">
+					<div class="feature-icon">
+						<span class="material-icons-outlined">support_agent</span>
+					</div>
+					<h4 class="feature-title">24/7 Support</h4>
+					<p class="feature-description">Round-the-clock customer support</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Call to Action Section -->
+{% if not app.user %}
+<section class="cta-section">
+	<div class="container">
+		<div class="cta-content text-center">
+			<h2 class="cta-title">Ready to Start Shopping?</h2>
+			<p class="text-muted cta-description" style="color: black">Join thousands of happy customers and discover amazing products today!</p>
+			<div class="cta-actions">
+				<a href="{{ path('register') }}" class="btn btn-primary btn-lg">
+					<span class="material-icons-outlined me-2">person_add</span>
+					Sign Up Now
+				</a>
+				<a href="{{ path('product_index') }}" class="btn btn-outline-light btn-lg">
+					<span class="material-icons-outlined me-2">explore</span>
+					Browse Products
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+{% else %}
+<section class="cta-section">
+	<div class="container">
+		<div class="cta-content text-center">
+			<h2 class="cta-title">Welcome back, {{ app.user.name }}!</h2>
+			<p class="text-muted cta-description" style="color: black">Continue exploring our amazing collection of products</p>
+			<div class="cta-actions">
+				<a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
+					<span class="material-icons-outlined me-2">shopping_bag</span>
+					Continue Shopping
+				</a>
+				{% if is_granted('ROLE_BUYER') %}
+					<a href="{{ path('wishlist_index') }}" class="btn btn-outline-light btn-lg">
+						<span class="material-icons-outlined me-2">favorite</span>
+						My Wishlist
+					</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 6rem 0 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+.min-vh-75 {
+    min-height: 75vh;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.brand-highlight {
+    color: var(--light);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-description {
+    font-size: 1.25rem;
+    margin-bottom: 2.5rem;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+.hero-actions {
+    margin-bottom: 3rem;
+}
+
+.hero-btn {
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.hero-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.hero-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--light);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.875rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hero-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.hero-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
+}
+
+.hero-icon {
+    font-size: 4rem;
+    color: var(--light);
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.hero-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.hero-card p {
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Section Styling */
+.section {
+    padding: 5rem 0;
+}
+
+.section-header {
+    margin-bottom: 4rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1rem;
+}
+
+.section-description {
+    font-size: 1.125rem;
+    color: var(--gray-600);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Categories Section */
+.category-card {
+    display: block;
+    padding: 2rem;
+    background: white;
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    height: 100%;
+    text-align: center;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    color: inherit;
+    text-decoration: none;
+}
+
+.category-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.category-icon .material-icons-outlined {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.category-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.category-desc {
+    color: var(--gray-600);
+    margin: 0;
+}
+
+/* Featured Products */
+.product-card {
+    background: white;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.product-image {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.product-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--gray-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-placeholder .material-icons-outlined {
+    font-size: 3rem;
+    color: var(--gray-600);
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.1);
+}
+
+.product-content {
+    padding: 1.5rem;
+}
+
+.product-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+}
+
+.product-description {
+    color: var(--gray-600);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.product-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.product-category {
+    background: var(--light);
+    color: var(--dark);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Features Section */
+.feature-card {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.feature-icon .material-icons-outlined {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.feature-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 1rem;
+}
+
+.feature-description {
+    color: var(--gray-600);
+    margin: 0;
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(135deg, var(--dark) 0%, var(--gray-800) 100%);
+    color: white;
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.cta-description {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-actions .btn {
+    margin: 0 0.5rem 1rem;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-description {
+        font-size: 1.125rem;
+    }
+    
+    .hero-stats {
+        justify-content: center;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .cta-title {
+        font-size: 2rem;
+    }
+}
+</style>
 {% endblock %}
