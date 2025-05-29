@@ -1,161 +1,127 @@
 {# templates/product/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Products
-{% endblock %}
+{% block title %}Products{% endblock %}
 
 {% block body %}
-<div class="container py-4">
-  <div class="row">
+	<div class="container py-4">
+		<div class="row">
+			{# —— SIDEBAR FILTERS —— #}
+			<aside class="col-lg-3 mb-4">
+				<form method="get" class="card p-3">
+					<h5 class="mb-3">Filter Products</h5>
 
-    {# —— SIDEBAR FILTERS —— #}
-    <aside class="col-lg-3 mb-4">
-      <form method="get" class="card p-3">
-        <h5 class="mb-3">Filter Products</h5>
+					{# Search by name #}
+					<div class="mb-3">
+						<label for="q" class="form-label">Search</label>
+						<input type="text" name="q" id="q" value="{{ criteria.q|default('') }}" class="form-control" placeholder="Product name…" />
+					</div>
 
-        {# Search by name #}
-        <div class="mb-3">
-          <label for="q" class="form-label">Search</label>
-          <input type="text" name="q" id="q"
-                 value="{{ criteria.q|default('') }}"
-                 class="form-control"
-                 placeholder="Product name…">
-        </div>
+					{# Price range #}
+					<div class="mb-3">
+						<label class="form-label">Price range</label>
+						<div class="d-flex">
+							<input type="number" name="minPrice" min="0" step="0.01" value="{{ criteria.minPrice is defined and criteria.minPrice ? criteria.minPrice : '' }}" class="form-control me-2" placeholder="Min" />
+							<input type="number" name="maxPrice" min="0" step="0.01" value="{{ criteria.maxPrice is defined and criteria.maxPrice ? criteria.maxPrice : '' }}" class="form-control" placeholder="Max" />
+						</div>
+					</div>
 
-        {# Price range #}
-        <div class="mb-3">
-          <label class="form-label">Price range</label>
-          <div class="d-flex">
-            <input type="number" name="minPrice" min="0" step="0.01"
-                   value="{{ criteria.minPrice is defined and criteria.minPrice ? criteria.minPrice : '' }}"
-                   class="form-control me-2"
-                   placeholder="Min">
-            <input type="number" name="maxPrice" min="0" step="0.01"
-                   value="{{ criteria.maxPrice is defined and criteria.maxPrice ? criteria.maxPrice : '' }}"
-                   class="form-control"
-                   placeholder="Max">
-          </div>
-        </div>
+					{# Shop dropdown #}
+					<div class="mb-3">
+						<label for="shop" class="form-label">Shop</label>
+						<select name="shop" id="shop" class="form-select">
+							<option value="">All shops</option>
+							{% for shop in allShops %}
+								<option value="{{ shop.id }}" {{ criteria.shop is defined and shop.id == criteria.shop ? 'selected' : '' }}>{{ shop.name }}</option>
+							{% endfor %}
+						</select>
+					</div>
 
-        {# Shop dropdown #}
-        <div class="mb-3">
-          <label for="shop" class="form-label">Shop</label>
-          <select name="shop" id="shop" class="form-select">
-            <option value="">All shops</option>
-            {% for shop in allShops %}
-              <option value="{{ shop.id }}"
-                {{ criteria.shop is defined and shop.id == criteria.shop ? 'selected' : '' }}>
-                {{ shop.name }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
+					{# Categories checkboxes #}
+					<div class="mb-3">
+						<label class="form-label">Categories</label>
+						{% for cat in allCategories %}
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="categories[]" id="cat_{{ cat.name }}" value="{{ cat.name }}" {{ criteria.categories is defined and cat.name in criteria.categories ? 'checked' : '' }} />
+								<label class="form-check-label" for="cat_{{ cat.name }}">{{ cat.value }}</label>
+							</div>
+						{% endfor %}
+					</div>
 
-        {# Categories checkboxes #}
-        <div class="mb-3">
-          <label class="form-label">Categories</label>
-          {% for cat in allCategories %}
-            <div class="form-check">
-              <input class="form-check-input"
-                     type="checkbox"
-                     name="categories[]"
-                     id="cat_{{ cat.name }}"
-                     value="{{ cat.name }}"
-                     {{ criteria.categories is defined and cat.name in criteria.categories ? 'checked' : '' }}>
-              <label class="form-check-label" for="cat_{{ cat.name }}">
-                {{ cat.value }}
-              </label>
-            </div>
-          {% endfor %}
-        </div>
+					<button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+				</form>
+			</aside>
 
-        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
-      </form>
-    </aside>
+			{# —— PRODUCT GRID —— #}
+			<main class="col-lg-9">
+				<div class="row g-4">
+					{% for product in products %}
+						<div class="col-sm-6 col-lg-4">
+							<div class="card h-100 product-card">
+								<div class="d-flex justify-content-center align-items-center" style="height:250px; width:100wh; overflow: hidden;">
+									{% include 'product/imageSlider.html.twig' %}
+								</div>
+								<div class="card-body d-flex flex-column">
+									<h5 class="card-title">{{ product.title }}</h5>
+									<p class="card-text text-muted">
+										{{ product.description|slice(0, 100) }}
+										{{ product.description|length > 100 ? '...' }}
+									</p>
+									<div class="mt-auto">
+										<div class="d-flex justify-content-between align-items-center mb-3">
+											<span class="fs-5 fw-bold text-primary">${{ product.price }}</span>
+											<span class="badge bg-light text-dark">{{ product.category.value }}</span>
+											{% if is_granted('ROLE_BUYER') %}
+												<button class="wishlist-btn border-0 bg-transparent" data-product-id="{{ product.id }}" data-action="{% if product in wishlist.items %}remove{% else %}add{% endif %}" data-url="{% if product in wishlist.items %}{{ path('wishlist_delete', { id: product.id }) }}{% else %}{{ path('wishlist_add', { id: product.id }) }}{% endif %}" style="cursor: pointer;">
+													<span class="material-icons-outlined me-1 text-danger wishlist-icon">
+														{% if product in wishlist.items %}favorite{% else %}favorite_border{% endif %}
+													</span>
+												</button>
+											{% else %}
+												<span class="material-icons-outlined me-1 text-muted">favorite_border</span>
+											{% endif %}
+										</div>
 
-    {# —— PRODUCT GRID —— #}
-    <main class="col-lg-9">
-      <div class="row g-4">
-        {% for product in products %}
-          <div class="col-sm-6 col-lg-4">
-            <div class="card h-100 product-card">
-                <div class="d-flex justify-content-center align-items-center" style="height:250px; width:100wh; overflow: hidden;">
-                        {% include 'product/imageSlider.html.twig' %}
-                </div>
-              <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ product.title }}</h5>
-                <p class="card-text text-muted">
-                  {{ product.description|slice(0, 100) }}
-                  {{ product.description|length > 100 ? '...' }}
-                </p>
-                <div class="mt-auto">                  <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="fs-5 fw-bold text-primary">${{ product.price }}</span>
-                    <span class="badge bg-light text-dark">{{ product.category.value }}</span>
-                    {% if is_granted('ROLE_BUYER') %}
-                      <button
-                        class="wishlist-btn border-0 bg-transparent"
-                        data-product-id="{{ product.id }}"
-                        data-action="{% if product in wishlist.items %}remove{% else %}add{% endif %}"
-                        data-url="{% if product in wishlist.items %}{{ path('wishlist_delete', { id: product.id }) }}{% else %}{{ path('wishlist_add', { id: product.id }) }}{% endif %}"
-                        style="cursor: pointer;"
-                      >
-                        <span class="material-icons-outlined me-1 text-danger wishlist-icon">
-                          {% if product in wishlist.items %}
-                            favorite
-                          {% else %}
-                            favorite_border
-                          {% endif %}
-                        </span>
-                      </button>
-                    {% else %}
-                      <span class="material-icons-outlined me-1 text-muted">favorite_border</span>
-                    {% endif %}
-
-                  </div>
-
-                  {# Shop info partial #}
-                  {% include 'shop/shopinfo.html.twig' with { shop: product.shop } %}                  <div class="d-grid gap-2">
-                    <a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-primary">
-                      <span class="material-icons-outlined me-1">visibility</span> View Details
-                    </a>
-                    {% if is_granted('ROLE_BUYER') %}
-                      <form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="product-card-form" data-product-id="{{ product.id }}">
-                        <input type="hidden" name="quantity" value="1" />
-                        <button type="submit" class="btn btn-outline w-100 add-to-cart-btn" 
-                          {% if product.stockQuantity <= 0 %}disabled{% endif %}>
-                          <span class="material-icons-outlined me-1">
-                            {% if product.stockQuantity > 0 %}add_shopping_cart{% else %}remove_shopping_cart{% endif %}
-                          </span>
-                          <span class="btn-text">
-                            {% if product.stockQuantity > 0 %}Add to Cart{% else %}Out of Stock{% endif %}
-                          </span>
-                        </button>
-                      </form>
-                    {% endif %}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        {% else %}
-          <div class="col-12">
-            <div class="card p-5 text-center">
-              <div class="card-body">
-                <span class="material-icons-outlined mb-3" style="font-size: 48px; color: var(--secondary);">
-                  inventory_2
-                </span>
-                <h3>No products found</h3>
-                <p class="text-muted">We couldn't find any products matching your criteria.</p>
-                <a href="{{ path('landing_page') }}" class="btn btn-primary">Return to Home</a>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    </main>
-
-  </div>
-</div>
+										{# Shop info partial #}
+										{% include 'shop/shopinfo.html.twig' with { shop: product.shop } %}
+										<div class="d-grid gap-2">
+											<a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-primary">
+												<span class="material-icons-outlined me-1">visibility</span> View Details
+											</a>
+											{% if is_granted('ROLE_BUYER') %}
+												<form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="product-card-form" data-product-id="{{ product.id }}">
+													<input type="hidden" name="quantity" value="1" />
+													<button type="submit" class="btn btn-outline w-100 add-to-cart-btn" {% if product.stockQuantity <= 0 %}disabled{% endif %}>
+														<span class="material-icons-outlined me-1">
+															{% if product.stockQuantity > 0 %}add_shopping_cart{% else %}remove_shopping_cart{% endif %}
+														</span>
+														<span class="btn-text">
+															{% if product.stockQuantity > 0 %}Add to Cart{% else %}Out of Stock{% endif %}
+														</span>
+													</button>
+												</form>
+											{% endif %}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% else %}
+						<div class="col-12">
+							<div class="card p-5 text-center">
+								<div class="card-body">
+									<span class="material-icons-outlined mb-3" style="font-size: 48px; color: var(--secondary);">inventory_2</span>
+									<h3>No products found</h3>
+									<p class="text-muted">We couldn't find any products matching your criteria.</p>
+									<a href="{{ path('landing_page') }}" class="btn btn-primary">Return to Home</a>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</main>
+		</div>
+	</div>
 {% endblock %}
 
 {% block javascripts %}

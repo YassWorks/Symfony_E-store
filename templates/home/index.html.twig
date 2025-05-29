@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Welcome to El Marchi - Your Ultimate Shopping Destination
-{% endblock %}
+{% block title %}Welcome to El Marchi - Your Ultimate Shopping Destination{% endblock %}
 
 {% block body %}
 <!-- Hero Section -->
@@ -11,8 +10,8 @@
 			<div class="col-lg-6">
 				<div class="hero-content">
 					<h1 class="hero-title">
-                        Welcome to <br>
-                        <span class="brand-highlight">El Marchi</span>
+						Welcome to <br />
+						<span class="brand-highlight">El Marchi</span>
 					</h1>
 					<p class="hero-description">
 						Discover amazing products from trusted sellers around the world. 
@@ -70,7 +69,7 @@
 		<div class="row g-4">
 			{% for row in topRatedProducts %}
 			{% set product = row[0] %}
-				{% include 'home/product.html.twig'%}
+				{% include 'home/product.html.twig' %}
 			{% endfor %}
 		</div>
 	</div>
@@ -85,10 +84,10 @@
 			<p class="section-description">Browse our wide range of product categories</p>
 		</div>
 		<div class="row g-4">
-			{% for category in categories|slice(0, 6) %}
-				<div class="col-md-6 col-lg-4">
+			{% for category in categories|slice(0, 6) %}				<div class="col-md-6 col-lg-4">
 					<a href="{{ path('product_index', { 'categories': [category.value] }) }}" class="category-card">
-						<div class="category-icon">							<span class="material-icons-outlined">
+						<div class="category-icon">
+							<span class="material-icons-outlined">
 								{% if category.value == 'ELECTRONICS' %}devices
 								{% elseif category.value == 'CLOTHES' %}checkroom
 								{% elseif category.value == 'BOOKS' %}menu_book
@@ -119,10 +118,9 @@
 		<div class="section-header text-center">
 			<h2 class="section-title">Featured Products</h2>
 			<p class="section-description">Check out our handpicked selection of amazing products</p>
-		</div>
-		<div class="row g-4">
+		</div>		<div class="row g-4">
 			{% for product in featuredProducts %}
-				{% include 'home/product.html.twig'%}
+				{% include 'home/product.html.twig' %}
 			{% endfor %}
 		</div>
 		<div class="text-center mt-5">
@@ -229,6 +227,6 @@
 {% endblock %}
 
 {% block stylesheets %}
-{{ parent() }}
-<link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/landing.css') }}" />
 {% endblock %}

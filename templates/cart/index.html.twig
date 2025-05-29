@@ -1,48 +1,40 @@
-{# templates/cart/index.html.twig #}
 {% extends 'base.html.twig' %}
-{% block title %}Your Cart
-{% endblock %}
+
+{% block title %}Your Cart{% endblock %}
+
 {% block body %}
-	<br/>
-	<br/>
-	<br/>
-	<div class="container py-2">
-		{# Flash Messages #}
-		{% for message in app.flashes('success') %}
-			<div class="alert alert-success alert-dismissible fade show" role="alert">
-				<span class="material-icons-outlined me-2">check_circle</span>
-				{{ message }}
-				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-			</div>
-		{% endfor %}
-
-		{% for message in app.flashes('error') %}
-			<div class="alert alert-danger alert-dismissible fade show" role="alert">
-				<span class="material-icons-outlined me-2">error_outline</span>
-				{{ message }}
-				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-			</div>
-		{% endfor %}
-
-		{% if cart.items|length == 0 %}
-			<div class="card shadow-sm text-center p-4">
-				<div class="card-body py-5">
-					<span class="material-icons-outlined" style="
-                        font-size: 64px;
-                        color: var(--secondary);
-                        margin-bottom: 1rem;
-                    ">shopping_cart</span>
-					<h3>Your cart is empty</h3>
-					<p class="text-muted mb-4">
-						Looks like you haven't added any products to your cart yet.
-					</p>
-					<a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
-						<span class="material-icons-outlined me-2">shopping_bag</span>
-						Start Shopping
-					</a>
+	<div style="padding-top: 40px">
+		<div class="container py-2">
+			{# Flash Messages #}
+			{% for message in app.flashes('success') %}
+				<div class="alert alert-success alert-dismissible fade show" role="alert">
+					<span class="material-icons-outlined me-2">check_circle</span>
+					{{ message }}
+					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 				</div>
-			</div>
-		{% else %}
+			{% endfor %}
+
+			{% for message in app.flashes('error') %}
+				<div class="alert alert-danger alert-dismissible fade show" role="alert">
+					<span class="material-icons-outlined me-2">error_outline</span>
+					{{ message }}
+					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+				</div>
+			{% endfor %}
+
+			{% if cart.items|length == 0 %}
+				<div class="card shadow-sm text-center p-4">
+					<div class="card-body py-5">
+						<span class="material-icons-outlined" style="font-size: 64px; color: var(--secondary); margin-bottom: 1rem;">shopping_cart</span>
+						<h3>Your cart is empty</h3>
+						<p class="text-muted mb-4">Looks like you haven't added any products to your cart yet.</p>
+						<a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
+							<span class="material-icons-outlined me-2">shopping_bag</span>
+							Start Shopping
+						</a>
+					</div>
+				</div>
+			{% else %}
 			<form method="post" action="{{ path('cart_update_all') }}" id="cart-form">
 				<div class="row g-4">
 					<div class="col-lg-8">
@@ -72,49 +64,25 @@
 										</thead>
 										<tbody>
 											{% for item in cart.items %}
-												<tr>
-													<td class="ps-4">
+												<tr>													<td class="ps-4">
 														<div class="d-flex align-items-center">
-															<div class="me-3" style="
-                                                                width: 60px;
-                                                                height: 60px;
-                                                            ">
+															<div class="me-3" style="width: 60px; height: 60px;">
 																{% if item.product.images is defined and item.product.images|length > 0 %}
-																	{% set image =
-                                                                    item.product.images[0] %}
-																	<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ item.product.title }}" class="img-fluid rounded" style="
-                                                                        width: 100%;
-                                                                        height: 100%;
-                                                                        object-fit: cover;
-                                                                    "/>
+																	{% set image = item.product.images[0] %}
+																	<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ item.product.title }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;" />
 																{% else %}
-																	<img src="{{ asset( 'uploads/default.jpg' ) }}" alt="Product" class="img-fluid rounded" style="
-                                                                        width: 100%;
-                                                                        height: 100%;
-                                                                        object-fit: cover;
-                                                                    "/>
+																	<img src="{{ asset('uploads/default.jpg') }}" alt="Product" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;" />
 																{% endif %}
 															</div>
 															<div>
-																<h6 class="mb-0">
-																	{{ item.product.title }}
-																</h6>
-																<small class="text-muted">{{
-                                                        item.product.category.value
-                                                    }}</small>
+																<h6 class="mb-0">{{ item.product.title }}</h6>
+																<small class="text-muted">{{ item.product.category.value }}</small>
 															</div>
 														</div>
 													</td>													<td class="text-center">
 														<div class="d-flex justify-content-center align-items-center">
 															<div style="width: 120px">
-																<input type="number" 
-																	   name="quantities[{{ item.id }}]" 
-																	   value="{{ item.quantity }}" 
-																	   min="1" 
-																	   max="{{ item.product.stockQuantity }}"
-																	   data-stock="{{ item.product.stockQuantity }}"
-																	   data-product-title="{{ item.product.title }}"
-																	   class="form-control form-control-sm text-center quantity-input"/>
+																<input type="number" name="quantities[{{ item.id }}]" value="{{ item.quantity }}" min="1" max="{{ item.product.stockQuantity }}" data-stock="{{ item.product.stockQuantity }}" data-product-title="{{ item.product.title }}" class="form-control form-control-sm text-center quantity-input" />
 																<small class="text-muted">Stock: {{ item.product.stockQuantity }}</small>
 															</div>
 														</div>
@@ -162,22 +130,18 @@
 								<div class="d-flex justify-content-between mb-3">
 									<span>Subtotal</span>
 									<span>${{ cart.getTotal()|number_format(2, '.', ',') }}</span>
-								</div>
-								<!-- Crystal Discount Section -->
-								<div class="border rounded p-3 mb-3 bg-light">
+								</div>								<div class="border rounded p-3 mb-3 bg-light">
 									<h6 class="mb-3">
 										<span class="material-icons-outlined me-1" style="font-size: 18px;">auto_awesome</span>
 										Crystal Discount
-									</h6>									<p class="small text-muted mb-2">
-										Use crystals for a discount on your order<br>
+									</h6>
+									<p class="small text-muted mb-2">
+										Use crystals for a discount on your order<br />
 										<small>1 crystal = 0.01% discount (e.g., 223 crystals = 2.23% discount)</small>
-									</p>
-									<div class="small mb-3">
+									</p>									<div class="small mb-3">
 										<span class="text-info">
 											<span class="material-icons-outlined me-1" style="font-size: 14px; position:relative; top: 2px">account_balance_wallet</span>
-											Available:
-											{{ app.user.crystals }}
-											crystals
+											Available: {{ app.user.crystals }} crystals
 										</span>
 									</div>
 									<div class="input-group input-group-sm mb-3">
@@ -186,24 +150,17 @@
 										</span>
 										<input type="number" id="crystals-input" class="form-control" placeholder="Crystals to use" min="0" max="{{ app.user.crystals }}" value="0">
 									</div>
-									<div id="crystal-error" class="small text-danger mb-2 d-none"></div>
-									<div id="discount-info" class="d-none">
+									<div id="crystal-error" class="small text-danger mb-2 d-none"></div>									<div id="discount-info" class="d-none">
 										<div class="d-flex justify-content-between small text-success mb-1">
-											<span>Crystals used:
-												<span id="crystals-used">0</span>
-											</span>
-											<span>Discount:
-												<span id="discount-percent">0</span>%</span>
+											<span>Crystals used: <span id="crystals-used">0</span></span>
+											<span>Discount: <span id="discount-percent">0</span>%</span>
 										</div>
 										<div class="d-flex justify-content-between small text-success">
 											<span>Discount amount:</span>
-											<span>-$<span id="discount-amount">0.00</span>
-											</span>
+											<span>-$<span id="discount-amount">0.00</span></span>
 										</div>
 									</div>
-								</div>
-
-								<!-- Final Total -->
+								</div>								<!-- Final Total -->
 								<div class="d-flex justify-content-between mb-4 pt-3 border-top">
 									<span class="fw-bold">Total</span>
 									<span class="fw-bold text-primary fs-5" id="final-total">${{ cart.getTotal()|number_format(2, '.', ',') }}</span>
@@ -217,13 +174,11 @@
 								</div>
 							</div>
 						</div>
-					</div>
-
-				</div>
-			</div>
-		</form>
-	{% endif %}	<script>
-		document.addEventListener('DOMContentLoaded', function () {
+					</div>				</div>
+			</form>
+		{% endif %}
+	</div>	<script>
+		document.addEventListener('DOMContentLoaded', function() {
 			// Quantity validation
 			const quantityInputs = document.querySelectorAll('.quantity-input');
 			const updateButton = document.querySelector('button[type="submit"]');
@@ -287,94 +242,95 @@
 				});
 			}
 			
-            // Crystal discount functionality
-            const crystalsInput = document.getElementById('crystals-input');
-            const discountInfo = document.getElementById('discount-info');
-            const crystalError = document.getElementById('crystal-error');
-            const crystalsUsedSpan = document.getElementById('crystals-used');
-            const discountPercentSpan = document.getElementById('discount-percent');
-            const discountAmountSpan = document.getElementById('discount-amount');
-            const finalTotalSpan = document.getElementById('final-total');
+			// Crystal discount functionality
+			const crystalsInput = document.getElementById('crystals-input');
+			const discountInfo = document.getElementById('discount-info');
+			const crystalError = document.getElementById('crystal-error');
+			const crystalsUsedSpan = document.getElementById('crystals-used');
+			const discountPercentSpan = document.getElementById('discount-percent');
+			const discountAmountSpan = document.getElementById('discount-amount');
+			const finalTotalSpan = document.getElementById('final-total');
 
-            const originalTotal = {{ cart.getTotal() }};
-            const availableCrystals = {{ app.user.crystals }};
-            let currentCrystalsUsed = 0;
+			const originalTotal = {{ cart.getTotal() }};
+			const availableCrystals = {{ app.user.crystals }};
+			let currentCrystalsUsed = 0;
 
-            function showError(message) {
-                crystalError.textContent = message;
-                crystalError.classList.remove('d-none');
-                discountInfo.classList.add('d-none');
-            }
+			function showError(message) {
+				crystalError.textContent = message;
+				crystalError.classList.remove('d-none');
+				discountInfo.classList.add('d-none');
+			}
 
-            function hideError() {
-                crystalError.classList.add('d-none');
-                }
-            function updateDiscount() {
-                const crystals = parseInt(crystalsInput.value) || 0;
+			function hideError() {
+				crystalError.classList.add('d-none');
+			}
 
-                // Reset errors
-                hideError();
+			function updateDiscount() {
+				const crystals = parseInt(crystalsInput.value) || 0;
 
-                // Basic client-side validation
-                if (crystals < 0) {
-                    crystalsInput.value = 0;
-                    showError('Cannot use negative crystals');
-                    return;
-                }
+				// Reset errors
+				hideError();
 
-                if (crystals > availableCrystals) {
-                    showError (`You only have ${availableCrystals} crystals available`);
-                    return;
-                }
+				// Basic client-side validation
+				if (crystals < 0) {
+					crystalsInput.value = 0;
+					showError('Cannot use negative crystals');
+					return;
+				}
 
-                if (crystals === 0) { // Reset to original total
-                    discountInfo.classList.add('d-none');
-                    finalTotalSpan.textContent = '$' + originalTotal.toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-                    return;
-                }
+				if (crystals > availableCrystals) {
+					showError(`You only have ${availableCrystals} crystals available`);
+					return;
+				}
 
-                // Send request to backend for validation and calculation
-                fetch('{{ path('cart_apply_crystal_discount') }}', {
-                    method: 'POST',
-                    headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: 'crystals=' + encodeURIComponent(crystals)
-                }).then(response => response.json()).then(data => {
-                    if (data.success) { // Update display with server response
-                        crystalsUsedSpan.textContent = data.crystals_used;
-                        discountPercentSpan.textContent = data.discount_percent;
-                        discountAmountSpan.textContent = data.discount_amount;
-                        finalTotalSpan.textContent = '$' + data.new_total;
-                        discountInfo.classList.remove('d-none');
-                        currentCrystalsUsed = data.crystals_used;
-                    } else {
-                        showError(data.error);
-                    }
-                }).catch(error => {
-                console.error('Error:', error);
-                showError('An error occurred while applying the discount');
-                });
-            }            
-            
-            // Validate input as user types and update discount
-            crystalsInput.addEventListener('input', function () {
-                const crystals = parseInt(this.value) || 0;
+				if (crystals === 0) { // Reset to original total
+					discountInfo.classList.add('d-none');
+					finalTotalSpan.textContent = '$' + originalTotal.toLocaleString('en-US', {
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2
+					});
+					return;
+				}
 
-                // Auto-correct if exceeds available crystals
-                if (crystals > availableCrystals) {
-                    this.value = availableCrystals;
-                }
+				// Send request to backend for validation and calculation
+				fetch('{{ path('cart_apply_crystal_discount') }}', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+						'X-Requested-With': 'XMLHttpRequest'
+					},
+					body: 'crystals=' + encodeURIComponent(crystals)
+				}).then(response => response.json()).then(data => {
+					if (data.success) { // Update display with server response
+						crystalsUsedSpan.textContent = data.crystals_used;
+						discountPercentSpan.textContent = data.discount_percent;
+						discountAmountSpan.textContent = data.discount_amount;
+						finalTotalSpan.textContent = '$' + data.new_total;
+						discountInfo.classList.remove('d-none');
+						currentCrystalsUsed = data.crystals_used;
+					} else {
+						showError(data.error);
+					}
+				}).catch(error => {
+					console.error('Error:', error);
+					showError('An error occurred while applying the discount');
+				});
+			}            
+			
+			// Validate input as user types and update discount
+			crystalsInput.addEventListener('input', function() {
+				const crystals = parseInt(this.value) || 0;
 
-                // hide error when user starts typing
-                hideError();
+				// Auto-correct if exceeds available crystals
+				if (crystals > availableCrystals) {
+					this.value = availableCrystals;
+				}
 
-                updateDiscount();
-            });
-        });
+				// hide error when user starts typing
+				hideError();
+
+				updateDiscount();
+			});
+		});
 	</script>
-</div>{% endblock %}
+{% endblock %}

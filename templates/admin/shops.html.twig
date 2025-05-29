@@ -1,10 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Manage Shops - Admin
-{% endblock %}
+{% block title %}Manage Shops - Admin{% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/admin.css') }}" />
 {% endblock %}
 
 {% block body %}
@@ -40,8 +39,7 @@
 				{% if shops is defined and shops|length > 0 %}
 					<div class="card">
 						<div class="card-header">
-							<h5 class="mb-0">All Shops ({{ shops|length }}
-								total)</h5>
+							<h5 class="mb-0">All Shops ({{ shops|length }} total)</h5>
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
@@ -64,7 +62,7 @@
 												<td>{{ shop.id }}</td>
 												<td>
 													{% if shop.logoUrl %}
-														<img src="{{ asset(shop.logoUrl) }}" alt="Logo" class="me-2" style="width: 30px; height: 30px; object-fit: cover; border-radius: 4px;">
+														<img src="{{ asset(shop.logoUrl) }}" alt="Logo" class="me-2" style="width: 30px; height: 30px; object-fit: cover; border-radius: 4px;" />
 													{% endif %}
 													{{ shop.name }}
 												</td>
@@ -87,7 +85,7 @@
 												<td>{{ shop.products|length }}</td>
 												<td>
 													<form method="post" action="{{ path('admin_shop_delete', {id: shop.id}) }}" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this shop? This action cannot be undone and will delete all associated products.')">
-														<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ shop.id) }}">
+														<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ shop.id) }}" />
 														<button type="submit" class="btn btn-danger btn-sm">
 															<span class="material-icons-outlined me-1">delete</span>
 															Delete

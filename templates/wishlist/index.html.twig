@@ -2,83 +2,80 @@
 {% block title %}My Wishlist{% endblock %}
 {% block body %}
 <div class="d-flex justify-content-center py-5">
-  <div class="w-100" style="max-width: 800px;">
-    {% if wishlist.items|length == 0 %}
-      <div class="card shadow-sm text-center p-4">
-        <div class="card-body py-5">
-          <span class="material-icons-outlined" style="font-size:64px;color:var(--secondary);margin-bottom:1rem;">favorite</span>
-          <h3>Your Wishlist is empty</h3>
-          <p class="text-muted mb-4">Looks like you haven't added any products to your wishlist yet.</p>
-          <a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
-            <span class="material-icons-outlined me-2">shopping_bag</span>Start Shopping
-          </a>
-        </div>
-      </div>
-    {% else %}
-      <div class="card shadow-sm mb-4">
-        <div class="card-header bg-white">
-          <h5 class="mb-0">Wishlist Items ({{ wishlist.items|length }})</h5>
-        </div>
-        <div class="table-responsive">
-          <table class="table table-borderless align-middle mb-0">
-            <thead class="bg-light">
-              <tr>
-                <th class="ps-4">Product</th>
-                <th class="text-end">Unit Price</th>
-                <th class="text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for item in wishlist.items %}
-                <tr>
-                  <td class="ps-4">
-                    <div class="d-flex align-items-center">
-                      <div class="me-3" style="width:60px;height:60px;">
-                        {% if item.images is defined and item.images|length > 0 %}
-                          {% set image = item.images[0] %}
-                          <img src="{{ asset('uploads/products_images/'~image.filename) }}" alt="{{ item.title }}" class="img-fluid rounded" style="width:100%;height:100%;object-fit:cover;"/>
-                        {% else %}
-                          <img src="{{ asset('uploads/default.jpg') }}" alt="Product" class="img-fluid rounded" style="width:100%;height:100%;object-fit:cover;"/>
-                        {% endif %}
-                      </div>
-                      <div>
-                        <h6 class="mb-0">{{ item.title }}</h6>
-                        <small class="text-muted">{{ item.category.value }}</small>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="text-end">${{ item.price }}</td>                  <td class="text-center">
-                    <div class="d-inline-flex align-items-center gap-2">
-                      <button class="btn btn-sm btn-outline-danger wishlist-remove-btn" 
-                              data-product-id="{{ item.id }}"
-                              data-url="{{ path('wishlist_delete',{id:item.id}) }}"
-                              data-product-title="{{ item.title }}">
-                        <span class="material-icons-outlined">delete</span>
-                      </button>
-                      <form method="post" action="{{ path('cart_add',{id:item.id}) }}" class="wishlist-add-form" data-product-id="{{ item.id }}">
-                        <input type="hidden" name="quantity" value="1">
-                        <button class="btn btn-sm btn-outline-primary wishlist-add-btn" type="submit"
-                          {% if item.stockQuantity <= 0 %}disabled{% endif %}>
-                          <span class="material-icons-outlined me-1">
-                            {% if item.stockQuantity > 0 %}add_shopping_cart{% else %}remove_shopping_cart{% endif %}
-                          </span>
-                        </button>
-                      </form>
-                    </div>
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        <div class="card-footer bg-white">
-          <a href="{{ path('product_index') }}" class="btn btn-light">
-            <span class="material-icons-outlined me-1">arrow_back</span>Continue Shopping
-          </a>
-        </div>
-      </div>
-    {% endif %}
-  </div>
+	<div class="w-100" style="max-width: 800px;">
+		{% if wishlist.items|length == 0 %}
+			<div class="card shadow-sm text-center p-4">
+				<div class="card-body py-5">
+					<span class="material-icons-outlined" style="font-size:64px;color:var(--secondary);margin-bottom:1rem;">favorite</span>
+					<h3>Your Wishlist is empty</h3>
+					<p class="text-muted mb-4">Looks like you haven't added any products to your wishlist yet.</p>
+					<a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
+						<span class="material-icons-outlined me-2">shopping_bag</span>Start Shopping
+					</a>
+				</div>
+			</div>
+		{% else %}
+			<div class="card shadow-sm mb-4">
+				<div class="card-header bg-white">
+					<h5 class="mb-0">Wishlist Items ({{ wishlist.items|length }})</h5>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-borderless align-middle mb-0">
+						<thead class="bg-light">
+							<tr>
+								<th class="ps-4">Product</th>
+								<th class="text-end">Unit Price</th>
+								<th class="text-center">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for item in wishlist.items %}
+								<tr>
+									<td class="ps-4">
+										<div class="d-flex align-items-center">
+											<div class="me-3" style="width:60px;height:60px;">
+												{% if item.images is defined and item.images|length > 0 %}
+													{% set image = item.images[0] %}
+													<img src="{{ asset('uploads/products_images/'~image.filename) }}" alt="{{ item.title }}" class="img-fluid rounded" style="width:100%;height:100%;object-fit:cover;" />
+												{% else %}
+													<img src="{{ asset('uploads/default.jpg') }}" alt="Product" class="img-fluid rounded" style="width:100%;height:100%;object-fit:cover;" />
+												{% endif %}
+											</div>
+											<div>
+												<h6 class="mb-0">{{ item.title }}</h6>
+												<small class="text-muted">{{ item.category.value }}</small>
+											</div>
+										</div>
+									</td>
+									<td class="text-end">${{ item.price }}</td>
+									<td class="text-center">
+										<div class="d-inline-flex align-items-center gap-2">
+											<button class="btn btn-sm btn-outline-danger wishlist-remove-btn" data-product-id="{{ item.id }}" data-url="{{ path('wishlist_delete',{id:item.id}) }}" data-product-title="{{ item.title }}">
+												<span class="material-icons-outlined">delete</span>
+											</button>
+											<form method="post" action="{{ path('cart_add',{id:item.id}) }}" class="wishlist-add-form" data-product-id="{{ item.id }}">
+												<input type="hidden" name="quantity" value="1" />
+												<button class="btn btn-sm btn-outline-primary wishlist-add-btn" type="submit" {% if item.stockQuantity <= 0 %}disabled{% endif %}>
+													<span class="material-icons-outlined me-1">
+														{% if item.stockQuantity > 0 %}add_shopping_cart{% else %}remove_shopping_cart{% endif %}
+													</span>
+												</button>
+											</form>
+										</div>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<div class="card-footer bg-white">
+					<a href="{{ path('product_index') }}" class="btn btn-light">
+						<span class="material-icons-outlined me-1">arrow_back</span>Continue Shopping
+					</a>
+				</div>
+			</div>
+		{% endif %}
+	</div>
 </div>
 {% endblock %}
 
@@ -148,7 +145,6 @@
 							if (typeof NotificationSystem !== 'undefined') {
 								NotificationSystem.show(data.message, 'success');
 							}
-							
 							// Update button state after successful addition
 							setTimeout(() => updateWishlistButtonState(productId, button, form), 100);
 						} else {
