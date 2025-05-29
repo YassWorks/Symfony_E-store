@@ -23,7 +23,9 @@ class ProductController extends AbstractController
         private readonly FileUploader $uploader,
         private readonly ShopService $shopService,
         private readonly CartService $cartService
-    ) {}    #[Route('', name: 'product_index', methods: ['GET'])]
+    ) {}    
+    
+    #[Route('', name: 'product_index', methods: ['GET'])]
     public function index(Request $request, WishlistService $wishlistService): Response
     {   
         $qRaw = $request->query->get('q', '');
