@@ -36,6 +36,12 @@ class Product
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Image::class, cascade: ['persist', 'remove'])]
     private Collection $images;
 
+    /**
+     * @var Collection<int, \App\Review\Entity\Review>
+     */
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: \App\Review\Entity\Review::class, cascade: ['remove'])]
+    private Collection $reviews;
+
     #[ORM\ManyToOne(targetEntity: Shop::class, inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Shop $shop = null;
@@ -43,6 +49,7 @@ class Product
     public function __construct()
     {
         $this->images = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function adjustStock(int $qty): void
@@ -134,6 +141,27 @@ class Product
                 $image->setProduct(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, \App\Review\Entity\Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(\App\Review\Entity\Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setProduct($this);
+        }
+        return $this;
+    }    public function removeReview(\App\Review\Entity\Review $review): self
+    {
+        $this->reviews->removeElement($review);
         return $this;
     }
 

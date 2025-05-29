@@ -32,16 +32,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(type: 'integer')]
-    private int $crystals = 0;    /**
+    private int $crystals = 0;
+
+    /**
      * @var Collection<int, \App\Wishlist\Entity\Wishlist>
      */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: \App\Wishlist\Entity\Wishlist::class, cascade: ['remove'])]
     private Collection $wishlists;
 
+    /**
+     * @var Collection<int, \App\Review\Entity\Review>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: \App\Review\Entity\Review::class, cascade: ['remove'])]
+    private Collection $reviews;
+
     public function __construct()
     {
         $this->crystals = 0;
         $this->wishlists = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,6 +182,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }    public function removeWishlist(\App\Wishlist\Entity\Wishlist $wishlist): static
     {
         $this->wishlists->removeElement($wishlist);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, \App\Review\Entity\Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(\App\Review\Entity\Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(\App\Review\Entity\Review $review): static
+    {
+        $this->reviews->removeElement($review);
 
         return $this;
     }
