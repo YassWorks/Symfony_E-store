@@ -138,16 +138,24 @@ class CartController extends AbstractController
     }    
     
     #[Route('/checkout/flouci', name: 'cart_checkout_flouci', methods: ['POST'])]
-    #[IsGranted('ROLE_BUYER')]
-    public function checkoutFlouci(Request $request): JsonResponse
+    #[IsGranted('ROLE_BUYER')]    public function checkoutFlouci(Request $request): JsonResponse
     {
         $phoneNumber = $request->request->get('phone_number');
+        $deliveryAddress = $request->request->get('delivery_address');
         
         // Validate phone number (8 digits)
         if (!preg_match('/^\d{8}$/', $phoneNumber)) {
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Please enter a valid 8-digit phone number'
+            ], 400);
+        }
+        
+        // Validate delivery address
+        if (empty($deliveryAddress) || strlen(trim($deliveryAddress)) < 10) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Please enter a valid delivery address (minimum 10 characters)'
             ], 400);
         }
         
@@ -177,9 +185,18 @@ class CartController extends AbstractController
     }
     
     #[Route('/checkout/crystals', name: 'cart_checkout_crystals', methods: ['POST'])]
-    #[IsGranted('ROLE_BUYER')]
-    public function checkoutCrystals(Request $request): JsonResponse
+    #[IsGranted('ROLE_BUYER')]    public function checkoutCrystals(Request $request): JsonResponse
     {
+        $deliveryAddress = $request->request->get('delivery_address');
+        
+        // Validate delivery address
+        if (empty($deliveryAddress) || strlen(trim($deliveryAddress)) < 10) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Please enter a valid delivery address (minimum 10 characters)'
+            ], 400);
+        }
+        
         /** @var User $user */
         $user = $this->getUser();
         $cart = $this->cartService->getCartDetails();
