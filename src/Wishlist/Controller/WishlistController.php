@@ -20,7 +20,7 @@ class WishlistController extends AbstractController
     public function __construct(
         private readonly WishlistService $service,
         ProductService $productService
-        ) {}
+    ) {}
 
     #[Route('', name: 'wishlist_index', methods: ['GET'])]
     public function index(): Response
@@ -28,7 +28,9 @@ class WishlistController extends AbstractController
         $wishlist = $this->service->getOrCreateByUser($this->getUser());
         return $this->render('wishlist/index.html.twig', ['wishlist'=>$wishlist]);
     
-    }    #[Route('/add/{id}', name:'wishlist_add', methods:['POST','GET'])]
+    }    
+    
+    #[Route('/add/{id}', name:'wishlist_add', methods:['POST','GET'])]
     public function add(Request $request, Product $product): Response
     {
         $this->service->addProduct($this->getUser(), $product);
@@ -43,7 +45,9 @@ class WishlistController extends AbstractController
         }
         
         return $this->redirectToRoute('wishlist_index');
-    }    #[Route('/remove/{id}', name: 'wishlist_delete', methods: ['GET', 'POST'])]
+    }    
+    
+    #[Route('/remove/{id}', name: 'wishlist_delete', methods: ['GET', 'POST'])]
     public function remove(Request $request, Product $product): Response
     {
         $this->service->removeProduct($this->getUser(), $product);
@@ -59,6 +63,4 @@ class WishlistController extends AbstractController
         
         return $this->redirectToRoute('wishlist_index');
     }
-
 }
-?>

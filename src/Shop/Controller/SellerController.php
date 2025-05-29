@@ -21,9 +21,7 @@ use App\Review\Service\ReviewService;
 
 final class SellerController extends AbstractController
 {
-    public function __construct(private readonly ShopService $shopService)
-    {
-    }
+    public function __construct(private readonly ShopService $shopService) {}
 
     #[Route('/join_us', name: 'join_us', methods: ['GET', 'POST'])]
     public function index(
@@ -90,7 +88,9 @@ final class SellerController extends AbstractController
           return $this->render('seller/index.html.twig', [
             'shopForm' => $form->createView(),
         ]);
-    }    #[Route('/dashboard', name: 'seller_dashboard', methods: ['GET'])]
+    }    
+    
+    #[Route('/dashboard', name: 'seller_dashboard', methods: ['GET'])]
     public function dashboard(ReviewService $ReviewService, OrderService $orderService): Response
     {
         $user = $this->getUser();
