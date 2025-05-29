@@ -68,13 +68,13 @@
 											</a>
 
 											<a href="{{ path('profile') }}" class="nav-link" style="margin-left: 10px;">
-												<span class="material-icons-outlined me-1 align-middle">token</span>
+												<span class="material-icons-outlined me-1 align-middle" style="position: relative; top:-2px">token</span>
 												{{ app.user.crystals }}
 												Crystals
 											</a>
 											{% if user_has_shop(app.user) %}
 												<a href="{{ path('seller_dashboard') }}" class="nav-link {% if 'seller' in app.request.attributes.get('_route') %}active{% endif %}">
-													<span class="material-icons-outlined me-1 align-middle">store</span>
+													<span class="material-icons-outlined me-1 align-middle" style="position: relative; top:-2px">store</span>
 													Your Shop
 												</a>
 											{% else %}
@@ -85,11 +85,11 @@
 											{% endif %}
 
 											<a href="{{ path('profile') }}" class="nav-link {% if app.request.attributes.get('_route') == 'profile' %}active{% endif %}" style="margin-left: 10px;">
-												<span class="material-icons-outlined me-1 align-middle">person</span>
+												<span class="material-icons-outlined me-1 align-middle" style="position: relative; top:-2px">person</span>
 												Profile
 											</a>
 											<a href="{{ path('cart_index') }}" class="nav-link cart-link {% if app.request.attributes.get('_route') == 'cart_index' %}active{% endif %}" style="margin-left: 10px;">
-												<span class="material-icons-outlined me-1 align-middle">shopping_cart</span>
+												<span class="material-icons-outlined me-1 align-middle" style="position: relative; top:-2px">shopping_cart</span>
 												Cart
 											</a>
 
