@@ -27,7 +27,9 @@ class CartController extends AbstractController
     {
         $cart = $this->cartService->getCartDetails();
         return $this->render('cart/index.html.twig', compact('cart'));
-    }    #[Route('/add/{id}', name: 'cart_add', methods: ['POST'])]
+    }    
+    
+    #[Route('/add/{id}', name: 'cart_add', methods: ['POST'])]
     #[IsGranted('ROLE_BUYER')]
     public function add(Request $req, int $id, Product $product): Response
     {
@@ -277,7 +279,9 @@ class CartController extends AbstractController
         }
         
         $this->entityManager->flush();
-    }    #[Route('/update/{itemId}', name: 'cart_update', methods: ['POST'])]
+    }    
+    
+    #[Route('/update/{itemId}', name: 'cart_update', methods: ['POST'])]
     #[IsGranted('ROLE_BUYER')]
     public function updateQuantity(Request $request, int $itemId): Response
     {
@@ -291,7 +295,9 @@ class CartController extends AbstractController
         }
 
         return $this->redirectToRoute('cart_index');
-    }#[Route('/update-all', name: 'cart_update_all', methods: ['POST'])]
+    }
+    
+    #[Route('/update-all', name: 'cart_update_all', methods: ['POST'])]
     #[IsGranted('ROLE_BUYER')]
     public function updateAllQuantities(Request $request): Response
     {
