@@ -8,6 +8,7 @@ use App\Product\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use function Symfony\Component\VarDumper\dump;
 
 class CartService
 {
@@ -51,13 +52,24 @@ class CartService
         }
         $this->em->flush();
     }
-
+    
     public function removeProduct(int $itemId): void
     {
         $cart = $this->getCart();
         $item = $this->em->find(CartItem::class, $itemId);
-        if ($item) {
+
+        // checking if it's the first item in the cart. If so we'll need to handling it differently
+        if ($cart->getItems()->count() === 1 && $cart->getItems()->first()->getId() === $itemId) {
+            // if it's the only item, we can just clear the cart
+            $cart->getItems()->clear();
+            $this->em->remove($item);
+            $this->em->flush();
+            return;
+        }
+
+        if ($item && $item->getCart() && $item->getCart()->getId() === $cart->getId()) {
             $cart->removeItem($item);
+            $this->em->remove($item);
             $this->em->flush();
         }
     }
@@ -76,22 +88,23 @@ class CartService
             // remove if zero or negative
             $cart = $item->getCart();
             $cart->removeItem($item);
+            $this->em->remove($item);
         }
         $this->em->flush();
-    }
-
+    }    
+    
     public function updateAllQuantities(array $quantities): void
     {
         $cart = $this->getCart();
-        
-        foreach ($quantities as $itemId => $quantity) {
+          foreach ($quantities as $itemId => $quantity) {
             $item = $this->em->find(CartItem::class, $itemId);
-            if ($item && $item->getCart()->getId() === $cart->getId()) {
+            if ($item && $item->getCart() && $item->getCart()->getId() === $cart->getId()) {
                 if ($quantity > 0) {
                     $item->setQuantity($quantity);
                 } else {
                     // remove if zero or negative
                     $cart->removeItem($item);
+                    $this->em->remove($item);
                 }
             }
         }

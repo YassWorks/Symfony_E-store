@@ -11,11 +11,9 @@ use App\Cart\Repository\CartItemRepository;
 class CartItem
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
-    private ?int $id = null;
-
-    #[ORM\ManyToOne(targetEntity: Cart::class, inversedBy: 'items')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Cart $cart;
+    private ?int $id = null;    #[ORM\ManyToOne(targetEntity: Cart::class, inversedBy: 'items')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Cart $cart = null;
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
@@ -24,9 +22,9 @@ class CartItem
     #[ORM\Column(type: 'integer')]
     private int $quantity = 1;
 
-    public function getId(): ?int { return $this->id; }
-    public function getCart(): Cart { return $this->cart; }
-    public function setCart(Cart $c): self { $this->cart = $c; return $this; }
+    public function getId(): ?int { return $this->id; }    
+    public function getCart(): ?Cart { return $this->cart; }
+    public function setCart(?Cart $c): self { $this->cart = $c; return $this; }
     public function getProduct(): Product { return $this->product; }
     public function setProduct(Product $p): self { $this->product = $p; return $this; }
     public function getQuantity(): int { return $this->quantity; }

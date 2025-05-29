@@ -57,7 +57,7 @@ class CartController extends AbstractController
     #[Route('/remove/{itemId}', name: 'cart_remove', methods: ['POST'])]
     #[IsGranted('ROLE_BUYER')]
     public function remove(int $itemId)
-    {
+    {   
         $this->cartService->removeProduct($itemId);
         return $this->redirectToRoute('cart_index');
     }    
