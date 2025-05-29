@@ -88,27 +88,28 @@
                   {{ product.description|slice(0, 100) }}
                   {{ product.description|length > 100 ? '...' }}
                 </p>
-                <div class="mt-auto">
-                  <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="mt-auto">                  <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="fs-5 fw-bold text-primary">${{ product.price }}</span>
                     <span class="badge bg-light text-dark">{{ product.category.value }}</span>
-                    <a
-                      href="{% if product in wishlist.items %}
-                              {{ path('wishlist_delete', { id: product.id }) }}
-                            {% else %}
-                              {{ path('wishlist_add',{ id: product.id }) }}
-                            {% endif %}"
-                      class="text-decoration-none"
-                      style="cursor: pointer;"
-                    >
-                      <span class="material-icons-outlined me-1 text-danger">
-                        {% if product in wishlist.items %}
-                          favorite
-                        {% else %}
-                          favorite_border
-                        {% endif %}
-                      </span>
-                    </a>
+                    {% if is_granted('ROLE_BUYER') %}
+                      <button
+                        class="wishlist-btn border-0 bg-transparent"
+                        data-product-id="{{ product.id }}"
+                        data-action="{% if product in wishlist.items %}remove{% else %}add{% endif %}"
+                        data-url="{% if product in wishlist.items %}{{ path('wishlist_delete', { id: product.id }) }}{% else %}{{ path('wishlist_add', { id: product.id }) }}{% endif %}"
+                        style="cursor: pointer;"
+                      >
+                        <span class="material-icons-outlined me-1 text-danger wishlist-icon">
+                          {% if product in wishlist.items %}
+                            favorite
+                          {% else %}
+                            favorite_border
+                          {% endif %}
+                        </span>
+                      </button>
+                    {% else %}
+                      <span class="material-icons-outlined me-1 text-muted">favorite_border</span>
+                    {% endif %}
 
                   </div>
 
@@ -161,6 +162,7 @@
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
 			const productForms = document.querySelectorAll('.product-card-form');
+			const wishlistBtns = document.querySelectorAll('.wishlist-btn');
 			
 			// Function to update a specific button's state
 			function updateButtonState(productId, button, form) {
@@ -241,6 +243,63 @@
 						if (typeof NotificationSystem !== 'undefined') {
 							NotificationSystem.show('Failed to add item to cart', 'error');
 						}
+					});
+				});
+			});
+
+			// Handle wishlist button clicks
+			wishlistBtns.forEach(function(btn) {
+				btn.addEventListener('click', function(e) {
+					e.preventDefault();
+					
+					const productId = btn.getAttribute('data-product-id');
+					const action = btn.getAttribute('data-action');
+					const url = btn.getAttribute('data-url');
+					const icon = btn.querySelector('.wishlist-icon');
+					
+					// Disable button temporarily
+					btn.disabled = true;
+					
+					fetch(url, {
+						method: 'POST',
+						headers: {
+							'X-Requested-With': 'XMLHttpRequest'
+						}
+					})
+					.then(response => response.json())
+					.then(data => {
+						if (data.success) {
+							// Show success notification
+							if (typeof NotificationSystem !== 'undefined') {
+								NotificationSystem.show(data.message, 'success');
+							}
+							
+							// Update button state based on action
+							if (data.action === 'added') {
+								icon.textContent = 'favorite';
+								btn.setAttribute('data-action', 'remove');
+								btn.setAttribute('data-url', btn.getAttribute('data-url').replace('/add/', '/remove/'));
+							} else if (data.action === 'removed') {
+								icon.textContent = 'favorite_border';
+								btn.setAttribute('data-action', 'add');
+								btn.setAttribute('data-url', btn.getAttribute('data-url').replace('/remove/', '/add/'));
+							}
+						} else {
+							// Show error notification
+							if (typeof NotificationSystem !== 'undefined') {
+								NotificationSystem.show(data.message || 'An error occurred', 'error');
+							}
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+						if (typeof NotificationSystem !== 'undefined') {
+							NotificationSystem.show('Failed to update wishlist', 'error');
+						}
+					})
+					.finally(() => {
+						// Re-enable button
+						btn.disabled = false;
 					});
 				});
 			});

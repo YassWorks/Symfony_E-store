@@ -47,15 +47,15 @@
                       </div>
                     </div>
                   </td>
-                  <td class="text-end">${{ item.price }}</td>
-                  <td class="text-center">
+                  <td class="text-end">${{ item.price }}</td>                  <td class="text-center">
                     <div class="d-inline-flex align-items-center gap-2">
-                      <form method="post" action="{{ path('wishlist_delete',{id:item.id}) }}">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete'~item.id) }}">
-                        <button class="btn btn-sm btn-outline-danger" type="submit">
-                          <span class="material-icons-outlined">delete</span>
-                        </button>
-                      </form>                      <form method="post" action="{{ path('cart_add',{id:item.id}) }}" class="wishlist-add-form" data-product-id="{{ item.id }}">
+                      <button class="btn btn-sm btn-outline-danger wishlist-remove-btn" 
+                              data-product-id="{{ item.id }}"
+                              data-url="{{ path('wishlist_delete',{id:item.id}) }}"
+                              data-product-title="{{ item.title }}">
+                        <span class="material-icons-outlined">delete</span>
+                      </button>
+                      <form method="post" action="{{ path('cart_add',{id:item.id}) }}" class="wishlist-add-form" data-product-id="{{ item.id }}">
                         <input type="hidden" name="quantity" value="1">
                         <button class="btn btn-sm btn-outline-primary wishlist-add-btn" type="submit"
                           {% if item.stockQuantity <= 0 %}disabled{% endif %}>
@@ -86,6 +86,7 @@
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
 			const wishlistForms = document.querySelectorAll('.wishlist-add-form');
+			const wishlistRemoveBtns = document.querySelectorAll('.wishlist-remove-btn');
 			
 			// Function to update a specific button's state
 			function updateWishlistButtonState(productId, button, form) {
@@ -165,6 +166,73 @@
 						if (typeof NotificationSystem !== 'undefined') {
 							NotificationSystem.show('Failed to add item to cart', 'error');
 						}
+					});
+				});
+			});
+
+			// Handle wishlist remove button clicks
+			wishlistRemoveBtns.forEach(function(btn) {
+				btn.addEventListener('click', function(e) {
+					e.preventDefault();
+					
+					const productId = btn.getAttribute('data-product-id');
+					const url = btn.getAttribute('data-url');
+					const productTitle = btn.getAttribute('data-product-title');
+					const row = btn.closest('tr');
+					
+					// Disable button temporarily
+					btn.disabled = true;
+					
+					fetch(url, {
+						method: 'POST',
+						headers: {
+							'X-Requested-With': 'XMLHttpRequest'
+						}
+					})
+					.then(response => response.json())
+					.then(data => {
+						if (data.success) {
+							// Show success notification
+							if (typeof NotificationSystem !== 'undefined') {
+								NotificationSystem.show(data.message, 'success');
+							}
+							
+							// Remove the row from the table with a smooth animation
+							row.style.transition = 'opacity 0.3s ease';
+							row.style.opacity = '0';
+							setTimeout(() => {
+								row.remove();
+								
+								// Check if the wishlist is now empty
+								const remainingRows = document.querySelectorAll('tbody tr');
+								if (remainingRows.length === 0) {
+									// Reload the page to show the empty wishlist message
+									window.location.reload();
+								} else {
+									// Update the item count in the header
+									const header = document.querySelector('.card-header h5');
+									if (header) {
+										const currentCount = remainingRows.length;
+										header.textContent = `Wishlist Items (${currentCount})`;
+									}
+								}
+							}, 300);
+						} else {
+							// Show error notification
+							if (typeof NotificationSystem !== 'undefined') {
+								NotificationSystem.show(data.message || 'An error occurred', 'error');
+							}
+							// Re-enable button on error
+							btn.disabled = false;
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+						if (typeof NotificationSystem !== 'undefined') {
+							NotificationSystem.show('Failed to remove item from wishlist', 'error');
+						}
+						// Re-enable button on error
+						btn.disabled = false;
 					});
 				});
 			});
