@@ -14,6 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Shared\Enum\Category;
 use App\Wishlist\Service\WishlistService;
+use App\Review\Service\ReviewService;
+use App\Review\Form\ReviewType;
 
 #[Route('/products')]
 class ProductController extends AbstractController
@@ -21,7 +23,8 @@ class ProductController extends AbstractController
     public function __construct(
         private readonly ProductService $service,
         private readonly FileUploader $uploader,
-        private readonly ShopService $shopService
+        private readonly ShopService $shopService,
+        private readonly ReviewService $reviewService
     ) {}
 
     #[Route('', name: 'product_index', methods: ['GET'])]
@@ -65,7 +68,7 @@ class ProductController extends AbstractController
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request);        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             // handle image uploads
             $files = $form->get('images')->getData();
             foreach ((array)$files as $file) {
@@ -133,9 +136,38 @@ class ProductController extends AbstractController
     }
 
     #[Route('/{id}', name: 'product_show', methods: ['GET'])]
-    public function show(Product $product): Response
+    public function add(int $id, Request $request): Response
     {
-        return $this->render('product/show.html.twig', compact('product'));
+        $product = $this->service->get($id);
+        $reviews = $this->reviewService->getReviewsForProduct($id);
+        if (!$product) {
+            throw $this->createNotFoundException('Produit introuvable');
+        }
+
+        $existingReview = $this->reviewService->findReviewByUserAndProduct(
+            $this->getUser(),
+            $product
+        );
+
+        $form = $this->createForm(ReviewType::class, $existingReview);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->reviewService->saveReview(
+                $this->getUser(),
+                $product,
+                $form->get('rating')->getData(),
+                $form->get('comment')->getData()
+            );
+
+            return $this->redirectToRoute('product_show', ['id' => $id]);
+        }
+
+        return $this->render('product/show.html.twig', [
+            'product' => $product,
+            'form'=> $form->createView(),
+            'reviews'=> $reviews,
+        ]);
     }
 
     #[Route('/{id}', name: 'product_delete', methods: ['POST'])]

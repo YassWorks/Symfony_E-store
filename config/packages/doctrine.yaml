@@ -48,6 +48,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Wishlist/Entity'
                 prefix: 'App\Wishlist\Entity'
                 alias: Wishlist
+            Review:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Review/Entity'
+                prefix: 'App\Review\Entity'
+                alias: Review
 
         controller_resolver:
             auto_mapping: false

@@ -39,3 +39,9 @@ wishlist_controllers:
         path: '../src/Wishlist/Controller/'
         namespace: App\Wishlist\Controller
     type: attribute
+
+review_controllers:
+    resource: 
+        path: '../src/Review/Controller/'
+        namespace: App\Review\Controller
+    type: attribute

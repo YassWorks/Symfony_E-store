@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block stylesheets %}
+	{{ parent() }}
 	<link rel="stylesheet" href="{{ asset('css/product.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('css/review.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -85,4 +87,49 @@
 			</div>
 		</div>
 	</div>
+    {# Include the review list #}
+    {% include 'review/list.html.twig' with {
+      reviews: reviews,
+      productId: product.id
+    } only %}
+
+	{% include 'review/add.html.twig' with {
+      form: form,
+      product: product
+    } only %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    const stars = document.querySelectorAll('.star-icon');
+    const ratingInput = document.querySelector('.review-form input[name$="[rating]"]');
+
+    if (stars.length && ratingInput) {
+      stars.forEach(star => {
+        star.addEventListener('click', () => {
+          const val = star.dataset.value;
+          ratingInput.value = val;
+          stars.forEach(s => {
+            s.textContent = (s.dataset.value <= val) ? 'star' : 'star_outline';
+            s.classList.toggle('filled', s.dataset.value <= val);
+          });
+        });
+      });
+    }
+
+    // Slider interaction
+    const slider = document.getElementById('slider');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    if (slider && prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', () => {
+        slider.scrollBy({ left: -300, behavior: 'smooth' });
+      });
+      nextBtn.addEventListener('click', () => {
+        slider.scrollBy({ left: 300, behavior: 'smooth' });
+      });
+    }
+  </script>
 {% endblock %}
