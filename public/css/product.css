@@ -188,6 +188,31 @@
     width: 80px;
 }
 
+/* Add to Cart Button States */
+.add-to-cart-form .btn {
+    min-width: 140px;
+    transition: all 0.3s ease;
+}
+
+.add-to-cart-form .btn:disabled {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: #fff !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.add-to-cart-form .btn.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.add-to-cart-form .btn.btn-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    transform: none;
+}
+
 .seller-actions {
     display: flex;
     gap: 0.75rem;

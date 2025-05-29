@@ -7,6 +7,7 @@ use App\Product\Form\ProductType;
 use App\Product\Service\ProductService;
 use App\Shared\Utils\FileUploader;
 use App\Shop\Service\ShopService;
+use App\Cart\Service\CartService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,14 +18,12 @@ use App\Wishlist\Service\WishlistService;
 
 #[Route('/products')]
 class ProductController extends AbstractController
-{
-    public function __construct(
+{    public function __construct(
         private readonly ProductService $service,
         private readonly FileUploader $uploader,
-        private readonly ShopService $shopService
-    ) {}
-
-    #[Route('', name: 'product_index', methods: ['GET'])]
+        private readonly ShopService $shopService,
+        private readonly CartService $cartService
+    ) {}    #[Route('', name: 'product_index', methods: ['GET'])]
     public function index(Request $request, WishlistService $wishlistService): Response
     {   
         $qRaw = $request->query->get('q', '');
@@ -50,12 +49,19 @@ class ProductController extends AbstractController
         $products = $this->service->findByFilters($criteria);
         $wishlist = $wishlistService->getOrCreateByUser($this->getUser());
         
+        // Get cart quantities for all products
+        $cartQuantities = [];
+        foreach ($products as $product) {
+            $cartQuantities[$product->getId()] = $this->cartService->getProductQuantityInCart($product->getId());
+        }
+        
         return $this->render('product/index.html.twig', [
                 'products'=> $products,
                 'allShops'=> $allShops,
                 'allCategories' => $allCategories,
                 'criteria'=> $criteria,
-                'wishlist'=> $wishlist
+                'wishlist'=> $wishlist,
+                'cartQuantities' => $cartQuantities
             ]);
     }
 

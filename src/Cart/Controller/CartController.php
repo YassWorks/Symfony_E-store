@@ -27,31 +27,84 @@ class CartController extends AbstractController
     {
         $cart = $this->cartService->getCartDetails();
         return $this->render('cart/index.html.twig', compact('cart'));
-    }
-
-    #[Route('/add/{id}', name: 'cart_add', methods: ['POST'])]
+    }    #[Route('/add/{id}', name: 'cart_add', methods: ['POST'])]
     #[IsGranted('ROLE_BUYER')]
     public function add(Request $req, int $id, Product $product): Response
     {
         $qty = (int)$req->request->get('quantity', 1);
+        
+        // Check if product is in stock
+        if ($product->getStockQuantity() <= 0) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'This product is currently out of stock.',
+                'stock_status' => 'out_of_stock'
+            ], 400);
+        }
+        
+        // Check current quantity in cart
+        $currentCartQty = $this->cartService->getProductQuantityInCart($id);
+        $newTotalQty = $currentCartQty + $qty;
+        
+        // Check if new total quantity would exceed stock
+        if ($newTotalQty > $product->getStockQuantity()) {
+            $availableQty = $product->getStockQuantity() - $currentCartQty;
+            return new JsonResponse([
+                'success' => false,
+                'message' => sprintf(
+                    'Cannot add %d items. Only %d items available (you already have %d in cart).',
+                    $qty,
+                    $availableQty,
+                    $currentCartQty
+                ),
+                'available_quantity' => $availableQty,
+                'current_cart_quantity' => $currentCartQty,
+                'stock_status' => $availableQty > 0 ? 'limited' : 'max_reached'
+            ], 400);
+        }
+        
         $this->cartService->addProduct($id, $qty);
 
-        // Always return JSON response for better UX
-        if ($req->isXmlHttpRequest()) {
-            return new JsonResponse([
-                'success' => true,
-                'message' => sprintf('%s added to cart successfully!', $product->getTitle()),
-                'quantity' => $qty
-            ]);
-        }
-
-        // For non-AJAX requests, also return JSON to be handled by frontend
+        // Calculate remaining stock after adding to cart
+        $remainingStock = $product->getStockQuantity() - $newTotalQty;
+        
         return new JsonResponse([
             'success' => true,
             'message' => sprintf('%s added to cart successfully!', $product->getTitle()),
             'quantity' => $qty,
-            'redirect' => false
+            'new_cart_quantity' => $newTotalQty,
+            'remaining_stock' => $remainingStock,
+            'stock_status' => $remainingStock > 0 ? 'available' : 'max_reached'
+        ]);    }
+
+    #[Route('/check-stock/{id}', name: 'cart_check_stock', methods: ['GET'])]
+    #[IsGranted('ROLE_BUYER')]
+    public function checkStock(Product $product): JsonResponse
+    {
+        $currentCartQty = $this->cartService->getProductQuantityInCart($product->getId());
+        $availableQty = $product->getStockQuantity() - $currentCartQty;
+        
+        return new JsonResponse([
+            'product_id' => $product->getId(),
+            'stock_quantity' => $product->getStockQuantity(),
+            'current_cart_quantity' => $currentCartQty,
+            'available_quantity' => $availableQty,
+            'stock_status' => $this->getStockStatus($product->getStockQuantity(), $currentCartQty)
         ]);
+    }
+    
+    private function getStockStatus(int $stockQuantity, int $currentCartQty): string
+    {
+        if ($stockQuantity <= 0) {
+            return 'out_of_stock';
+        }
+        
+        $availableQty = $stockQuantity - $currentCartQty;
+        if ($availableQty <= 0) {
+            return 'max_reached';
+        }
+        
+        return 'available';
     }
 
     #[Route('/remove/{itemId}', name: 'cart_remove', methods: ['POST', 'GET'])]

@@ -92,8 +92,7 @@ class CartService
         }
         $this->em->flush();
     }    
-    
-    public function updateAllQuantities(array $quantities): void
+      public function updateAllQuantities(array $quantities): void
     {
         $cart = $this->getCart();
           foreach ($quantities as $itemId => $quantity) {
@@ -110,6 +109,16 @@ class CartService
         }
         
         $this->em->flush();
+    }
+    
+    public function getProductQuantityInCart(int $productId): int
+    {
+        $cart = $this->getCart();
+        $existing = $cart->getItems()
+            ->filter(fn($i) => $i->getProduct()->getId() === $productId)
+            ->first();
+        
+        return $existing ? $existing->getQuantity() : 0;
     }
 }
 
