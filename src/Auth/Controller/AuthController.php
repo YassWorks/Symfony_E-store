@@ -7,6 +7,9 @@ use App\Auth\Form\LoginType;
 use App\Auth\Form\RegistrationType;
 use App\Auth\Repository\UserRepository;
 use App\Auth\Service\AuthService;
+use App\Product\Service\ProductService;
+use App\Shop\Service\ShopService;
+use App\Shared\Enum\Category;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,16 +18,33 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class AuthController extends AbstractController
 {   
+    public function __construct(
+        private readonly ProductService $productService,
+        private readonly ShopService $shopService
+    ) {}
+
    #[Route('/', name: 'landing_page')]
     public function home(): Response
     {
         // get the current authenticated user using Symfony's security
         $user = $this->getUser();
         
+        // Get featured products (limit to 6 for the landing page)
+        $featuredProducts = array_slice($this->productService->list(), 0, 6);
+        
+        // Get all categories for the category showcase
+        $categories = Category::cases();
+        
+        // Get some featured shops (limit to 4)
+        $featuredShops = array_slice($this->shopService->listAll(), 0, 4);
+        
         return $this->render('home/index.html.twig', [
             'user' => $user,
+            'featuredProducts' => $featuredProducts,
+            'categories' => $categories,
+            'featuredShops' => $featuredShops,
         ]);
-    }    #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
+    }#[Route('/login', name: 'login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // get the login error if there is one
