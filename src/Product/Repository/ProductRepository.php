@@ -11,7 +11,6 @@ class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
-    // src/Product/Repository/ProductRepository.php
 
     public function findByFilters(array $c): array
     {

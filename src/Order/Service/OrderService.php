@@ -31,7 +31,7 @@ class OrderService
         $order->setDeliveryAddress($deliveryAddress);
         $order->setCrystalsUsed($crystalsUsed);
 
-        // Create order items from cart items
+        // create order items from cart items
         foreach ($cart->getItems() as $cartItem) {
             $orderItem = new OrderItem();
             $orderItem->setProduct($cartItem->getProduct());

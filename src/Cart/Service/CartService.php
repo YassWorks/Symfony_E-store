@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Cart\Service;
 
 use App\Cart\Entity\Cart;
@@ -82,7 +83,8 @@ class CartService
     {
         $item = $this->em->find(CartItem::class, $itemId);
         if ($item && $quantity > 0) {
-            // Check stock availability
+
+            // check stock
             $product = $item->getProduct();
             if ($quantity > $product->getStockQuantity()) {
                 throw new \InvalidArgumentException(
@@ -90,9 +92,10 @@ class CartService
                     $quantity, $product->getStockQuantity())
                 );
             }
+
             $item->setQuantity($quantity);
+
         } elseif ($item) {
-            // remove if zero or negative
             $cart = $item->getCart();
             $cart->removeItem($item);
             $this->em->remove($item);
@@ -105,7 +108,7 @@ class CartService
             $item = $this->em->find(CartItem::class, $itemId);
             if ($item && $item->getCart() && $item->getCart()->getId() === $cart->getId()) {
                 if ($quantity > 0) {
-                    // Check stock availability
+
                     $product = $item->getProduct();
                     if ($quantity > $product->getStockQuantity()) {
                         throw new \InvalidArgumentException(
@@ -115,7 +118,7 @@ class CartService
                     }
                     $item->setQuantity($quantity);
                 } else {
-                    // remove if zero or negative
+
                     $cart->removeItem($item);
                     $this->em->remove($item);
                 }
@@ -135,5 +138,3 @@ class CartService
         return $existing ? $existing->getQuantity() : 0;
     }
 }
-
-?>

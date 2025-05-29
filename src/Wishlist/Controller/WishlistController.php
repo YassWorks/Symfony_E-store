@@ -48,7 +48,7 @@ class WishlistController extends AbstractController
     {
         $this->service->removeProduct($this->getUser(), $product);
         
-        // Check if this is an AJAX request
+        // if AJAX
         if ($request->isXmlHttpRequest()) {
             return new JsonResponse([
                 'success' => true,

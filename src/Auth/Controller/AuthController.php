@@ -26,16 +26,14 @@ final class AuthController extends AbstractController
    #[Route('/', name: 'landing_page')]
     public function home(): Response
     {
-        // get the current authenticated user using Symfony's security
         $user = $this->getUser();
         
-        // Get featured products (limit to 6 for the landing page)
+        // limit to 6 featured products
         $featuredProducts = array_slice($this->productService->list(), 0, 6);
         
-        // Get all categories for the category showcase
         $categories = Category::cases();
         
-        // Get some featured shops (limit to 4)
+        // limlit to 4 featured shops
         $featuredShops = array_slice($this->shopService->listAll(), 0, 4);
         
         return $this->render('home/index.html.twig', [
@@ -49,13 +47,10 @@ final class AuthController extends AbstractController
     #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         
-        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        // Create the form
         $form = $this->createForm(LoginType::class);
 
         return $this->render('auth/index.html.twig', [
@@ -63,12 +58,13 @@ final class AuthController extends AbstractController
             'last_username' => $lastUsername,
             'error' => $error,
         ]);
-    }    #[Route('/register', name: 'register', methods: ['GET', 'POST'])]
+    }   
+    
+    #[Route('/register', name: 'register', methods: ['GET', 'POST'])]
     public function register(Request $request, AuthService $authService, UserRepository $userRepository): Response
     {
         $user = new User();
         
-        // Create the form using the RegistrationType
         $form = $this->createForm(RegistrationType::class, $user);
         
         $form->handleRequest($request);

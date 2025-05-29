@@ -24,11 +24,4 @@ class LoginType extends AbstractType
                 'attr' => ['class' => 'btn-primary'],
             ]);
     }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            // Configure your form options here
-        ]);
-    }
 }

@@ -15,12 +15,11 @@ class AuthService
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
         private MailServiceInterface $mailService
-    ) {
-    }
+    ) {}
 
     public function registerUser(User $user, FormInterface $form): void
     {
-        // encode the password
+        // encode the password using the stuff we configured in security.yaml
         $user->setPassword(
             $this->passwordHasher->hashPassword(
                 $user,
@@ -31,17 +30,16 @@ class AuthService
         // set default roles
         $user->addRole(Role::ROLE_BUYER);
         
-        //send email :
         $this->mailService->send(
             $user->getEmail(),
             'Welcome to Our Store!',
             'emails/registration.html.twig',
             [
                 'user'=> $user
-            ] //context
+            ]
 
         );
-        // save the User
+        
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }

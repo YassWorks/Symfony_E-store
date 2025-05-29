@@ -54,7 +54,7 @@ class ProductController extends AbstractController
         $products = $this->service->findByFilters($criteria);
         $wishlist = $wishlistService->getOrCreateByUser($this->getUser());
         
-        // Get cart quantities for all products
+        // get cart quantities for all products
         $cartQuantities = [];
         foreach ($products as $product) {
             $cartQuantities[$product->getId()] = $this->cartService->getProductQuantityInCart($product->getId());
@@ -79,7 +79,7 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            // handle image uploads
+            // image
             $files = $form->get('images')->getData();
             foreach ((array)$files as $file) {
                 if ($file instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
@@ -92,19 +92,19 @@ class ProductController extends AbstractController
                 }
             }
 
-            // Associate product with the current user's shop
+            // associate product with the current user's shop
             $user = $this->getUser();
             $shop = $this->shopService->getShopByUser($user);
             if ($shop) {
                 $product->setShop($shop);
             } else {
-                // Handle case where seller does not have a shop
+                // if seller does not have a shop for some reason
                 $this->addFlash('error', 'You must register a shop before adding products.');
                 return $this->redirectToRoute('join_us'); // Or some other appropriate route
             }
 
             $this->service->save($product);
-            return $this->redirectToRoute('seller_dashboard'); // Redirect to seller dashboard
+            return $this->redirectToRoute('seller_dashboard');
         }
 
         return $this->render('product/new.html.twig', ['form' => $form->createView()]);
@@ -114,7 +114,6 @@ class ProductController extends AbstractController
     #[IsGranted('ROLE_SELLER')]
     public function edit(Request $request, Product $product): Response
     {
-        // Check if the current user owns the product's shop
         $user = $this->getUser();
         if (!$product->getShop() || $product->getShop()->getOwner() !== $user) {
             $this->addFlash('error', 'You are not authorized to edit this product.');
@@ -137,7 +136,7 @@ class ProductController extends AbstractController
             }
 
             $this->service->save($product);
-            return $this->redirectToRoute('seller_dashboard'); // Redirect to seller dashboard
+            return $this->redirectToRoute('seller_dashboard');
         }
 
         return $this->render('product/edit.html.twig', [
@@ -185,7 +184,6 @@ class ProductController extends AbstractController
     #[IsGranted('ROLE_SELLER')]
     public function delete(Request $request, Product $product): Response
     {
-        // Check if the current user owns the product's shop
         $user = $this->getUser();
         if (!$product->getShop() || $product->getShop()->getOwner() !== $user) {
             $this->addFlash('error', 'You are not authorized to delete this product.');
@@ -195,6 +193,6 @@ class ProductController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->request->get('_token'))) {
             $this->service->delete($product);
         }
-        return $this->redirectToRoute('seller_dashboard'); // Redirect to seller dashboard
+        return $this->redirectToRoute('seller_dashboard');
     }
 }

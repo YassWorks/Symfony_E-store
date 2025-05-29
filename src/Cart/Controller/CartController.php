@@ -37,7 +37,7 @@ class CartController extends AbstractController
     {
         $qty = (int)$req->request->get('quantity', 1);
         
-        // Check if product is in stock
+        // checking if product is available
         if ($product->getStockQuantity() <= 0) {
             return new JsonResponse([
                 'success' => false,
@@ -46,11 +46,10 @@ class CartController extends AbstractController
             ], 400);
         }
         
-        // Check current quantity in cart
         $currentCartQty = $this->cartService->getProductQuantityInCart($id);
         $newTotalQty = $currentCartQty + $qty;
         
-        // Check if new total quantity would exceed stock
+        // check if new total quantity would exceed stock
         if ($newTotalQty > $product->getStockQuantity()) {
             $availableQty = $product->getStockQuantity() - $currentCartQty;
             return new JsonResponse([
@@ -68,8 +67,8 @@ class CartController extends AbstractController
         }
         
         $this->cartService->addProduct($id, $qty);
-
-        // Calculate remaining stock after adding to cart
+        
+        // remaining
         $remainingStock = $product->getStockQuantity() - $newTotalQty;
         
         return new JsonResponse([
@@ -119,7 +118,7 @@ class CartController extends AbstractController
         return $this->redirectToRoute('cart_index');
     }    
     
-    // flouci implmentation here -------   
+    // checkout starts here (we made just a mock checkout for Flouci as an example)
     #[Route('/checkout', name: 'cart_checkout', methods: ['GET'])]
     #[IsGranted('ROLE_BUYER')]
     public function checkout(Request $request)
@@ -128,7 +127,6 @@ class CartController extends AbstractController
         $session = $request->getSession();
         $crystalDiscount = $session->get('crystal_discount', null);
         
-        // Calculate final total
         $finalTotal = $cart->getTotal();
         if ($crystalDiscount) {
             $finalTotal = $crystalDiscount['new_total'];
@@ -142,12 +140,13 @@ class CartController extends AbstractController
     }    
     
     #[Route('/checkout/flouci', name: 'cart_checkout_flouci', methods: ['POST'])]
-    #[IsGranted('ROLE_BUYER')]    public function checkoutFlouci(Request $request): JsonResponse
+    #[IsGranted('ROLE_BUYER')]    
+    public function checkoutFlouci(Request $request): JsonResponse
     {
         $phoneNumber = $request->request->get('phone_number');
         $deliveryAddress = $request->request->get('delivery_address');
         
-        // Validate phone number (8 digits)
+        // phone num tounsi (8 digits)
         if (!preg_match('/^\d{8}$/', $phoneNumber)) {
             return new JsonResponse([
                 'success' => false,
@@ -155,20 +154,20 @@ class CartController extends AbstractController
             ], 400);
         }
         
-        // Validate delivery address
         if (empty($deliveryAddress) || strlen(trim($deliveryAddress)) < 10) {
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Please enter a valid delivery address (minimum 10 characters)'
             ], 400);
         }
-          // Check if there's a crystal discount and deduct those crystals
+
+        // remove crystals from discount if any
         /** @var User $user */
         $user = $this->getUser();
         $session = $request->getSession();
         $crystalDiscount = $session->get('crystal_discount', null);
         
-        // Calculate final total to determine crystal reward
+        // total
         $cart = $this->cartService->getCartDetails();
         $finalTotal = $cart->getTotal();
         if ($crystalDiscount) {
@@ -176,18 +175,15 @@ class CartController extends AbstractController
         }
         
         if ($crystalDiscount && $crystalDiscount['crystals_used'] > 0) {
-            // Deduct crystals used for discount
             $user->subtractCrystals($crystalDiscount['crystals_used']);
         }
         
-        // Award 10 crystals for every $1 spent when paying with Flouci
-        $crystalReward = floor($finalTotal * 10); // 10 crystals per $1
+        // award 10 crystals for every $1 spent when paying with Flouci
+        $crystalReward = floor($finalTotal * 10);
         $user->addCrystals($crystalReward);
         $this->entityManager->persist($user);
-          // Simulate Flouci transaction delay
-        // In real implementation, you would call Flouci API here
-        sleep(2); // Simulate processing delay
-          // Process the order
+        sleep(2); // simulation of delay :D
+
         $this->processOrder($request, 'Flouci', $deliveryAddress);
         
         return new JsonResponse([
@@ -200,11 +196,12 @@ class CartController extends AbstractController
     }
     
     #[Route('/checkout/crystals', name: 'cart_checkout_crystals', methods: ['POST'])]
-    #[IsGranted('ROLE_BUYER')]    public function checkoutCrystals(Request $request): JsonResponse
+    #[IsGranted('ROLE_BUYER')]    
+    public function checkoutCrystals(Request $request): JsonResponse
     {
         $deliveryAddress = $request->request->get('delivery_address');
         
-        // Validate delivery address
+        // validate delivery address
         if (empty($deliveryAddress) || strlen(trim($deliveryAddress)) < 10) {
             return new JsonResponse([
                 'success' => false,
@@ -218,22 +215,21 @@ class CartController extends AbstractController
         $session = $request->getSession();
         $crystalDiscount = $session->get('crystal_discount', null);
         
-        // Calculate final total
+        // total
         $finalTotal = $cart->getTotal();
         if ($crystalDiscount) {
             $finalTotal = $crystalDiscount['new_total'];
         }
         
-        // Calculate crystals needed for payment (100 crystals = $1)
         $crystalsNeededForPayment = ceil($finalTotal * 100);
         
-        // Calculate total crystals needed (payment + discount if any)
+        // crystals total
         $totalCrystalsNeeded = $crystalsNeededForPayment;
         if ($crystalDiscount && $crystalDiscount['crystals_used'] > 0) {
             $totalCrystalsNeeded += $crystalDiscount['crystals_used'];
         }
         
-        // Check if user has enough crystals for the total
+        // check if user has enough
         if ($user->getCrystals() < $totalCrystalsNeeded) {
             return new JsonResponse([
                 'success' => false,
@@ -246,10 +242,9 @@ class CartController extends AbstractController
                 )
             ], 400);
         }
-          // Deduct all crystals needed (payment + discount)
         $user->subtractCrystals($totalCrystalsNeeded);        
         $this->entityManager->persist($user);
-          // Process the order
+
         $this->processOrder($request, 'Crystals', $deliveryAddress);
         
         return new JsonResponse([
@@ -262,7 +257,8 @@ class CartController extends AbstractController
             'crystals_used' => $totalCrystalsNeeded
         ]);
     }    
-      private function processOrder(Request $request, string $paymentMethod, string $deliveryAddress): void
+    
+    private function processOrder(Request $request, string $paymentMethod, string $deliveryAddress): void
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -270,7 +266,6 @@ class CartController extends AbstractController
         $session = $request->getSession();
         $crystalDiscount = $session->get('crystal_discount', null);
         
-        // Calculate final total and crystals used
         $finalTotal = $cart->getTotal();
         $crystalsUsed = 0;
         if ($crystalDiscount) {
@@ -278,12 +273,11 @@ class CartController extends AbstractController
             $crystalsUsed = $crystalDiscount['crystals_used'] ?? 0;
         }
         
-        // If paying with crystals, add payment crystals to the total
         if ($paymentMethod === 'Crystals') {
             $crystalsUsed += ceil($finalTotal * 100); // 100 crystals = $1
         }
         
-        // Create the order before modifying cart/stock
+        // creating order here (cuz might need later idk)
         $order = $this->orderService->createOrderFromCart(
             $user,
             $cart,
@@ -292,19 +286,18 @@ class CartController extends AbstractController
             $crystalsUsed > 0 ? $crystalsUsed : null
         );
         
-        // Decrease stock for each product
+        // decrease stock
         foreach ($cart->getItems() as $item) {
             $product = $item->getProduct();
             $product->adjustStock(-$item->getQuantity());
             $this->entityManager->persist($product);
         }
         
-        // Clear crystal discount from session since order is complete
         if ($crystalDiscount) {
             $session->remove('crystal_discount');
         }
         
-        // Clear cart after successful order
+        // empty cart
         foreach ($cart->getItems() as $item) {
             $cart->removeItem($item);
             $this->entityManager->remove($item);
@@ -335,25 +328,25 @@ class CartController extends AbstractController
     {
         $quantities = $request->request->all('quantities');
 
-        // Convert string values to integers and filter out invalid entries
         $validQuantities = [];
         foreach ($quantities as $itemId => $quantity) {
             $qty = (int)$quantity;
-            if ($qty >= 0) { // Allow 0 to remove items
+            if ($qty >= 0) {
                 $validQuantities[(int)$itemId] = $qty;
             }
         }
-
+        
         try {
             $this->cartService->updateAllQuantities($validQuantities);
             $this->addFlash('success', 'Cart updated successfully!');
         } catch (\InvalidArgumentException $e) {
             $this->addFlash('error', $e->getMessage());
         }
-
+        
         return $this->redirectToRoute('cart_index');
     }
-
+    
+    #[Route('/checkout/apply-discount', name: 'cart_checkout_apply_discount', methods: ['POST'])]
     #[Route('/apply-crystal-discount', name: 'cart_apply_crystal_discount', methods: ['POST'])]
     #[IsGranted('ROLE_BUYER')]
     public function applyCrystalDiscount(Request $request): JsonResponse
@@ -362,7 +355,7 @@ class CartController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $cart = $this->cartService->getCartDetails();
-          // Validation
+
         if ($crystalsToUse < 0) {
             return new JsonResponse(['success' => false, 'error' => 'Cannot use negative crystals'], 400);
         }
@@ -374,13 +367,12 @@ class CartController extends AbstractController
             ], 400);
         }
         
-        // Calculate continuous discount: 1 crystal = 0.01% discount
+        // calculate discount: 1 crystal = 0.01% discount
         $discountPercent = $crystalsToUse * 0.01;
         $originalTotal = $cart->getTotal();
         $discountAmount = ($originalTotal * $discountPercent) / 100;
         $newTotal = $originalTotal - $discountAmount;
         
-        // Store discount in session for checkout process
         $session = $request->getSession();
         $session->set('crystal_discount', [
             'crystals_used' => $crystalsToUse,
@@ -389,59 +381,24 @@ class CartController extends AbstractController
             'original_total' => $originalTotal,
             'new_total' => $newTotal
         ]);
-          return new JsonResponse([
+
+        $response = [
             'success' => true,
             'crystals_used' => $crystalsToUse,
             'discount_percent' => number_format($discountPercent, 2),
             'discount_amount' => number_format($discountAmount, 2),
             'new_total' => number_format($newTotal, 2)
-        ]);
-    }
-
-    #[Route('/checkout/apply-discount', name: 'cart_checkout_apply_discount', methods: ['POST'])]
-    #[IsGranted('ROLE_BUYER')]
-    public function applyDiscountCheckout(Request $request): JsonResponse
-    {
-        $crystalsToUse = (int)$request->request->get('crystals', 0);
-        /** @var User $user */
-        $user = $this->getUser();
-        $cart = $this->cartService->getCartDetails();
-          // Validation
-        if ($crystalsToUse < 0) {
-            return new JsonResponse(['success' => false, 'error' => 'Cannot use negative crystals'], 400);
+        ];
+        
+        // add payment info if this is the checkout route (there were 2 functions but we merged them)
+        if ($request->attributes->get('_route') === 'cart_checkout_apply_discount') {
+            $response['crystals_needed_for_payment'] = ceil($newTotal * 100);
         }
         
-        if ($crystalsToUse > $user->getCrystals()) {
-            return new JsonResponse([
-                'success' => false, 
-                'error' => sprintf('You only have %d crystals available', $user->getCrystals())
-            ], 400);
-        }
-          // Calculate continuous discount: 1 crystal = 0.01% discount
-        $discountPercent = $crystalsToUse * 0.01;
-        $originalTotal = $cart->getTotal();
-        $discountAmount = ($originalTotal * $discountPercent) / 100;
-        $newTotal = $originalTotal - $discountAmount;
-        
-        // Store discount in session for checkout process
-        $session = $request->getSession();
-        $session->set('crystal_discount', [
-            'crystals_used' => $crystalsToUse,
-            'discount_percent' => $discountPercent,
-            'discount_amount' => $discountAmount,
-            'original_total' => $originalTotal,
-            'new_total' => $newTotal
-        ]);
-          return new JsonResponse([
-            'success' => true,
-            'crystals_used' => $crystalsToUse,
-            'discount_percent' => number_format($discountPercent, 2),
-            'discount_amount' => number_format($discountAmount, 2),
-            'new_total' => number_format($newTotal, 2),
-            'crystals_needed_for_payment' => ceil($newTotal * 100)
-        ]);
+        return new JsonResponse($response);
     }
 
+    // adding a button to checkout to clear the discount for convenience (instead of going back to cart)
     #[Route('/clear-crystal-discount', name: 'cart_clear_crystal_discount', methods: ['POST'])]
     #[IsGranted('ROLE_BUYER')]
     public function clearCrystalDiscount(Request $request): JsonResponse

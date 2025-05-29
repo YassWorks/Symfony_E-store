@@ -67,7 +67,7 @@ final class ProfileController extends AbstractController
             try {
                 $profileService->deleteUserAccount($user);
                 
-                // Invalidate the session and redirect to login
+                // invalidate the session and redirect to login
                 $this->container->get('security.token_storage')->setToken(null);
                 $request->getSession()->invalidate();
                 
