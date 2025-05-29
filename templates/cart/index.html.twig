@@ -103,9 +103,9 @@
 													</td>
 													<td class="text-center">
 														<form method="post" action="{{ path('cart_remove', { itemId: item.id }) }}" style="display: inline;">
-															<button class="btn btn-sm btn-outline-danger" type="submit">
+															<a class="btn btn-sm btn-outline-danger" href="{{ path('cart_remove', { itemId: item.id }) }}">
 																<span class="material-icons-outlined">delete</span>
-															</button>
+															</a>
 														</form>
 													</td>
 												</tr>

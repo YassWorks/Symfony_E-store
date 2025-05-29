@@ -54,7 +54,7 @@ class CartController extends AbstractController
         ]);
     }
 
-    #[Route('/remove/{itemId}', name: 'cart_remove', methods: ['POST'])]
+    #[Route('/remove/{itemId}', name: 'cart_remove', methods: ['POST', 'GET'])]
     #[IsGranted('ROLE_BUYER')]
     public function remove(int $itemId)
     {   
