@@ -13,10 +13,10 @@
       {% for review in reviews %}
         <div class="card review-card">
           <div class="review-header">
-            {% set avatar = review.user.avatarFilename|default('default.jpg') %}
+            {# {% set avatar = review.user.avatarFilename|default('default.jpg') %}
             <img src="/uploads/products_images/{{ avatar }}"
                  alt="{{ review.user.name }}"
-                 class="review-avatar">
+                 class="review-avatar"> #}
             <h5 class="mt-2 mb-0">{{ review.user.name }}</h5>
             <small class="text-muted">Rate : {{ review.rating }}/5</small>
           </div>
