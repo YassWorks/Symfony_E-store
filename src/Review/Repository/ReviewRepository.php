@@ -51,4 +51,18 @@ class ReviewRepository extends ServiceEntityRepository
 
         return $averages;
     }
+    public function findTopRatedProducts(int $limit = 5): array
+    {
+        return $this->getEntityManager()->createQuery(
+        'SELECT p, AVG(r.rating) AS avgRating
+         FROM App\Product\Entity\Product p
+         JOIN p.reviews r
+         GROUP BY p.id
+         ORDER BY avgRating DESC'
+    )
+    ->setMaxResults($limit)
+    ->getResult();
+    }
+
 }
+?>

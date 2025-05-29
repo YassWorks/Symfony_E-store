@@ -15,12 +15,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use App\Review\Service\ReviewService;
 
 final class AuthController extends AbstractController
 {   
     public function __construct(
         private readonly ProductService $productService,
-        private readonly ShopService $shopService
+        private readonly ShopService $shopService,
+        private readonly ReviewService $reviewService
     ) {}
 
    #[Route('/', name: 'landing_page')]
@@ -37,12 +39,15 @@ final class AuthController extends AbstractController
         
         // Get some featured shops (limit to 4)
         $featuredShops = array_slice($this->shopService->listAll(), 0, 4);
+
+        $topRatedProducts = $this->reviewService->getTopRatedProducts();
         
         return $this->render('home/index.html.twig', [
             'user' => $user,
             'featuredProducts' => $featuredProducts,
             'categories' => $categories,
             'featuredShops' => $featuredShops,
+            'topRatedProducts' => $topRatedProducts,
         ]);
     }#[Route('/login', name: 'login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils): Response
