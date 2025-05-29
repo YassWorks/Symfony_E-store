@@ -51,14 +51,16 @@
 							<div class="d-flex justify-content-between mb-2">
 								<span>Subtotal:</span>
 								<span class="fw-semibold">${{ cart.getTotal()|number_format(2, '.', ',') }}</span>
-							</div>
-							{% if crystal_discount %}
+							</div>							{% if crystal_discount %}
 								<div class="d-flex justify-content-between mb-2 text-success">
 									<span>Crystal Discount ({{ crystal_discount.discount_percent|number_format(2) }}%):</span>
 									<span>-${{ crystal_discount.discount_amount|number_format(2, '.', ',') }}</span>
 								</div>
-								<div class="small text-muted mb-2">
-									{{ crystal_discount.crystals_used }} crystals used for discount
+								<div class="d-flex justify-content-between align-items-center small text-muted mb-2">
+									<span>{{ crystal_discount.crystals_used }} crystals used for discount</span>
+									<button type="button" id="clear-crystal-discount" class="btn btn-sm btn-outline-danger" style="font-size: 11px; padding: 2px 8px;" title="Clear crystal discount">
+										<span class="material-icons-outlined" style="font-size: 12px;">close</span>
+									</button>
 								</div>
 							{% endif %}
 
@@ -307,6 +309,7 @@ const flouciForm = document.getElementById('flouci-payment-form');
 const crystalPaymentBtn = document.getElementById('crystal-payment-btn');
 const cancelButtons = document.querySelectorAll('.cancel-payment');
 const retryButton = document.getElementById('retry-payment');
+const clearDiscountBtn = document.getElementById('clear-crystal-discount');
 
 // Payment option selection
 paymentOptions.forEach(option => {
@@ -391,6 +394,29 @@ hideSuccess();
 paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
 paymentForms.forEach(form => form.style.display = 'none');
 });
+
+// Clear crystal discount
+if (clearDiscountBtn) {
+clearDiscountBtn.addEventListener('click', function () {
+fetch('{{ path("cart_clear_crystal_discount") }}', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded',
+'X-Requested-With': 'XMLHttpRequest'
+}
+}).then(response => response.json()).then(data => {
+if (data.success) {
+// Reload the page to show updated pricing without discount
+window.location.reload();
+} else {
+showError('Failed to clear crystal discount');
+}
+}).catch(error => {
+console.error('Error:', error);
+showError('An error occurred while clearing the discount');
+});
+});
+}
 
 function showLoading() {
 paymentForms.forEach(form => form.style.display = 'none');

@@ -326,4 +326,21 @@ class CartController extends AbstractController
             'crystals_needed_for_payment' => ceil($newTotal * 100)
         ]);
     }
+
+    #[Route('/clear-crystal-discount', name: 'cart_clear_crystal_discount', methods: ['POST'])]
+    #[IsGranted('ROLE_BUYER')]
+    public function clearCrystalDiscount(Request $request): JsonResponse
+    {
+        $session = $request->getSession();
+        $session->remove('crystal_discount');
+        
+        $cart = $this->cartService->getCartDetails();
+        $originalTotal = $cart->getTotal();
+        
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Crystal discount has been cleared',
+            'original_total' => number_format($originalTotal, 2)
+        ]);
+    }
 }
