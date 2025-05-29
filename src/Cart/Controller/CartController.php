@@ -5,6 +5,7 @@ namespace App\Cart\Controller;
 use App\Cart\Service\CartService;
 use App\Product\Entity\Product;
 use App\Auth\Entity\User;
+use App\Order\Service\OrderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,7 +19,8 @@ class CartController extends AbstractController
 {
     public function __construct(
         private CartService $cartService,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private OrderService $orderService
     ) {}
 
     #[Route('', name: 'cart_index', methods: ['GET'])]
@@ -172,13 +174,11 @@ class CartController extends AbstractController
             $user->subtractCrystals($crystalDiscount['crystals_used']);
             $this->entityManager->persist($user);
         }
-        
-        // Simulate Flouci transaction delay
+          // Simulate Flouci transaction delay
         // In real implementation, you would call Flouci API here
         sleep(2); // Simulate processing delay
-        
-        // Process the order
-        $this->processOrder($request);
+          // Process the order
+        $this->processOrder($request, 'Flouci', $deliveryAddress);
         
         return new JsonResponse([
             'success' => true,
@@ -233,13 +233,11 @@ class CartController extends AbstractController
                 )
             ], 400);
         }
-        
-        // Deduct all crystals needed (payment + discount)
+          // Deduct all crystals needed (payment + discount)
         $user->subtractCrystals($totalCrystalsNeeded);        
         $this->entityManager->persist($user);
-        
-        // Process the order
-        $this->processOrder($request);
+          // Process the order
+        $this->processOrder($request, 'Crystals', $deliveryAddress);
         
         return new JsonResponse([
             'success' => true,
@@ -251,14 +249,35 @@ class CartController extends AbstractController
             'crystals_used' => $totalCrystalsNeeded
         ]);
     }    
-    
-    private function processOrder(Request $request): void
+      private function processOrder(Request $request, string $paymentMethod, string $deliveryAddress): void
     {
         /** @var User $user */
         $user = $this->getUser();
         $cart = $this->cartService->getCartDetails();
         $session = $request->getSession();
         $crystalDiscount = $session->get('crystal_discount', null);
+        
+        // Calculate final total and crystals used
+        $finalTotal = $cart->getTotal();
+        $crystalsUsed = 0;
+        if ($crystalDiscount) {
+            $finalTotal = $crystalDiscount['new_total'];
+            $crystalsUsed = $crystalDiscount['crystals_used'] ?? 0;
+        }
+        
+        // If paying with crystals, add payment crystals to the total
+        if ($paymentMethod === 'Crystals') {
+            $crystalsUsed += ceil($finalTotal * 100); // 100 crystals = $1
+        }
+        
+        // Create the order before modifying cart/stock
+        $order = $this->orderService->createOrderFromCart(
+            $user,
+            $cart,
+            $paymentMethod,
+            $deliveryAddress,
+            $crystalsUsed > 0 ? $crystalsUsed : null
+        );
         
         // Decrease stock for each product
         foreach ($cart->getItems() as $item) {
@@ -279,7 +298,7 @@ class CartController extends AbstractController
         }
         
         $this->entityManager->flush();
-    }    
+    }
     
     #[Route('/update/{itemId}', name: 'cart_update', methods: ['POST'])]
     #[IsGranted('ROLE_BUYER')]

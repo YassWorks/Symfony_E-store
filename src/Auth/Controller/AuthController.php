@@ -44,7 +44,9 @@ final class AuthController extends AbstractController
             'categories' => $categories,
             'featuredShops' => $featuredShops,
         ]);
-    }#[Route('/login', name: 'login', methods: ['GET', 'POST'])]
+    }
+    
+    #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // get the login error if there is one

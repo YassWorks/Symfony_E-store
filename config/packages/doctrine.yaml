@@ -54,6 +54,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Review/Entity'
                 prefix: 'App\Review\Entity'
                 alias: Review
+            Order:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Order/Entity'
+                prefix: 'App\Order\Entity'
+                alias: Order
 
         controller_resolver:
             auto_mapping: false

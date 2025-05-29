@@ -135,6 +135,122 @@
 								<span class="material-icons-outlined me-2">add</span>
 								Add Your First Product
 							</a>
+						</div>					{% endif %}
+				</div>
+			</div>
+
+			<!-- Recent Purchases Section -->
+			<div class="card border-0 shadow-sm mt-4">
+				<div class="card-header bg-white border-0 py-3">
+					<div class="d-flex justify-content-between align-items-center">
+						<div>
+							<h5 class="mb-1 fw-bold">
+								<span class="material-icons-outlined me-2" style="vertical-align: middle;">
+									receipt_long
+								</span>
+								Recent Purchases
+							</h5>
+							<p class="text-muted mb-0">Latest orders for your products</p>
+							<br>
+						</div>
+					</div>
+				</div>
+				<div class="card-body p-0">
+					{% if recentOrders is defined and recentOrders|length > 0 %}
+						<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+							<table class="table table-hover align-middle mb-0">
+								<thead class="bg-light">
+									<tr>
+										<th class="ps-4 py-3 border-0">
+											<span class="text-muted fw-semibold">Order</span>
+										</th>
+										<th class="py-3 border-0">
+											<span class="text-muted fw-semibold">Customer</span>
+										</th>
+										<th class="py-3 border-0">
+											<span class="text-muted fw-semibold">Items</span>
+										</th>
+										<th class="py-3 border-0">
+											<span class="text-muted fw-semibold">Total</span>
+										</th>
+										<th class="py-3 border-0">
+											<span class="text-muted fw-semibold">Payment</span>
+										</th>
+										<th class="pe-4 py-3 border-0">
+											<span class="text-muted fw-semibold">Date</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for order in recentOrders %}
+										<tr class="border-bottom">
+											<td class="ps-4 py-3">
+												<div class="d-flex align-items-center">
+													<span class="material-icons-outlined text-primary me-2">receipt</span>
+													<div>
+														<h6 class="mb-0 fw-semibold">#{{ order.id }}</h6>
+														<small class="text-muted">Order ID</small>
+													</div>
+												</div>
+											</td>
+											<td class="py-3">
+												<div>
+													<small class="text-muted">{{ order.buyer.email }}</small>
+												</div>
+											</td>
+											<td class="py-3">
+												<div class="d-flex flex-column">
+													{% for item in order.items %}
+														{% if item.product.shop.id == shop.id %}
+															<div class="d-flex align-items-center mb-1">
+																<div class="me-2" style="width: 30px; height: 30px;">
+																	{% if item.product.images is defined and item.product.images|length > 0 %}
+																		{% set image = item.product.images[0] %}
+																		<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ item.product.title }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;">
+																	{% else %}
+																		<div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 100%; height: 100%;">
+																			<span class="material-icons-outlined text-muted" style="font-size: 16px;">image</span>
+																		</div>
+																	{% endif %}
+																</div>
+																<div class="flex-grow-1">
+																	<small class="fw-semibold">{{ item.product.title }}</small>
+																	<small class="text-muted d-block">Qty: {{ item.quantity }}</small>
+																</div>
+															</div>
+														{% endif %}
+													{% endfor %}
+												</div>
+											</td>
+											<td class="py-3">
+												<span class="fw-bold text-success">${{ order.totalAmount }}</span>
+											</td>
+											<td class="py-3">
+												<span class="badge {% if order.paymentMethod == 'Crystals' %}bg-warning{% else %}bg-info{% endif %} bg-opacity-50">
+													{{ order.paymentMethod }}
+													{% if order.crystalsUsed %}
+														<br><small>{{ order.crystalsUsed }} crystals</small>
+													{% endif %}
+												</span>
+											</td>
+											<td class="pe-4 py-3">
+												<div>
+													<small class="fw-semibold">{{ order.createdAt|date('M d, Y') }}</small>
+													<small class="text-muted d-block">{{ order.createdAt|date('H:i') }}</small>
+												</div>
+											</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					{% else %}
+						<div class="text-center py-5">
+							<div class="mb-4">
+								<span class="material-icons-outlined text-muted" style="font-size: 4rem;">receipt_long</span>
+							</div>
+							<h5 class="fw-bold mb-2">No Recent Purchases</h5>
+							<p class="text-muted mb-0">No customers have purchased your products yet. Keep promoting your shop!</p>
 						</div>
 					{% endif %}
 				</div>
