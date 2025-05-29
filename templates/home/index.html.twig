@@ -69,14 +69,17 @@
 			{% for category in categories|slice(0, 6) %}
 				<div class="col-md-6 col-lg-4">
 					<a href="{{ path('product_index', { 'categories': [category.value] }) }}" class="category-card">
-						<div class="category-icon">
-							<span class="material-icons-outlined">
-								{% if category.value == 'Electronics' %}devices
-								{% elseif category.value == 'Clothing' %}checkroom
-								{% elseif category.value == 'Books' %}menu_book
-								{% elseif category.value == 'Food' %}restaurant
-								{% elseif category.value == 'Sports' %}sports_soccer
-								{% elseif category.value == 'Health' %}health_and_safety
+						<div class="category-icon">							<span class="material-icons-outlined">
+								{% if category.value == 'ELECTRONICS' %}devices
+								{% elseif category.value == 'CLOTHES' %}checkroom
+								{% elseif category.value == 'BOOKS' %}menu_book
+								{% elseif category.value == 'FOOD' %}restaurant
+								{% elseif category.value == 'SPORTS' %}sports_soccer
+								{% elseif category.value == 'HEALTH' %}health_and_safety
+								{% elseif category.value == 'FURNITURE' %}chair
+								{% elseif category.value == 'TOYS' %}toys
+								{% elseif category.value == 'BEAUTY' %}face
+								{% elseif category.value == 'AUTOMOTIVE' %}directions_car
 								{% else %}category
 								{% endif %}
 							</span>
