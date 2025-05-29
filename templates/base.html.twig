@@ -43,14 +43,15 @@
 									{% endfor %}
 								</ul>
 							</div>
-						</div>						<div class="d-flex align-items-center">
+						</div>						
+                        <div class="d-flex align-items-center">
 							{% if app.user %}
 								<div class="d-flex align-items-center">
 									<a href="{{ path('wishlist_index') }}" class="nav-link" style="margin-left: 10px;">
 										<span class="material-icons-outlined me-1 align-middle">favorite_border</span>
 										Wishlist
 									</a>
-									<a href="{{ path('profile') }}" class="nav-link" style="margin-left: 10px;">
+									<a href="{{ path('profile') }}" class="nav-link" style="margin-left: 10px; margin-right: 10px;">
 										<span class="material-icons-outlined me-1 align-middle" style="position: relative; top:-2px">token</span>
 										{{ app.user.crystals }}
 										Crystals

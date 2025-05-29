@@ -111,28 +111,6 @@
 	</div>
 </section>
 
-<!-- Featured Products Section -->
-{% if featuredProducts|length > 0 %}
-<section class="featured-products-section section bg-light">
-	<div class="container">
-		<div class="section-header text-center">
-			<h2 class="section-title">Featured Products</h2>
-			<p class="section-description">Check out our handpicked selection of amazing products</p>
-		</div>		<div class="row g-4">
-			{% for product in featuredProducts %}
-				{% include 'home/product.html.twig' %}
-			{% endfor %}
-		</div>
-		<div class="text-center mt-5">
-			<a href="{{ path('product_index') }}" class="btn btn-primary btn-lg">
-				<span class="material-icons-outlined me-2">inventory</span>
-				View All Products
-			</a>
-		</div>
-	</div>
-</section>
-{% endif %}
-
 <!-- Why Choose Us Section -->
 <section class="features-section section">
 	<div class="container">
