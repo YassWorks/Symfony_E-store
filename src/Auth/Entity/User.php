@@ -32,9 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(type: 'integer')]
-    private int $crystals = 0;
-
-    /**
+    private int $crystals = 0;    /**
      * @var Collection<int, \App\Wishlist\Entity\Wishlist>
      */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: \App\Wishlist\Entity\Wishlist::class, cascade: ['remove'])]

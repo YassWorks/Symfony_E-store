@@ -40,14 +40,19 @@
 					class="row">
 					<!-- User Information Card -->
 					<div class="col-lg-6 mb-4">
-						<div class="card border-0 shadow-sm">
-							<div class="card-header bg-white border-0 py-3">
-								<h5 class="mb-0 fw-bold">
-									<span class="material-icons-outlined me-2" style="vertical-align: middle;">
-										account_circle
-									</span>
-									Personal Information
-								</h5>
+						<div class="card border-0 shadow-sm">							<div class="card-header bg-white border-0 py-3">
+								<div class="d-flex justify-content-between align-items-center">
+									<h5 class="mb-0 fw-bold">
+										<span class="material-icons-outlined me-2" style="vertical-align: middle;">
+											account_circle
+										</span>
+										Personal Information
+									</h5>
+									<a href="{{ path('profile_edit') }}" class="btn btn-sm btn-outline-primary">
+										<span class="material-icons-outlined me-1" style="font-size: 18px;">edit</span>
+										Edit
+									</a>
+								</div>
 							</div>
 							<div class="card-body">
 								<div class="row mb-3">
@@ -68,13 +73,28 @@
 										<p class="form-control-plaintext mb-0">#{{ app.user.id }}</p>
 									</div>
 								</div>
-								<div class="row">
+								<div class="row mb-3">
 									<label class="col-sm-4 col-form-label fw-semibold text-muted">Account Type:</label>
 									<div class="col-sm-8">
 										<div class="d-flex flex-wrap gap-2">
 											{% for role in app.user.rolesEnums %}
 												<span class="badge bg-primary">{{ role.name|replace({'ROLE_': ''})|title }}</span>
 											{% endfor %}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<hr class="my-3">
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<h6 class="text-danger mb-1">Danger Zone</h6>
+												<small class="text-muted">Permanently delete your account and all associated data</small>
+											</div>
+											<button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+												<span class="material-icons-outlined me-1" style="font-size: 18px;">delete</span>
+												Delete Account
+											</button>
 										</div>
 									</div>
 								</div>
@@ -205,9 +225,56 @@
 								</div>
 							</div>
 						</div>
-					{% endif %}
-				</div>
+					{% endif %}				</div>
 
+			</div>
+		</div>
+	</div>
+
+	<!-- Delete Account Modal -->
+	<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header border-0">
+					<h5 class="modal-title text-danger" id="deleteAccountModalLabel">
+						<span class="material-icons-outlined me-2">warning</span>
+						Delete Account
+					</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="alert alert-danger" role="alert">
+						<span class="material-icons-outlined me-2">error_outline</span>
+						<strong>Warning:</strong> This action cannot be undone!
+					</div>
+					
+					<p class="mb-3">Deleting your account will permanently remove:</p>
+					<ul class="mb-3">
+						<li>Your personal information and profile</li>
+						<li>Your shopping cart and wishlist</li>
+						{% if user_has_shop(app.user) %}
+							<li><strong>Your shop and all its products</strong></li>
+						{% endif %}
+						<li>All associated data and history</li>
+					</ul>
+					
+					<p class="text-muted mb-0">
+						<strong>Are you sure you want to delete your account?</strong>
+					</p>
+				</div>
+				<div class="modal-footer border-0">
+					<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+						<span class="material-icons-outlined me-1">cancel</span>
+						Cancel
+					</button>
+					<form method="post" action="{{ path('profile_delete') }}" style="display: inline;">
+						<input type="hidden" name="_token" value="{{ csrf_token('delete_account' ~ app.user.id) }}">
+						<button type="submit" class="btn btn-danger" onclick="return confirm('Are you absolutely sure? This action cannot be undone!')">
+							<span class="material-icons-outlined me-1">delete_forever</span>
+							Delete My Account
+						</button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
