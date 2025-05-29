@@ -162,18 +162,28 @@ class CartController extends AbstractController
                 'error' => 'Please enter a valid delivery address (minimum 10 characters)'
             ], 400);
         }
-        
-        // Check if there's a crystal discount and deduct those crystals
+          // Check if there's a crystal discount and deduct those crystals
         /** @var User $user */
         $user = $this->getUser();
         $session = $request->getSession();
         $crystalDiscount = $session->get('crystal_discount', null);
         
+        // Calculate final total to determine crystal reward
+        $cart = $this->cartService->getCartDetails();
+        $finalTotal = $cart->getTotal();
+        if ($crystalDiscount) {
+            $finalTotal = $crystalDiscount['new_total'];
+        }
+        
         if ($crystalDiscount && $crystalDiscount['crystals_used'] > 0) {
             // Deduct crystals used for discount
             $user->subtractCrystals($crystalDiscount['crystals_used']);
-            $this->entityManager->persist($user);
         }
+        
+        // Award 10 crystals for every $1 spent when paying with Flouci
+        $crystalReward = floor($finalTotal * 10); // 10 crystals per $1
+        $user->addCrystals($crystalReward);
+        $this->entityManager->persist($user);
           // Simulate Flouci transaction delay
         // In real implementation, you would call Flouci API here
         sleep(2); // Simulate processing delay
@@ -182,7 +192,10 @@ class CartController extends AbstractController
         
         return new JsonResponse([
             'success' => true,
-            'message' => 'Payment processed successfully via Flouci! Your order will be shipped soon.'
+            'message' => sprintf(
+                'Payment processed successfully via Flouci! Your order will be shipped soon. You earned %d crystals!',
+                $crystalReward
+            )
         ]);
     }
     

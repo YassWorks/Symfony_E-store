@@ -88,15 +88,21 @@
 							<div class="col-12">
 								<div class="payment-option" data-payment="flouci">
 									<div class="card border-2 payment-card" style="cursor: pointer; transition: var(--transition);">
-										<div class="card-body py-3">
-											<div class="d-flex align-items-center">
+										<div class="card-body py-3">											<div class="d-flex align-items-center">
 												<span class="material-icons-outlined text-primary me-3" style="font-size: 32px;">phone_android</span>
 												<div class="flex-grow-1">
 													<h6 class="fw-bold mb-1">Pay with Flouci</h6>
 													<small class="text-muted">Mobile payment solution</small>
+													<div class="small text-success mt-1">
+														<span class="material-icons-outlined" style="font-size: 14px; vertical-align: middle;">auto_awesome</span>
+														Earn 10 crystals per $1 spent!
+													</div>
 												</div>
 												<div class="text-end">
 													<small class="badge bg-primary">Recommended</small>
+													<div class="small text-success mt-1">
+														+{{ (final_total * 10)|round }} crystals
+													</div>
 												</div>
 											</div>
 										</div>
@@ -129,11 +135,18 @@
 						</div>						<!-- Flouci Payment Form -->
 						<div id="flouci-form" class="payment-form" style="display: none;">
 							<div class="card border-primary bg-light">
-								<div class="card-body">
-									<div class="d-flex align-items-center mb-3">
+								<div class="card-body">									<div class="d-flex align-items-center mb-3">
 										<span class="material-icons-outlined text-primary me-2">phone_android</span>
 										<h5 class="mb-0 text-primary">Flouci Payment</h5>
-									</div>									<form id="flouci-payment-form">
+									</div>
+									<div class="alert alert-success border-0 py-2 mb-3">
+										<div class="d-flex align-items-center">
+											<span class="material-icons-outlined text-success me-2" style="font-size: 18px;">auto_awesome</span>
+											<small class="mb-0">
+												<strong>Crystal Reward:</strong> You'll earn {{ (final_total * 10)|round }} crystals with this purchase!
+											</small>
+										</div>
+									</div><form id="flouci-payment-form">
 										<div class="mb-3">
 											<label for="phone-number" class="form-label">Phone Number</label>
 											<div class="input-group">
