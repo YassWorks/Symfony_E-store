@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Shared\Enum\Category;
+use App\Wishlist\Service\WishlistService;
 
 #[Route('/products')]
 class ProductController extends AbstractController
@@ -20,11 +21,11 @@ class ProductController extends AbstractController
     public function __construct(
         private readonly ProductService $service,
         private readonly FileUploader $uploader,
-        private readonly ShopService $shopService 
+        private readonly ShopService $shopService
     ) {}
 
     #[Route('', name: 'product_index', methods: ['GET'])]
-    public function index(Request $request): Response
+    public function index(Request $request, WishlistService $wishlistService): Response
     {   
         $qRaw = $request->query->get('q', '');
         $minRaw = $request->query->get('minPrice', '');
@@ -47,12 +48,14 @@ class ProductController extends AbstractController
         $allShops = $this->shopService->listAll();
         $allCategories = Category::cases();
         $products = $this->service->findByFilters($criteria);
-
+        $wishlist = $wishlistService->getOrCreateByUser($this->getUser());
+        
         return $this->render('product/index.html.twig', [
-                'products'      => $products,
-                'allShops'      => $allShops,
+                'products'=> $products,
+                'allShops'=> $allShops,
                 'allCategories' => $allCategories,
-                'criteria'      => $criteria,
+                'criteria'=> $criteria,
+                'wishlist'=> $wishlist
             ]);
     }
 

@@ -92,6 +92,24 @@
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="fs-5 fw-bold text-primary">${{ product.price }}</span>
                     <span class="badge bg-light text-dark">{{ product.category.value }}</span>
+                    <a
+                      href="{% if product in wishlist.items %}
+                              {{ path('wishlist_delete', { id: product.id }) }}
+                            {% else %}
+                              {{ path('wishlist_add',{ id: product.id }) }}
+                            {% endif %}"
+                      class="text-decoration-none"
+                      style="cursor: pointer;"
+                    >
+                      <span class="material-icons-outlined me-1 text-danger">
+                        {% if product in wishlist.items %}
+                          favorite
+                        {% else %}
+                          favorite_border
+                        {% endif %}
+                      </span>
+                    </a>
+
                   </div>
 
                   {# Shop info partial #}

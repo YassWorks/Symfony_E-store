@@ -33,3 +33,9 @@ admin_controllers:
         path: '../src/Admin/Controller/'
         namespace: App\Admin\Controller
     type: attribute
+
+wishlist_controllers:
+    resource: 
+        path: '../src/Wishlist/Controller/'
+        namespace: App\Wishlist\Controller
+    type: attribute
