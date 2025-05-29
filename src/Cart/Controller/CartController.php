@@ -260,19 +260,21 @@ class CartController extends AbstractController
         }
         
         $this->entityManager->flush();
-    }
-
-    #[Route('/update/{itemId}', name: 'cart_update', methods: ['POST'])]
+    }    #[Route('/update/{itemId}', name: 'cart_update', methods: ['POST'])]
     #[IsGranted('ROLE_BUYER')]
     public function updateQuantity(Request $request, int $itemId): Response
     {
         $qty = (int)$request->request->get('quantity', 1);
-        $this->cartService->updateQuantity($itemId, $qty);
+        
+        try {
+            $this->cartService->updateQuantity($itemId, $qty);
+            $this->addFlash('success', 'Quantity updated successfully!');
+        } catch (\InvalidArgumentException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
 
         return $this->redirectToRoute('cart_index');
-    }
-
-    #[Route('/update-all', name: 'cart_update_all', methods: ['POST'])]
+    }#[Route('/update-all', name: 'cart_update_all', methods: ['POST'])]
     #[IsGranted('ROLE_BUYER')]
     public function updateAllQuantities(Request $request): Response
     {
@@ -287,7 +289,12 @@ class CartController extends AbstractController
             }
         }
 
-        $this->cartService->updateAllQuantities($validQuantities);
+        try {
+            $this->cartService->updateAllQuantities($validQuantities);
+            $this->addFlash('success', 'Cart updated successfully!');
+        } catch (\InvalidArgumentException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
 
         return $this->redirectToRoute('cart_index');
     }

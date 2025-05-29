@@ -78,11 +78,18 @@ class CartService
     {
         return $this->getCart();
     }    
-    
-    public function updateQuantity(int $itemId, int $quantity): void
+      public function updateQuantity(int $itemId, int $quantity): void
     {
         $item = $this->em->find(CartItem::class, $itemId);
         if ($item && $quantity > 0) {
+            // Check stock availability
+            $product = $item->getProduct();
+            if ($quantity > $product->getStockQuantity()) {
+                throw new \InvalidArgumentException(
+                    sprintf('Cannot set quantity to %d. Only %d items available in stock.', 
+                    $quantity, $product->getStockQuantity())
+                );
+            }
             $item->setQuantity($quantity);
         } elseif ($item) {
             // remove if zero or negative
@@ -91,14 +98,21 @@ class CartService
             $this->em->remove($item);
         }
         $this->em->flush();
-    }    
-      public function updateAllQuantities(array $quantities): void
+    }      public function updateAllQuantities(array $quantities): void
     {
         $cart = $this->getCart();
           foreach ($quantities as $itemId => $quantity) {
             $item = $this->em->find(CartItem::class, $itemId);
             if ($item && $item->getCart() && $item->getCart()->getId() === $cart->getId()) {
                 if ($quantity > 0) {
+                    // Check stock availability
+                    $product = $item->getProduct();
+                    if ($quantity > $product->getStockQuantity()) {
+                        throw new \InvalidArgumentException(
+                            sprintf('Cannot set quantity to %d for "%s". Only %d items available in stock.', 
+                            $quantity, $product->getTitle(), $product->getStockQuantity())
+                        );
+                    }
                     $item->setQuantity($quantity);
                 } else {
                     // remove if zero or negative
