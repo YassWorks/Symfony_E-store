@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Review\Service\ReviewService;
 
 final class SellerController extends AbstractController
 {
@@ -91,19 +92,23 @@ final class SellerController extends AbstractController
     }
 
     #[Route('/dashboard', name: 'seller_dashboard', methods: ['GET'])]
-    public function dashboard(): Response
+    public function dashboard(ReviewService $ReviewService): Response
     {
         $user = $this->getUser();
-
         $shop = $this->shopService->getShopByUser($user);
         $products = [];
+        $averageRatings = [];
         if ($shop) {
-            $products = $shop->getProducts(); // Get products associated with the shop
+            $products = $shop->getProducts();
+            
+            $productIds = array_map(fn($p) => $p->getId(), $products->toArray());
+            $averageRatings = $ReviewService->getProdsAvg($productIds);
         }
 
         return $this->render('seller/dashboard.html.twig', [
             'products' => $products,
-            'shop' => $shop
+            'shop' => $shop,
+            'averageRatings' => $averageRatings
         ]);
     }
 }

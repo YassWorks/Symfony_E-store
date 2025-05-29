@@ -56,4 +56,12 @@ class ReviewService
     {
         return $this->repo->findByProduct($productId);
     }
+    public function getAvgs(int $productId): ?float
+    {
+        return $this->repo->getAverageRatingForProduct($productId);
+    }
+    public function getProdsAvg(array $productIds): array
+    {
+        return $this->repo->getAverageRatingsForShopProducts($productIds);
+    }
 }

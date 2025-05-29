@@ -60,6 +60,7 @@
 											<span class="text-muted fw-semibold">Stock</span>
 										</th>
 										<th class="pe-4 py-3 border-0 text-center"></th>
+										<th class="pe-4 py-3 border-0 text-center">Average rate</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -99,6 +100,13 @@
 													</a>
 													{{ include('product/_delete_form.html.twig', {product: product}) }}
 												</div>
+											</td>
+											<td class="py-3">
+												{% if averageRatings[product.id] is defined %}
+													{{ averageRatings[product.id] }}/5
+												{% else %}
+													no rates yet
+												{% endif %}
 											</td>
 										</tr>
 									{% endfor %}
