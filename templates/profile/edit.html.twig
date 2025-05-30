@@ -1,10 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Profile
-{% endblock %}
+{% block title %}Edit Profile{% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('css/seller.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/seller.css') }}" />
 {% endblock %}
 
 {% block body %}
@@ -14,14 +13,11 @@
 				<div class="card border-0 shadow-sm">
 					<div class="card-header bg-white border-0 py-3">
 						<h2 class="mb-0 fw-bold">
-							<span class="material-icons-outlined me-2" style="font-size: 2rem; vertical-align: middle;">
-								edit
-							</span>
+							<span class="material-icons-outlined me-2" style="font-size: 2rem; vertical-align: middle;">edit</span>
 							Edit Profile
 						</h2>
 					</div>
 					<div class="card-body p-4">
-						
 						{% for message in app.flashes('success') %}
 							<div class="alert alert-success alert-dismissible fade show" role="alert">
 								<span class="material-icons-outlined me-2">check_circle</span>
@@ -68,7 +64,6 @@
 						</div>
 
 						{{ form_end(form) }}
-
 					</div>
 				</div>
 			</div>

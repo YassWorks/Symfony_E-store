@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Checkout
-{% endblock %}
+{% block title %}Checkout{% endblock %}
 
 {% block body %}
 	<div style="padding-top: 40px">
@@ -46,7 +45,8 @@
 									</div>
 								</div>
 							{% endfor %}
-						</div>						<!-- Pricing Details -->
+						</div>						
+                        <!-- Pricing Details -->
 						<div class="border-top pt-3">
 							<div class="d-flex justify-content-between mb-2">
 								<span>Subtotal:</span>
@@ -74,7 +74,7 @@
 			</div>
 
 			<!-- Payment Methods Side -->
-			<div class="col-lg-6">				<!-- Payment Methods Card -->
+			<div class="col-lg-6">
 				<div class="card">
 					<div class="card-header">
 						<h4 class="mb-0 fw-bold">
@@ -82,6 +82,7 @@
 							Payment Method
 						</h4>
 					</div>
+
 					<div class="card-body">
 						<div class="row g-3 mb-4">
 							<!-- Flouci Payment -->
@@ -132,7 +133,9 @@
 									</div>
 								</div>
 							</div>
-						</div>						<!-- Flouci Payment Form -->
+						</div>						
+                        
+                        <!-- Flouci Payment Form -->
 						<div id="flouci-form" class="payment-form" style="display: none;">
 							<div class="card border-primary bg-light">
 								<div class="card-body">									<div class="d-flex align-items-center mb-3">
@@ -259,6 +262,7 @@
 			</div>
 		</div>
 	</div>
+
 	<style>
 		.payment-card {
 			border: 2px solid var(--gray-medium) !important;
@@ -321,175 +325,186 @@
 
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
-const paymentOptions = document.querySelectorAll('.payment-option');
-const paymentForms = document.querySelectorAll('.payment-form');
-const loadingState = document.getElementById('loading-state');
-const successState = document.getElementById('success-state');
-const errorState = document.getElementById('error-state');
-const flouciForm = document.getElementById('flouci-payment-form');
-const crystalPaymentBtn = document.getElementById('crystal-payment-btn');
-const cancelButtons = document.querySelectorAll('.cancel-payment');
-const retryButton = document.getElementById('retry-payment');
-const clearDiscountBtn = document.getElementById('clear-crystal-discount');
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            const paymentForms = document.querySelectorAll('.payment-form');
+            const loadingState = document.getElementById('loading-state');
+            const successState = document.getElementById('success-state');
+            const errorState = document.getElementById('error-state');
+            const flouciForm = document.getElementById('flouci-payment-form');
+            const crystalPaymentBtn = document.getElementById('crystal-payment-btn');
+            const cancelButtons = document.querySelectorAll('.cancel-payment');
+            const retryButton = document.getElementById('retry-payment');
+            const clearDiscountBtn = document.getElementById('clear-crystal-discount');
 
-// Payment option selection
-paymentOptions.forEach(option => {
-option.addEventListener('click', function () {
-const paymentType = this.dataset.payment;
+            // Payment option selection
+            paymentOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    const paymentType = this.dataset.payment;
 
-// Reset all selections
-paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
-paymentForms.forEach(form => form.style.display = 'none');
+                    // Reset all selections
+                    paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
+                    paymentForms.forEach(form => form.style.display = 'none');
 
-// Select current option
-this.querySelector('.payment-card').classList.add('selected');
-document.getElementById(paymentType + '-form').style.display = 'block';
-});
-});
+                    // Select current option
+                    this.querySelector('.payment-card').classList.add('selected');
+                    document.getElementById(paymentType + '-form').style.display = 'block';
+                });
+            });
 
-// Cancel payment
-cancelButtons.forEach(btn => {
-btn.addEventListener('click', function () {
-paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
-paymentForms.forEach(form => form.style.display = 'none');
-});
-});
+            // Cancel payment
+            cancelButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
+                    paymentForms.forEach(form => form.style.display = 'none');
+                });
+            });
 
-// Flouci payment form
-flouciForm.addEventListener('submit', function (e) {
-e.preventDefault();
-const phoneNumber = document.getElementById('phone-number').value;
-const deliveryAddress = document.getElementById('delivery-address').value.trim();
+            // Flouci payment form
+            flouciForm.addEventListener('submit', function (e) {
+                e.preventDefault();
 
-if (!/^\d{8}$/.test(phoneNumber)) {
-showError('Please enter a valid 8-digit phone number');
-return;
-}
+                const phoneNumber = document.getElementById('phone-number').value;
+                const deliveryAddress = document.getElementById('delivery-address').value.trim();
 
-if (!deliveryAddress || deliveryAddress.length < 10) {
-showError('Please enter a valid delivery address (minimum 10 characters)');
-return;
-}
+                if (!/^\d{8}$/.test(phoneNumber)) {
+                    showError('Please enter a valid 8-digit phone number');
+                    return;
+                }
 
-showLoading();
+                if (!deliveryAddress || deliveryAddress.length < 10) {
+                    showError('Please enter a valid delivery address (minimum 10 characters)');
+                    return;
+                }
 
-fetch('{{ path("cart_checkout_flouci") }}', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/x-www-form-urlencoded'
-},
-body: 'phone_number=' + encodeURIComponent(phoneNumber) + '&delivery_address=' + encodeURIComponent(deliveryAddress)
-}).then(response => response.json()).then(data => {
-hideLoading();
-if (data.success) {
-showSuccess(data.message);
-} else {
-showError(data.error);
-}
-}).catch(error => {
-hideLoading();
-showError('An error occurred while processing your payment. Please try again.');
-});
-});
+                showLoading();
 
-// Crystal payment
-crystalPaymentBtn.addEventListener('click', function () {
-const crystalDeliveryAddress = document.getElementById('crystal-delivery-address').value.trim();
+                fetch('{{ path("cart_checkout_flouci") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'phone_number=' + encodeURIComponent(phoneNumber) +
+                        '&delivery_address=' + encodeURIComponent(deliveryAddress)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        showSuccess(data.message);
+                    } else {
+                        showError(data.error);
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    showError('An error occurred while processing your payment. Please try again.');
+                });
+            });
 
-if (!crystalDeliveryAddress || crystalDeliveryAddress.length < 10) {
-showError('Please enter a valid delivery address (minimum 10 characters)');
-return;
-}
+            // Crystal payment
+            crystalPaymentBtn.addEventListener('click', function () {
+                const crystalDeliveryAddress = document.getElementById('crystal-delivery-address').value.trim();
 
-showLoading();
+                if (!crystalDeliveryAddress || crystalDeliveryAddress.length < 10) {
+                    showError('Please enter a valid delivery address (minimum 10 characters)');
+                    return;
+                }
 
-fetch('{{ path("cart_checkout_crystals") }}', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/x-www-form-urlencoded'
-},
-body: 'delivery_address=' + encodeURIComponent(crystalDeliveryAddress)
-}).then(response => response.json()).then(data => {
-hideLoading();
-if (data.success) {
-showSuccess(data.message);
-} else {
-showError(data.error);
-}
-}).catch(error => {
-hideLoading();
-showError('An error occurred while processing your payment. Please try again.');
-});
-});
+                showLoading();
 
-// Retry payment
-retryButton.addEventListener('click', function () {
-hideError();
-hideSuccess();
-paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
-paymentForms.forEach(form => form.style.display = 'none');
-});
+                fetch('{{ path("cart_checkout_crystals") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'delivery_address=' + encodeURIComponent(crystalDeliveryAddress)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        showSuccess(data.message);
+                    } else {
+                        showError(data.error);
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    showError('An error occurred while processing your payment. Please try again.');
+                });
+            });
 
-// Clear crystal discount
-if (clearDiscountBtn) {
-clearDiscountBtn.addEventListener('click', function () {
-fetch('{{ path("cart_clear_crystal_discount") }}', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/x-www-form-urlencoded',
-'X-Requested-With': 'XMLHttpRequest'
-}
-}).then(response => response.json()).then(data => {
-if (data.success) {
-// Reload the page to show updated pricing without discount
-window.location.reload();
-} else {
-showError('Failed to clear crystal discount');
-}
-}).catch(error => {
-console.error('Error:', error);
-showError('An error occurred while clearing the discount');
-});
-});
-}
+            // Retry payment
+            retryButton.addEventListener('click', function () {
+                hideError();
+                hideSuccess();
+                paymentOptions.forEach(opt => opt.querySelector('.payment-card').classList.remove('selected'));
+                paymentForms.forEach(form => form.style.display = 'none');
+            });
 
-function showLoading() {
-paymentForms.forEach(form => form.style.display = 'none');
-errorState.style.display = 'none';
-successState.style.display = 'none';
-loadingState.style.display = 'block';
-}
+            // Clear crystal discount
+            if (clearDiscountBtn) {
+                clearDiscountBtn.addEventListener('click', function () {
+                    fetch('{{ path("cart_clear_crystal_discount") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload(); // Reload the page to update pricing
+                        } else {
+                            showError('Failed to clear crystal discount');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('An error occurred while clearing the discount');
+                    });
+                });
+            }
 
-function hideLoading() {
-loadingState.style.display = 'none';
-}
+            // Helper functions
+            function showLoading() {
+                paymentForms.forEach(form => form.style.display = 'none');
+                errorState.style.display = 'none';
+                successState.style.display = 'none';
+                loadingState.style.display = 'block';
+            }
 
-function showSuccess(message) {
-document.getElementById('success-message').textContent = message;
-successState.style.display = 'block';
-}
+            function hideLoading() {
+                loadingState.style.display = 'none';
+            }
 
-function hideSuccess() {
-successState.style.display = 'none';
-}
+            function showSuccess(message) {
+                document.getElementById('success-message').textContent = message;
+                successState.style.display = 'block';
+            }
 
-function showError(message) {
-document.getElementById('error-message').textContent = message;
-errorState.style.display = 'block';
-}
+            function hideSuccess() {
+                successState.style.display = 'none';
+            }
 
-function hideError() {
-errorState.style.display = 'none';
-}
+            function showError(message) {
+                document.getElementById('error-message').textContent = message;
+                errorState.style.display = 'block';
+            }
 
-// Phone number input validation
-const phoneInput = document.getElementById('phone-number');
-phoneInput.addEventListener('input', function () {
-this.value = this.value.replace(/\D/g, '');
-if (this.value.length > 8) {
-this.value = this.value.slice(0, 8);
-}
-});
-});
+            function hideError() {
+                errorState.style.display = 'none';
+            }
+
+            // Phone number input validation
+            const phoneInput = document.getElementById('phone-number');
+            phoneInput.addEventListener('input', function () {
+                this.value = this.value.replace(/\D/g, '');
+                if (this.value.length > 8) {
+                    this.value = this.value.slice(0, 8);
+                }
+            });
+        });
 	</script>
 {% endblock %}

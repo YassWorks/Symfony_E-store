@@ -1,10 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register
-{% endblock %}
+{% block title %}Register{% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('css/seller.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/seller.css') }}" />
 {% endblock %}
 
 {% block header %}{% endblock %}
@@ -50,9 +49,7 @@
 			{{ form_end(registrationForm) }}
 
 			<div class="register-link">
-				<span>Already have an account?
-					<a href="{{ path('login') }}">Sign in</a>
-				</span>
+				<span>Already have an account? <a href="{{ path('login') }}">Sign in</a></span>
 			</div>
 
 			<div class="text-center mt-4">

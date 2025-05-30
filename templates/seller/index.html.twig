@@ -1,10 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register Your Shop
-{% endblock %}
+{% block title %}Register Your Shop{% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('css/seller.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/seller.css') }}" />
 {% endblock %}
 
 {% block header %}{% endblock %}
@@ -91,72 +90,72 @@
 		</div>
 	</div>
 
-	 <script>
-	        document.addEventListener('DOMContentLoaded', function() {
-	            const dropdown = document.getElementById('categoryDropdown');
-	            const addButton = document.getElementById('addCategory');
-	            const selectedList = document.getElementById('selectedCategories');
-	            const inputsContainer = document.getElementById('categoryInputs');
-	            const selectedCategories = new Set();
-	            
-	            // Get the original form widget checkboxes
-	            const originalCheckboxes = document.querySelectorAll('input[name^="form[categories]"][type="checkbox"]');
-	
-	            // Add category when button clicked
-	            addButton.addEventListener('click', function() {
-	                addSelectedCategory();
-	            });
-	
-	            // Also allow adding by pressing Enter on the dropdown
-	            dropdown.addEventListener('keypress', function(e) {
-	                if (e.key === 'Enter') {
-	                    e.preventDefault();
-	                    addSelectedCategory();
-	                }
-	            });
-	
-	            function addSelectedCategory() {
-	                const categoryValue = dropdown.value;
-	                const categoryText = dropdown.options[dropdown.selectedIndex].text;
-	                
-	                if (categoryValue && !selectedCategories.has(categoryValue)) {
-	                    // Add to selected set
-	                    selectedCategories.add(categoryValue);
-	                    
-	                    // Create list item
-	                    const li = document.createElement('li');
-	                    li.dataset.value = categoryValue;
-	                    li.innerHTML = `
-	                        <span>${categoryText}</span>
-	                        <button type="button" class="remove-category">&times;</button>
-	                    `;
-	                    
-	                    // Add remove functionality
-	                    const removeButton = li.querySelector('.remove-category');
-	                    removeButton.addEventListener('click', function() {
-	                        selectedCategories.delete(categoryValue);
-	                        li.remove();
-	                        
-	                        // Uncheck the original checkbox
-	                        originalCheckboxes.forEach(function(checkbox) {
-	                            if (checkbox.value === categoryValue) {
-	                                checkbox.checked = false;
-	                            }
-	                        });
-	                    });
-	                    
-	                    selectedList.appendChild(li);
-	                    
-	                    // Check the corresponding original checkbox
-	                    originalCheckboxes.forEach(function(checkbox) {
-	                        if (checkbox.value === categoryValue) {
-	                            checkbox.checked = true;
-	                        }
-	                    });
-	                      // Reset dropdown
-	                    dropdown.selectedIndex = 0;
-	                }
-	            }
-	        });
-	    </script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const dropdown = document.getElementById('categoryDropdown');
+			const addButton = document.getElementById('addCategory');
+			const selectedList = document.getElementById('selectedCategories');
+			const inputsContainer = document.getElementById('categoryInputs');
+			const selectedCategories = new Set();
+
+			// Get the original form widget checkboxes
+			const originalCheckboxes = document.querySelectorAll('input[name^="form[categories]"][type="checkbox"]');
+
+			// Add category when button clicked
+			addButton.addEventListener('click', function() {
+				addSelectedCategory();
+			});
+
+			// Also allow adding by pressing Enter on the dropdown
+			dropdown.addEventListener('keypress', function(e) {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					addSelectedCategory();
+				}
+			});
+
+			function addSelectedCategory() {
+				const categoryValue = dropdown.value;
+				const categoryText = dropdown.options[dropdown.selectedIndex].text;
+				
+				if (categoryValue && !selectedCategories.has(categoryValue)) {
+					// Add to selected set
+					selectedCategories.add(categoryValue);
+					
+					// Create list item
+					const li = document.createElement('li');
+					li.dataset.value = categoryValue;
+					li.innerHTML = `
+						<span>${categoryText}</span>
+						<button type="button" class="remove-category">&times;</button>
+					`;
+					
+					// Add remove functionality
+					const removeButton = li.querySelector('.remove-category');
+					removeButton.addEventListener('click', function() {
+						selectedCategories.delete(categoryValue);
+						li.remove();
+						
+						// Uncheck the original checkbox
+						originalCheckboxes.forEach(function(checkbox) {
+							if (checkbox.value === categoryValue) {
+								checkbox.checked = false;
+							}
+						});
+					});
+					
+					selectedList.appendChild(li);
+					
+					// Check the corresponding original checkbox
+					originalCheckboxes.forEach(function(checkbox) {
+						if (checkbox.value === categoryValue) {
+							checkbox.checked = true;
+						}
+					});
+					// Reset dropdown
+					dropdown.selectedIndex = 0;
+				}
+			}
+		});
+	</script>
 {% endblock %}

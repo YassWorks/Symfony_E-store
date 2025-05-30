@@ -1,10 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}My Profile
-{% endblock %}
+{% block title %}My Profile{% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('css/seller.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/seller.css') }}" />
 {% endblock %}
 
 {% block body %}
@@ -13,9 +12,7 @@
 			<div class="col-12">
 				<div class="d-flex justify-content-between align-items-center mb-4">
 					<h1 class="mb-2 fw-bold">
-						<span class="material-icons-outlined me-2" style="font-size: 2.5rem; vertical-align: middle; position: relative; top: -2px;">
-							person
-						</span>
+						<span class="material-icons-outlined me-2" style="font-size: 2.5rem; vertical-align: middle; position: relative; top: -2px;">person</span>
 						My Profile
 					</h1>
 				</div>
@@ -36,16 +33,14 @@
 					</div>
 				{% endfor %}
 
-				<div
-					class="row">
+				<div class="row">
 					<!-- User Information Card -->
 					<div class="col-lg-6 mb-4">
-						<div class="card border-0 shadow-sm">							<div class="card-header bg-white border-0 py-3">
+						<div class="card border-0 shadow-sm">
+							<div class="card-header bg-white border-0 py-3">
 								<div class="d-flex justify-content-between align-items-center">
 									<h5 class="mb-0 fw-bold">
-										<span class="material-icons-outlined me-2" style="vertical-align: middle;">
-											account_circle
-										</span>
+										<span class="material-icons-outlined me-2" style="vertical-align: middle;">account_circle</span>
 										Personal Information
 									</h5>
 									<a href="{{ path('profile_edit') }}" class="btn btn-sm btn-outline-primary">
@@ -85,7 +80,7 @@
 								</div>
 								<div class="row">
 									<div class="col-12">
-										<hr class="my-3">
+										<hr class="my-3" />
 										<div class="d-flex justify-content-between align-items-center">
 											<div>
 												<h6 class="text-danger mb-1">Danger Zone</h6>
@@ -107,9 +102,7 @@
 						<div class="card border-0 shadow-sm">
 							<div class="card-header bg-white border-0 py-3">
 								<h5 class="mb-0 fw-bold">
-									<span class="material-icons-outlined me-2" style="vertical-align: middle;">
-										token
-									</span>
+									<span class="material-icons-outlined me-2" style="vertical-align: middle;">token</span>
 									Crystals
 								</h5>
 							</div>
@@ -138,8 +131,7 @@
 					</div>
 				</div>
 
-				<div
-					class="row">
+				<div class="row">
 					<!-- Shop Information Card (if user is a seller) -->
 					{% if user_has_shop(app.user) %}
 						<div class="col-lg-6 mb-4">
@@ -147,9 +139,7 @@
 								<div class="card-header bg-white border-0 py-3">
 									<div class="d-flex justify-content-between align-items-center">
 										<h5 class="mb-0 fw-bold">
-											<span class="material-icons-outlined me-2" style="vertical-align: middle;">
-												store
-											</span>
+											<span class="material-icons-outlined me-2" style="vertical-align: middle;">store</span>
 											My Shop
 										</h5>
 										<a href="{{ path('seller_dashboard') }}" class="btn btn-sm btn-outline-primary">
@@ -162,7 +152,7 @@
 									{% if userShop %}
 										<div class="d-flex align-items-center mb-3">
 											{% if userShop.logoUrl %}
-												<img src="{{ asset(userShop.logoUrl) }}" alt="{{ userShop.name }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+												<img src="{{ asset(userShop.logoUrl) }}" alt="{{ userShop.name }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" />
 											{% else %}
 												<div class="bg-light rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
 													<span class="material-icons-outlined text-muted">store</span>
@@ -206,9 +196,7 @@
 							<div class="card border-0 shadow-sm">
 								<div class="card-header bg-white border-0 py-3">
 									<h5 class="mb-0 fw-bold">
-										<span class="material-icons-outlined me-2" style="vertical-align: middle;">
-											sell
-										</span>
+										<span class="material-icons-outlined me-2" style="vertical-align: middle;">sell</span>
 										Become a Seller
 									</h5>
 								</div>
@@ -225,8 +213,8 @@
 								</div>
 							</div>
 						</div>
-					{% endif %}				</div>
-
+					{% endif %}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -268,7 +256,7 @@
 						Cancel
 					</button>
 					<form method="post" action="{{ path('profile_delete') }}" style="display: inline;">
-						<input type="hidden" name="_token" value="{{ csrf_token('delete_account' ~ app.user.id) }}">
+						<input type="hidden" name="_token" value="{{ csrf_token('delete_account' ~ app.user.id) }}" />
 						<button type="submit" class="btn btn-danger" onclick="return confirm('Are you absolutely sure? This action cannot be undone!')">
 							<span class="material-icons-outlined me-1">delete_forever</span>
 							Delete My Account

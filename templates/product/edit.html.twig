@@ -1,21 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Product
-{% endblock %}
+{% block title %}Edit Product{% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('css/product.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('css/product.css') }}" />
 {% endblock %}
 
 {% block body %}
 	<div class="product-form-page">
 		<div class="container">
-
 			<div class="product-form-container">
 				<h1 class="product-form-title">
 					<span class="material-icons-outlined" style="font-size: 2rem">edit</span>
-					Edit Product:
-					{{ product.title }}
+					Edit Product: {{ product.title }}
 				</h1>
 
 				{{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'novalidate': 'novalidate'}}) }}
@@ -80,8 +77,7 @@
 								</div>
 								{{ form_errors(form.images) }}
 								{% if product.images|length > 0 %}
-									<small class="text-muted">Current image:
-										{{ product.images[0].filename }}</small>
+									<small class="text-muted">Current image: {{ product.images[0].filename }}</small>
 								{% endif %}
 							</div>
 						</div>

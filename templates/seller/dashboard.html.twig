@@ -1,15 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Seller Dashboard
-{% endblock %}
+{% block title %}Seller Dashboard{% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('css/seller.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/seller.css') }}" />
 {% endblock %}
 
 {% block body %}
-	<div
-		class="container-fluid py-4" style="background-color: #f8f9fa;">
+	<div class="container-fluid py-4" style="background-color: #f8f9fa;">
 		<!-- Dashboard Header -->
 		<div class="container">
 			<div class="d-flex justify-content-between align-items-center mb-4">
@@ -71,7 +69,7 @@
 													<div class="me-3" style="width: 50px; height: 50px;">
 														{% if product.images is defined and product.images|length > 0 %}
 															{% set image = product.images[0] %}
-															<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ product.title }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;">
+															<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ product.title }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;" />
 														{% else %}
 															<div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 100%; height: 100%;">
 																<span class="material-icons-outlined text-muted">image</span>
@@ -119,6 +117,7 @@
 												{% else %}
 													<p>No rates yet</p>
 												{% endif %}
+											</td>
 										</tr>
 									{% endfor %}
 								</tbody>
@@ -135,7 +134,8 @@
 								<span class="material-icons-outlined me-2">add</span>
 								Add Your First Product
 							</a>
-						</div>					{% endif %}
+						</div>
+					{% endif %}
 				</div>
 			</div>
 
@@ -206,7 +206,7 @@
 																<div class="me-2" style="width: 30px; height: 30px;">
 																	{% if item.product.images is defined and item.product.images|length > 0 %}
 																		{% set image = item.product.images[0] %}
-																		<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ item.product.title }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;">
+																		<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ item.product.title }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover;" />
 																	{% else %}
 																		<div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 100%; height: 100%;">
 																			<span class="material-icons-outlined text-muted" style="font-size: 16px;">image</span>

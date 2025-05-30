@@ -1,31 +1,31 @@
 <div class="col-sm-6 col-lg-4">
-    <div class="product-card">
-        <div class="product-image">
-            {% if product.images is defined and product.images|length > 0 %}
-                {% set image = product.images[0] %}
-                <img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ product.title }}" class="img-fluid">
-            {% else %}
-                <div class="product-placeholder">
-                    <span class="material-icons-outlined">image</span>
-                </div>
-            {% endif %}
-            <div class="product-overlay">
-                <a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-primary btn-sm">
-                    <span class="material-icons-outlined me-1">visibility</span>
-                    View Details
-                </a>
-            </div>
-        </div>
-        <div class="product-content">
-            <h5 class="product-title">{{ product.title }}</h5>
-            <p class="product-description">
-                {{ product.description|slice(0, 80) }}
-                {{ product.description|length > 80 ? '...' }}
-            </p>
-            <div class="product-meta">
-                <span class="product-price">${{ product.price }}</span>
-                <span class="product-category">{{ product.category.value }}</span>
-            </div>
-        </div>
-    </div>
+	<div class="product-card">
+		<div class="product-image">
+			{% if product.images is defined and product.images|length > 0 %}
+				{% set image = product.images[0] %}
+				<img src="{{ asset('uploads/products_images/' ~ image.filename) }}" alt="{{ product.title }}" class="img-fluid" />
+			{% else %}
+				<div class="product-placeholder">
+					<span class="material-icons-outlined">image</span>
+				</div>
+			{% endif %}
+			<div class="product-overlay">
+				<a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-primary btn-sm">
+					<span class="material-icons-outlined me-1">visibility</span>
+					View Details
+				</a>
+			</div>
+		</div>
+		<div class="product-content">
+			<h5 class="product-title">{{ product.title }}</h5>
+			<p class="product-description">
+				{{ product.description|slice(0, 80) }}
+				{{ product.description|length > 80 ? '...' }}
+			</p>
+			<div class="product-meta">
+				<span class="product-price">${{ product.price }}</span>
+				<span class="product-category">{{ product.category.value }}</span>
+			</div>
+		</div>
+	</div>
 </div>

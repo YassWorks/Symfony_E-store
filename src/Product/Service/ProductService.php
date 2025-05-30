@@ -26,10 +26,32 @@ class ProductService
     {
         $this->em->persist($product);
         $this->em->flush();
-    }
-
+    }    
+    
     public function delete(Product $product): void
     {
+        // Remove related OrderItems first to avoid foreign key constraint violation
+        $orderItems = $this->em->getRepository(\App\Order\Entity\OrderItem::class)
+            ->findBy(['product' => $product]);
+        
+        foreach ($orderItems as $orderItem) {
+            $this->em->remove($orderItem);
+        }
+        
+        // Remove related CartItems to avoid foreign key constraint violation
+        $cartItems = $this->em->getRepository(\App\Cart\Entity\CartItem::class)
+            ->findBy(['product' => $product]);
+        
+        foreach ($cartItems as $cartItem) {
+            $this->em->remove($cartItem);
+        }
+        
+        // Remove from wishlists (many-to-many relationship)
+        $wishlists = $this->em->getRepository(\App\Wishlist\Entity\Wishlist::class)->findAll();
+        foreach ($wishlists as $wishlist) {
+            $wishlist->removeItem($product);
+        }
+        
         $this->em->remove($product);
         $this->em->flush();
     }
