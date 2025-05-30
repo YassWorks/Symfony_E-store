@@ -82,7 +82,3 @@ Prerequisites:
    php -S localhost:8000 -t public
    ```
 5. Open your browser to [http://localhost:8000](http://localhost:8000).
-
----
-
-Feel free to explore, contribute, and customize as needed!
