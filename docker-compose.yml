@@ -1,0 +1,64 @@
+services:
+  php:
+    build: .
+    container_name: symfony_e_store_php
+    environment:
+      PGPASSWORD: symfony
+    volumes:
+      - .:/var/www/html:delegated
+    depends_on:
+      database:
+        condition: service_healthy
+    # override start: wait → rename reserved table → sync schema → php-fpm
+    command: >
+      sh -c "
+        until pg_isready -h database -U symfony; do
+          echo '⏳ Waiting for Postgres…' && sleep 2;
+        done &&
+        echo '📦 Ensuring DB exists…' &&
+        php bin/console doctrine:database:create --if-not-exists --quiet &&
+        echo '🔄 Renaming \"user\"→\"users\"…' &&
+        psql -h database -U symfony -d symfony -c 'ALTER TABLE \"user\" RENAME TO users;' || true &&
+        echo '🚧 Updating schema from Entities…' &&
+        php bin/console doctrine:schema:update --force --quiet &&
+        echo '✅ Starting PHP-FPM…' &&
+        exec php-fpm
+      "
+
+  nginx:
+    image: nginx:alpine
+    container_name: symfony_e_store_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+
+  database:
+    image: postgres:16-alpine
+    container_name: symfony_e_store_db
+    environment:
+      POSTGRES_USER: symfony
+      POSTGRES_PASSWORD: symfony
+      POSTGRES_DB: symfony
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U symfony"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  mailer:
+    image: axllent/mailpit
+    container_name: symfony_e_store_mailer
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8025"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
