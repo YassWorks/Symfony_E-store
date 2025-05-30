@@ -1,20 +1,33 @@
-version: '3.8'
-
 services:
   php:
     build: .
-    container_name: symfony_e-store-php
+    container_name: symfony_e_store_php
+    environment:
+      PGPASSWORD: symfony
     volumes:
       - .:/var/www/html:delegated
     depends_on:
       database:
         condition: service_healthy
-    environment:
-      PGPASSWORD: symfony
+    # override start: wait → rename reserved table → sync schema → php-fpm
+    command: >
+      sh -c "
+        until pg_isready -h database -U symfony; do
+          echo '⏳ Waiting for Postgres…' && sleep 2;
+        done &&
+        echo '📦 Ensuring DB exists…' &&
+        php bin/console doctrine:database:create --if-not-exists --quiet &&
+        echo '🔄 Renaming \"user\"→\"users\"…' &&
+        psql -h database -U symfony -d symfony -c 'ALTER TABLE \"user\" RENAME TO users;' || true &&
+        echo '🚧 Updating schema from Entities…' &&
+        php bin/console doctrine:schema:update --force --quiet &&
+        echo '✅ Starting PHP-FPM…' &&
+        exec php-fpm
+      "
 
   nginx:
     image: nginx:alpine
-    container_name: symfony_e-store-nginx
+    container_name: symfony_e_store_nginx
     ports:
       - "8080:80"
     volumes:
@@ -25,7 +38,7 @@ services:
 
   database:
     image: postgres:16-alpine
-    container_name: symfony_e-store-database
+    container_name: symfony_e_store_db
     environment:
       POSTGRES_USER: symfony
       POSTGRES_PASSWORD: symfony
@@ -40,7 +53,7 @@ services:
 
   mailer:
     image: axllent/mailpit
-    container_name: symfony_e-store-mailer
+    container_name: symfony_e_store_mailer
     ports:
       - "1025:1025"
       - "8025:8025"
